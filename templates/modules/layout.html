@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en" th:fragment="html (content)">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title th:text="${site.title}"></title>
+    <link rel="stylesheet" th:href="@{/assets/dist/main.css?v={version}(version=${theme.spec.version})}" />
+    <script th:src="@{/assets/dist/main.iife.js?v={version}(version=${theme.spec.version})}"></script>
+  </head>
+  <body>
+    <header class="w-full">
+      <div class="flex flex-col items-center justify-center pt-3">
+        <div>
+          <span class="text-3xl font-bold">Head</span>
+        </div>
+
+        <div id="counter"></div>
+      </div>
+    </header>
+    <main id="swup" class="transition-main">
+      <th:block th:replace="${content}" />
+    </main>
+  </body>
+</html>

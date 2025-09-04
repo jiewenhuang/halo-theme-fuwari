@@ -1,0 +1,12 @@
+<div
+  id="sidebar"
+  class="onload-animation col-span-2 row-start-2 row-end-3 mb-4 w-full lg:col-span-1 lg:row-start-1 lg:row-end-2 lg:max-w-[17.5rem]"
+>
+  <div class="mb-4 flex w-full flex-col gap-4">
+    <th:block th:replace="~{modules/widgets/sidebar/profile}" />
+  </div>
+  <div id="sidebar-sticky" class="sticky top-4 flex w-full flex-col gap-4 transition-all duration-700">
+    <th:block th:replace="~{modules/widgets/sidebar/categories}" />
+    <th:block th:replace="~{modules/widgets/sidebar/tag}" />
+  </div>
+</div>

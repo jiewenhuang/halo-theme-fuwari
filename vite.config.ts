@@ -1,20 +1,36 @@
 import { defineConfig } from "vite";
 import { fileURLToPath } from "url";
-import tailwindcss from "@tailwindcss/vite";
+import path from "path";
 import preact from "@preact/preset-vite";
 
-import path from "path";
+export default ({ mode }: { mode: string }) => {
+  const isProduction = mode === "production";
 
-export default defineConfig({
-  plugins: [tailwindcss(), preact()],
-  build: {
-    outDir: fileURLToPath(new URL("./templates/assets/dist", import.meta.url)),
-    emptyOutDir: true,
-    lib: {
-      entry: path.resolve(__dirname, "src/main.ts"),
-      name: "main",
-      fileName: "main",
-      formats: ["iife"],
+  return defineConfig({
+    root: "./src",
+    base: isProduction ? "/themes/theme-fuwari-2/assets/dist/" : "",
+    plugins: [preact()],
+    define: {
+      "process.env": process.env,
     },
-  },
-});
+    build: {
+      manifest: isProduction,
+      minify: isProduction,
+      rollupOptions: {
+        input: path.resolve(__dirname, "src/main.ts"),
+        output: {
+          entryFileNames: "[name].js",
+          chunkFileNames: "[name].js",
+          assetFileNames: "[name][extname]",
+        },
+        treeshake: false,
+        preserveEntrySignatures: "allow-extension",
+      },
+      outDir: fileURLToPath(new URL("./templates/assets/dist", import.meta.url)),
+      emptyOutDir: true,
+    },
+    server: {
+      origin: "http://localhost:5173",
+    },
+  });
+};

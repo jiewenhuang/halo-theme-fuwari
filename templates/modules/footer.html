@@ -1,0 +1,33 @@
+<div class="flex w-full flex-col items-center justify-center">
+  <!--<div class="border-t border-[var(&#45;&#45;primary)] mx-16 border-dashed py-8 max-w-[var(&#45;&#45;page-width)] flex flex-col items-center justify-center px-6">-->
+  <div class="my-10 w-2/3 border-t border-dashed border-black/10 transition dark:border-white/15"></div>
+  <!--<div class="transition bg-[oklch(92%_0.01_var(&#45;&#45;hue))] dark:bg-black rounded-2xl py-8 mt-4 mb-8 flex flex-col items-center justify-center px-6">-->
+  <div
+    class="mb-12 flex flex-col items-center justify-center rounded-2xl border-dashed border-[oklch(85%_0.01_var(--hue))] px-6 transition dark:border-white/15"
+  >
+    <div class="text-50 text-center text-sm transition !delay-0">
+      &copy;
+      <span id="copyright-year" x-data="{ currentYear: new Date().getFullYear() }" x-text="currentYear"></span>
+      [[${site.title}]]. All Rights Reserved. /
+      <th:block th:if="${pluginFinder.available('PluginFeed')}">
+        <a class="link font-medium text-[var(--primary)] transition" target="_blank" th:href="@{/rss.xml}">RSS</a> /
+      </th:block>
+      <a
+        class="link font-medium text-[var(--primary)]"
+        target="_blank"
+        th:if="${pluginFinder.available('PluginSitemap')}"
+        th:href="@{/sitemap.xml}"
+        >Sitemap</a
+      ><br />
+      Powered by
+      <a class="link font-medium text-[var(--primary)]" target="_blank" href="https://www.halo.run/">Halo</a> &
+      <a
+        class="link font-medium text-[var(--primary)]"
+        target="_blank"
+        href="https://github.com/jiewenhuang/halo-theme-fuwari"
+        >Theme-Fuwari</a
+      >
+    </div>
+  </div>
+  <halo:footer />
+</div>

@@ -1,0 +1,43 @@
+<th:block th:with="tags = ${tagFinder.listAll()}">
+  <div
+    data-id="tags"
+    x-data="{ isCollapsed: true }"
+    th:x-init="|isCollapsed = ${categoriesCount >=20}|"
+    th:with="tagsCount = ${tags.size()}"
+    th:data-is-collapsed="${tagsCount >=20}"
+    class="card-base onload-animation pb-4"
+    style="animation-delay: 200ms; --collapsedHeight: 7.5rem"
+  >
+    <div
+      class="relative mb-2 ml-8 mt-4 text-lg font-bold text-neutral-900 transition before:absolute before:left-[-16px] before:top-[5.5px] before:h-4 before:w-1 before:rounded-md before:bg-[var(--primary)] dark:text-neutral-100"
+      style="--collapsedHeight: 7.5rem"
+    >
+      [[#{widget.tags.title}]]
+    </div>
+    <div
+      id="tags"
+      class="collapse-wrapper overflow-hidden px-4"
+      :class="isCollapsed ? 'collapsed' : ''"
+      style="--collapsedHeight: 7.5rem"
+    >
+      <div class="flex flex-wrap gap-2">
+        <a
+          th:each="tag : ${tags}"
+          th:href="@{${tag.status.permalink}}"
+          th:aria-label="|View all posts with the ${tag.spec.displayName} tag|"
+          th:text="${tag.spec.displayName}"
+          class="btn-regular h-8 rounded-lg px-3 text-sm"
+        ></a>
+      </div>
+    </div>
+
+    <div class="expand-btn -mb-2 px-4" :class="isCollapsed ? 'collapsed' : 'hidden'" th:if="${categoriesCount >= 5}">
+      <button class="btn-plain h-9 w-full rounded-lg" @click="isCollapsed = ! isCollapsed">
+        <div class="flex -translate-x-2 items-center justify-center gap-2 text-[var(--primary)]">
+          <span class="icon-[material-symbols--more-horiz] text-[1.75rem]"></span>
+          [[#{widget.categories.more}]]
+        </div>
+      </button>
+    </div>
+  </div>
+</th:block>

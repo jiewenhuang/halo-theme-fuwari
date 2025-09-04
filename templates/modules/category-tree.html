@@ -1,0 +1,30 @@
+<div
+  th:fragment="next (categories)"
+  class="relative ml-3 before:absolute before:left-[-4px] before:top-[11px] before:h-4 before:w-0.5 before:rounded-md before:bg-[var(--primary)]"
+>
+  <div th:fragment="single (categories)" th:each="category : ${categories}">
+    <a
+      th:href="@{${category.status.permalink}}"
+      th:title="${category.spec.displayName}"
+      aria-label="View all posts in the Examples category"
+    >
+      <button
+        class="h-10 w-full rounded-lg bg-none pl-2 text-neutral-700 transition-all hover:bg-[var(--btn-plain-bg-hover)] hover:pl-3 hover:text-[var(--primary)] active:bg-[var(--btn-plain-bg-active)] dark:text-neutral-300 dark:hover:text-[var(--primary)]"
+      >
+        <div class="relative mr-2 flex items-center justify-between">
+          <div
+            class="overflow-hidden overflow-ellipsis whitespace-nowrap text-left"
+            th:text="${category.spec.displayName}"
+          ></div>
+          <div
+            class="ml-4 flex h-7 min-w-[2rem] items-center justify-center rounded-lg bg-[oklch(0.95_0.025_var(--hue))] px-2 text-sm font-bold text-[var(--btn-content)] transition dark:bg-[var(--primary)] dark:text-[var(--deep-text)]"
+            th:text="${category.postCount ?: 0}"
+          ></div>
+        </div>
+      </button>
+    </a>
+    <th:block th:if="${not #lists.isEmpty(category.children)}">
+      <th:block th:replace="~{modules/category-tree :: next (categories=${category.children})}"></th:block>
+    </th:block>
+  </div>
+</div>

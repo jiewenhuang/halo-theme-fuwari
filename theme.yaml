@@ -1,21 +1,21 @@
 apiVersion: theme.halo.run/v1alpha1
 kind: Theme
 metadata:
-  name: theme-modern-starter
+  name: Theme-Fuwari
 spec:
-  displayName: Modern Starter
+  displayName: theme-fuwari
   author:
-    name: Halo
-    website: https://github.com/halo-dev
-  description: A development starter theme with Vite Ecosystem for Halo
-  logo: https://www.halo.run/logo
-  homepage: https://github.com/halo-dev/theme-modern-starter#readme
-  repo: https://github.com/halo-dev/theme-modern-starter
-  issues: https://github.com/halo-dev/theme-modern-starter/issues
-  settingName: "theme-modern-starter-setting"
-  configMapName: "theme-modern-starter-configMap"
+    name: Jiewenhuang
+    website: https://www.jiewen.run
+  description: A modern theme for Halo.
+  logo: /themes/theme-fuwari/assets/images/favicon-light-192.png
+  homepage: https://github.com/jiewenhuang/halo-theme-fuwari#readme
+  repo: https://github.com/jiewenhuang/halo-theme-fuwari
+  issues: https://github.com/jiewenhuang/halo-theme-fuwari/issues
+  settingName: "theme-fuwari-setting"
+  configMapName: "theme-fuwari-configMap"
   version: "1.0.0"
   requires: "2.0.0"
   license:
-    - name: "GPL-3.0"
-      url: "https://github.com/halo-dev/theme-modern-starter/blob/main/LICENSE"
+    - name: "MIT"
+      url: "https://github.com/jiewenhuang/halo-theme-fuwari/blob/main/LICENSE"

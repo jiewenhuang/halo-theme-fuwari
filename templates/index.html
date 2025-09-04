@@ -1,34 +1,18 @@
 <!doctype html>
-<html xmlns:th="https://www.thymeleaf.org" th:replace="~{modules/layout :: html(content = ~{::content})}">
+<html
+  xmlns:th="https://www.thymeleaf.org"
+  th:replace="~{modules/layout :: html(title = ${site.title}, hero = null, content = ~{::content}, head = null, footer = null, sidebar = null, contentClass = null, pageType = 'home')}"
+>
   <th:block th:fragment="content">
-    <div class="mx-auto mt-10 flex h-screen w-96 flex-col items-center">
-      <ul class="w-full list-inside list-disc">
-        <li th:each="post : ${posts.items}">
-          <span class="icon-[tabler--box]"></span>
-          <a
-            th:text="${post.spec.title}"
-            th:href="${post.status.permalink}"
-            class="hover:text-gray-600 hover:underline"
-          ></a>
-        </li>
-      </ul>
-      <div class="mt-6 flex w-full items-center justify-between" th:if="${posts.hasPrevious() || posts.hasNext()}">
-        <a
-          th:href="@{${posts.prevUrl}}"
-          class="whitespace-no-wrap group inline-flex items-center justify-center gap-1 rounded-md border border-gray-200 bg-white px-4 py-1 text-sm leading-6 font-medium text-gray-600 shadow-sm hover:bg-gray-50 focus:shadow-none focus:outline-none"
-        >
-          <span class="icon-[tabler--arrow-left] text-lg transition-all group-hover:-translate-x-1"></span>
-          <span>上一页</span>
-        </a>
-        <span class="text-sm text-gray-900" th:text="${posts.page} +' / '+ ${posts.totalPages}"></span>
-        <a
-          th:href="@{${posts.nextUrl}}"
-          class="whitespace-no-wrap group inline-flex items-center justify-center gap-1 rounded-md border border-gray-200 bg-white px-4 py-1 text-sm leading-6 font-medium text-gray-600 shadow-sm hover:bg-gray-50 focus:shadow-none focus:outline-none"
-        >
-          <span>下一页</span>
-          <span class="icon-[tabler--arrow-right] text-lg transition-all group-hover:translate-x-1"></span>
-        </a>
-      </div>
+    <div
+      class="mb-4 flex flex-col rounded-[var(--radius-large)] bg-[var(--card-bg)] py-1 transition md:gap-4 md:bg-transparent md:py-0"
+    >
+      <th:block th:each="post,postStat : ${posts.items}">
+        <th:block th:replace="~{modules/post-card :: card(post = ${post}, index = ${postStat.index})}" />
+      </th:block>
     </div>
+    <th:block
+      th:replace="~{modules/pagination :: pagination(context = '/page/', prevUrl = ${posts.prevUrl}, nextUrl = ${posts.nextUrl}, totalPages = ${posts.totalPages}, page = ${posts.page}, hasPrevious = ${posts.hasPrevious()}, hasNext = ${posts.hasNext()}, postListCount = ${posts.items.size()})}"
+    />
   </th:block>
 </html>

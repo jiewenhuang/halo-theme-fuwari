@@ -1,0 +1,34 @@
+<th:block th:with="categories = ${categoryFinder.listAsTree()}">
+  <div
+    data-id="categories"
+    x-data="{ isCollapsed: true }"
+    th:x-init="|isCollapsed = ${categoriesCount >=5}|"
+    th:with="categoriesCount = ${categoryFinder.listAll().size()}"
+    th:data-is-collapsed="${categoriesCount >=5}"
+    class="card-base onload-animation pb-4"
+    style="animation-delay: 150ms; --collapsedHeight: 7.5rem"
+  >
+    <div
+      class="relative mb-2 ml-8 mt-4 text-lg font-bold text-neutral-900 transition before:absolute before:left-[-16px] before:top-[5.5px] before:h-4 before:w-1 before:rounded-md before:bg-[var(--primary)] dark:text-neutral-100"
+      style="--collapsedHeight: 7.5rem"
+    >
+      [[#{widget.categories.title}]]
+    </div>
+    <div
+      id="categories"
+      class="collapse-wrapper overflow-hidden px-4"
+      :class="isCollapsed ? 'collapsed' : ''"
+      style="--collapsedHeight: 7.5rem"
+    >
+      <th:block th:replace="~{modules/category-tree :: single(categories=${categories})}" />
+    </div>
+    <div class="expand-btn -mb-2 px-4" :class="isCollapsed ? 'collapsed' : 'hidden'" th:if="${categoriesCount >= 5}">
+      <button class="btn-plain h-9 w-full rounded-lg" @click="isCollapsed = ! isCollapsed">
+        <div class="flex -translate-x-2 items-center justify-center gap-2 text-[var(--primary)]">
+          <span class="icon-[material-symbols--more-horiz] text-[1.75rem]"></span>
+          [[#{widget.categories.more}]]
+        </div>
+      </button>
+    </div>
+  </div>
+</th:block>

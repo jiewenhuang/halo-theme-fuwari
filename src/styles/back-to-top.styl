@@ -1,0 +1,27 @@
+.back-to-top-wrapper
+  width: 3.75rem
+  height: 3.75rem
+  position: absolute
+  right: 0
+  top: 0
+  pointer-events: none
+
+.back-to-top-btn
+  color: var(--primary)
+  font-size: 2.25rem
+  font-weight: bold
+  border: none
+  position: fixed
+  bottom: 10rem
+  opacity: 1
+  cursor: pointer
+  transform: translateX(5rem)
+  pointer-events: auto
+  i
+    font-size: 1.75rem
+  &.hide
+    transform: translateX(5rem) scale(0.9)
+    opacity: 0
+    pointer-events: none
+  &:active
+    transform: translateX(5rem) scale(0.9)

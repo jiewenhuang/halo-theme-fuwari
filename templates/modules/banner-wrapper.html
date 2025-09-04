@@ -1,0 +1,17 @@
+<th:block th:fragment="banner-wrapper">
+  <div id="banner-wrapper" class="absolute z-10 w-full overflow-hidden transition duration-700" style="top: -30vh">
+    <div id="banner" class="relative h-full overflow-hidden object-cover transition duration-700">
+      <div class="pointer-events-none absolute inset-0 bg-opacity-50 transition dark:bg-black/10"></div>
+      <img
+        th:src="${theme.config.base.banner.src}"
+        alt="Banner image of the blog"
+        th:style="|object-position: ${theme.config.base.banner.position}|"
+        width="1344"
+        height="896"
+        loading="lazy"
+        decoding="async"
+        class="h-full w-full object-cover"
+      />
+    </div>
+  </div>
+</th:block>

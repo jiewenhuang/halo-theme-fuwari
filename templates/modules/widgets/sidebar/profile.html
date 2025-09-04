@@ -1,0 +1,65 @@
+<div class="card-base p-3" th:with="profile = ${theme.config.profile}">
+  <a
+    aria-label="Go to About Page"
+    href="/about"
+    th:href="${profile.url}"
+    class="group relative mx-auto mb-3 mt-1 block max-w-[12rem] overflow-hidden rounded-xl active:scale-95 lg:mx-0 lg:mt-0 lg:max-w-none"
+  >
+    <div
+      class="pointer-events-none absolute z-50 flex h-full w-full items-center justify-center transition group-hover:bg-black/30 group-active:bg-black/50"
+    >
+      <span
+        class="icon-[fa6-regular--address-card] scale-90 text-5xl text-white opacity-0 transition group-hover:scale-100 group-hover:opacity-100"
+      >
+      </span>
+    </div>
+    <img
+      src="/themes/theme-fuwari/assets/images/demo-avatar.png"
+      th:src="${profile.avatar}"
+      alt="Profile Image of the Author"
+      class="mx-auto h-full lg:mt-0 lg:w-full"
+    />
+  </a>
+  <div class="px-2">
+    <div class="mb-1 text-center text-xl font-bold transition dark:text-neutral-50" th:text="${profile.name}"></div>
+    <div class="mx-auto mb-2 h-1 w-5 rounded-full bg-[var(--primary)] transition"></div>
+    <div class="mb-2.5 text-center text-neutral-400 transition" th:text="${profile.bio}"></div>
+    <div class="mb-1 flex justify-center gap-2" th:unless="${#lists.isEmpty(profile.social_media)}">
+      <th:block th:if="${profile.social_media.size() > 1}">
+        <th:block th:each="social_media : ${profile.social_media}">
+          <a
+            th:if="${social_media.url_type == 'normal'}"
+            rel="me"
+            th:aria-label="${social_media.name}"
+            th:href="${social_media.url}"
+            target="_blank"
+            class="btn-regular h-10 w-10 rounded-lg active:scale-90"
+          >
+            <span class="text-[1.5rem]" th:classappend="${social_media.icon}"></span>
+          </a>
+          <span
+            th:if="${social_media.url_type == 'image'}"
+            th:attr="x-data=|{openImageModal:false,image: '${social_media.url}', alt: '${social_media.name}'}|"
+            class="btn-regular h-10 w-10 rounded-lg active:scale-90"
+            @click="openImageModal = true"
+          >
+            <div th:classappend="${social_media.icon}" class="text-gray-600 dark:text-slate-400"></div>
+            <th:block th:replace="~{modules/image-view-modal}" />
+          </span>
+        </th:block>
+      </th:block>
+      <th:block th:if="${profile.social_media.size() == 1}">
+        <a
+          rel="me"
+          th:aria-label="${profile.social_media[0].name}"
+          th:href="${profile.social_media[0].url}"
+          target="_blank"
+          class="btn-regular h-10 gap-2 rounded-lg px-3 font-bold active:scale-95"
+        >
+          <span class="text-[1.5rem]" th:classappend="${profile.social_media[0].icon}"></span>
+          [[${profile.social_media[0].name}]]
+        </a>
+      </th:block>
+    </div>
+  </div>
+</div>

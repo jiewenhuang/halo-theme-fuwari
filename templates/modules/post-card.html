@@ -1,0 +1,84 @@
+<th:block th:fragment="card(post,index)">
+  <div
+    class="card-base onload-animation relative flex w-full flex-col-reverse overflow-hidden rounded-[var(--radius-large)] md:flex-col"
+    th:style="|animation-delay: calc(var(--content-delay) + ${index * 50}ms); --coverWidth: 28%;|"
+  >
+    <div
+      class="relative pb-6 pl-6 pr-6 pt-6 md:pl-9 md:pr-2 md:pt-7"
+      th:classappend="${not #strings.isEmpty(post.spec.cover) ? 'w-full md:w-[calc(100%_-_var(--coverWidth)_-_12px)]' : 'w-full md:w-[calc(100%_-_52px_-_12px)]'}"
+    >
+      <a
+        th:href="@{${post.status.permalink}}"
+        th:title="${post.spec.title}"
+        class="text-90 group mb-3 block w-full text-3xl font-bold transition before:absolute before:left-[18px] before:top-[35px] before:hidden before:h-5 before:w-1 before:rounded-md before:bg-[var(--primary)] hover:text-[var(--primary)] active:text-[var(--title-active)] dark:hover:text-[var(--primary)] dark:active:text-[var(--title-active)] md:before:block"
+      >
+        [[${post.spec.title}]]
+        <span
+          class="icon-[material-symbols--chevron-right-rounded] absolute inline translate-y-0.5 text-[2rem] text-[var(--primary)] md:hidden"
+        ></span>
+        <span
+          class="icon-[material-symbols--chevron-right-rounded] absolute hidden -translate-x-1 translate-y-0.5 text-[2rem] text-[var(--primary)] opacity-0 transition group-hover:translate-x-0 group-hover:opacity-100 md:inline"
+        ></span>
+      </a>
+      <!-- metadata -->
+      <th:block th:replace="~{modules/post-meta :: post-meta(class='')}" />
+      <!-- description -->
+      <div
+        class="text-75 mb-3.5 pr-4 transition"
+        th:classappend="${not #strings.isEmpty(post.status.excerpt) ? '' : 'line-clamp-2 md:line-clamp-1'}"
+      >
+        [[${post.status.excerpt}]]
+      </div>
+      <div class="flex gap-4 text-sm text-black/30 transition dark:text-white/30">
+        <div class="flex items-center justify-center">
+          <span class="icon-[material-symbols--readiness-score-outline-rounded] mr-1 text-lg"></span>
+          [[${post.stats.visit}]]
+        </div>
+        <div>|</div>
+        <div class="flex items-center justify-center">
+          <span class="icon-[material-symbols--ar-stickers-outline] mr-1 text-lg"></span>
+          [[${post.stats.upvote}]]
+        </div>
+      </div>
+    </div>
+    <!-- cover -->
+    <th:block th:if="${#strings.isEmpty(post.spec.cover)}">
+      <a
+        th:href="@{${post.status.permalink}}"
+        th:title="${post.spec.title}"
+        th:aria-label="${post.spec.title}"
+        class="btn-regular absolute bottom-3 right-3 top-3 !hidden w-[3.25rem] rounded-xl bg-[var(--enter-btn-bg)] hover:bg-[var(--enter-btn-bg-hover)] active:scale-95 active:bg-[var(--enter-btn-bg-active)] md:!flex"
+      >
+        <span
+          class="icon-[material-symbols--chevron-right-rounded] mx-auto text-4xl text-[var(--primary)] transition"
+        ></span>
+      </a>
+    </th:block>
+    <th:block th:if="${not #strings.isEmpty(post.spec.cover)}">
+      <a
+        th:href="@{${post.status.permalink}}"
+        th:title="${post.spec.title}"
+        th:aria-label="${post.spec.title}"
+        class="group relative mx-4 -mb-2 mt-4 max-h-[20vh] overflow-hidden rounded-xl active:scale-95 md:absolute md:bottom-3 md:right-3 md:top-3 md:mx-0 md:mb-0 md:mt-0 md:max-h-none md:w-[var(--coverWidth)]"
+      >
+        <div
+          class="pointer-events-none absolute z-10 h-full w-full transition group-hover:bg-black/30 group-active:bg-black/50"
+        ></div>
+        <div class="pointer-events-none absolute z-20 flex h-full w-full items-center justify-center">
+          <span
+            class="icon-[material-symbols--chevron-right-rounded] scale-50 text-5xl text-white opacity-0 transition group-hover:scale-100 group-hover:opacity-100"
+          ></span>
+        </div>
+        <img
+          th:src="${post.spec.cover}"
+          th:alt="${post.spec.title}"
+          th:srcset="|${thumbnail.gen(post.spec.cover, 's')} 400w,
+                    ${thumbnail.gen(post.spec.cover, 'm')} 800w,
+                    ${thumbnail.gen(post.spec.cover, 'l')} 1200w|"
+          sizes="(max-width: 1200px) 100vw, 1200px"
+          class="h-full w-full"
+        />
+      </a>
+    </th:block>
+  </div>
+</th:block>

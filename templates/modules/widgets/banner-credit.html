@@ -4,13 +4,13 @@
   target="_blank"
   rel="noopener"
   aria-label="Visit image source"
-  th:class="|group onload-animation transition-all| absolute -top-[3.25rem] right-4 flex h-9 items-center justify-center rounded-full bg-black/60 px-3 hover:bg-black/70"
+  class="onload-animation group absolute -top-[3.25rem] right-4 flex h-9 items-center justify-center rounded-full bg-black/60 px-3 transition-all hover:bg-black/70"
   th:classappend="${not #strings.isEmpty(theme.config.base.banner.credit.url) ? 'hover:pr-9 active:bg-black/80' : ''}"
 >
   <span class="icon-[material-symbols--copyright-outline-rounded] mr-1 text-[1.25rem] text-white/75"></span>
   <div class="text-xs text-white/75" th:text="${theme.config.base.banner.credit.text}"></div>
   <span
-    th:class="|icon-[material-symbols--share-outline] opacity-0| absolute right-4 text-[0.75rem] text-[oklch(0.75_0.14_var(--hue))] transition"
+    class="icon-[material-symbols--share-outline] absolute right-4 text-[0.75rem] text-[oklch(0.75_0.14_var(--hue))] opacity-0 transition"
     th:classappend="${not #strings.isEmpty(theme.config.base.banner.credit.url) ? 'group-hover:opacity-100' : ''}"
   >
   </span>

@@ -11,8 +11,7 @@
       >
         <a th:href="@{/}" class="btn-plain scale-animation h-[3.25rem] rounded-lg px-5 font-bold active:scale-95">
           <div class="text-md flex flex-row items-center text-[var(--primary)]">
-            <span class="icon-[tabler--smart-home] mb-1 mr-2 text-[1.75rem]"></span>
-            [[${site.title}]]
+            <span class="icon-[tabler--smart-home] mb-1 mr-2 text-[1.75rem]"></span> [[${site.title}]]
           </div>
         </a>
         <div
@@ -82,7 +81,7 @@
                     <button
                       class="btn-plain scale-animation mb-0.5 flex h-9 w-full items-center !justify-start whitespace-nowrap rounded-lg px-3 font-medium active:scale-95"
                       :class="currentValue === colorScheme.value ? 'current-theme-btn' : ''"
-                      @click="[main.setColorScheme(colorScheme.value,true),currentValue = colorScheme.value]"
+                      @click="switchTheme(colorScheme.value)"
                     >
                       <span :class="colorScheme.icon" class="mr-3 text-[1.25rem]"></span>
                       <span x-text="colorScheme.label"></span>

@@ -1,4 +1,7 @@
 export default () => ({
+  // Alpine.js 内部状态变量
+  currentValue: localStorage.getItem("color-scheme-fuwari") || "auto",
+
   colorSchemes: [
     {
       label: window.i18nResources["jsModule.colorSchemeSwitcher.dark"],
@@ -16,22 +19,16 @@ export default () => ({
       icon: "icon-[material-symbols--radio-button-partial-outline]",
     },
   ],
-  get currentValue() {
-    // Get current color scheme from localStorage or default
-    const stored = localStorage.getItem("color-scheme-fuwari");
-    if (stored) return stored;
 
-    // Fallback to checking the document classes to determine current theme
-    if (document.documentElement.classList.contains("dark")) return "dark";
-    if (document.documentElement.classList.contains("light")) return "light";
-    return "auto";
-  },
-  set currentValue(value) {
-    // This setter will be called when the template updates currentValue
-    // The actual theme setting is handled by main.setColorScheme in the template
-    localStorage.setItem("color-scheme-fuwari", value);
-  },
   get colorScheme() {
     return this.colorSchemes.find((x) => x.value === this.currentValue);
+  },
+
+  // 切换主题的方法
+  switchTheme: function (value: any) {
+    // 更新内部状态
+    this.currentValue = value;
+    // 调用主题切换函数
+    window.fuwari.setColorScheme(value, true);
   },
 });

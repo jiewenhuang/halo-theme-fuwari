@@ -49,6 +49,12 @@ import {
 import { mountCounter } from "./preact";
 
 window.Alpine = Alpine;
+
+// 将主要函数暴露到全局 window.fuwari 对象中以便模板调用
+window.fuwari = {
+  setColorScheme,
+  getCurrentColorScheme,
+};
 const swup = new Swup({
   animationSelector: '[class*="transition-swup-"]',
   containers: ["main"],
@@ -109,7 +115,8 @@ function mountWidgets() {
   }
 }
 
-export let currentColorScheme: LIGHT_DARK_MODE = "auto";
+let currentColorScheme: LIGHT_DARK_MODE = "auto";
+
 export function initColorScheme(defaultColorScheme: LIGHT_DARK_MODE, enableChangeColorScheme: boolean) {
   let colorScheme = defaultColorScheme;
 
@@ -121,6 +128,7 @@ export function initColorScheme(defaultColorScheme: LIGHT_DARK_MODE, enableChang
 
   setColorScheme(colorScheme, false);
 }
+
 export function setColorScheme(colorScheme: LIGHT_DARK_MODE, store: boolean) {
   if (colorScheme === "auto") {
     const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
@@ -134,6 +142,10 @@ export function setColorScheme(colorScheme: LIGHT_DARK_MODE, store: boolean) {
   if (store) {
     localStorage.setItem("color-scheme-fuwari", colorScheme);
   }
+}
+
+export function getCurrentColorScheme(): LIGHT_DARK_MODE {
+  return currentColorScheme;
 }
 
 window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", function () {

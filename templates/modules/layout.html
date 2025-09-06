@@ -30,16 +30,16 @@
       const themeConfig = /*[(${theme.config})]*/ {};
     </script>
     <!--/* 每页可变属性 */-->
-    <script th:inline="javascript">
-      let pageData = {
-        '_templateId': '[(${_templateId})]',
-        [# th:if="${_templateId == 'post'}"]
-      "postLastModifyTime": "[(${#dates.format(post.status.lastModifyTime, 'yyyy-MM-dd HH:mm:ss')})]",
+    <!--    <script th:inline="javascript">-->
+    <!--        let pageData = {-->
+    <!--                '_templateId': '[(${_templateId})]',-->
+    <!--                [#th:if = "${_templateId == 'post'}"]-->
+    <!--                "postLastModifyTime": "[(${#dates.format(post.status.lastModifyTime, 'yyyy-MM-dd HH:mm:ss')})]",-->
 
-        [/]
-          'version': '[(${theme.spec.version})]',
-      }
-    </script>
+    <!--                [/]-->
+    <!--                    'version': '[(${theme.spec.version})]',-->
+    <!--                }-->
+    <!--    </script>-->
     <!-- Set the theme before the page is rendered to avoid a flash -->
     <script th:inline="javascript">
       (function () {
@@ -109,6 +109,7 @@
       <th:block th:replace="${head}" />
     </th:block>
   </head>
+
   <body
     class="min-h-screen transition"
     th:date-page-type="${pageType}"

@@ -9,3 +9,9 @@
     overflow-y: auto;
   }
 }
+
+/*halo var*/
+
+:root {
+  --halo-cw-primary-1-color: var(--primary);
+}

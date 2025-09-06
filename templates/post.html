@@ -93,5 +93,46 @@
         </div>
       </div>
     </div>
+    <div
+      class="mb-4 flex w-full flex-col justify-between gap-4 overflow-hidden md:flex-row"
+      th:with="postCursor = ${postFinder.cursor(post.metadata.name)}"
+    >
+      <a
+        href="#"
+        class="w-full overflow-hidden font-bold active:scale-95"
+        th:classappend="${postCursor.hasPrevious() ? '' : 'pointer-events-none '}"
+        th:href="@{${postCursor.previous.status.permalink}}"
+        th:title="${postCursor.previous.spec.title}"
+      >
+        <div class="btn-card flex h-[3.75rem] w-full max-w-full items-center !justify-start gap-4 rounded-2xl px-4">
+          <span class="icon-[material-symbols--chevron-left-rounded] !text-2xl font-black text-[var(--primary)]"></span>
+          <div
+            class="max-w-[calc(100%_-_3rem)] overflow-hidden overflow-ellipsis whitespace-nowrap text-black/75 transition dark:text-white/75"
+            th:text="${#strings.abbreviate(postCursor.previous.spec.title,20)}"
+          ></div>
+        </div>
+      </a>
+      <a
+        href=""
+        class="w-full overflow-hidden font-bold active:scale-95"
+        th:classappend="${postCursor.hasNext() ? '' : 'pointer-events-none '}"
+        th:href="@{${postCursor.next.status.permalink}}"
+        th:title="${postCursor.next.spec.title}"
+      >
+        <div class="btn-card flex h-[3.75rem] w-full max-w-full items-center !justify-end gap-4 rounded-2xl px-4">
+          <div
+            class="max-w-[calc(100%_-_3rem)] overflow-hidden overflow-ellipsis whitespace-nowrap text-black/75 transition dark:text-white/75"
+            th:text="${#strings.abbreviate(postCursor.next.spec.title,20)}"
+          ></div>
+          <span
+            class="icon-[material-symbols--chevron-right-rounded] !text-2xl font-black text-[var(--primary)]"
+          ></span>
+        </div>
+      </a>
+    </div>
+    <div class="card-base relative z-10 w-full px-6 pb-4 pt-6 md:px-9" id="comment" th:if="${haloCommentEnabled}">
+      <h2 class="mb-2 text-base font-medium text-gray-900 dark:text-slate-50" th:text="#{common.comment}"></h2>
+      <halo:comment group="content.halo.run" kind="Post" th:attr="name=${post.metadata.name}" />
+    </div>
   </th:block>
 </html>

@@ -10,6 +10,13 @@ export default ({ mode }: { mode: string }) => {
     root: "./src",
     base: isProduction ? "/themes/theme-fuwari-2/assets/dist/" : "",
     plugins: [preact()],
+    css: {
+      preprocessorOptions: {
+        stylus: {
+          additionalData: ``, // 如果需要全局 stylus 变量
+        },
+      },
+    },
     define: {
       "process.env": process.env,
     },

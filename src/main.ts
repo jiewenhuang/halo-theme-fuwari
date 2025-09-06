@@ -1,6 +1,6 @@
+import "./styles/tailwind.css";
 import "./styles/variables.styl";
 import "./styles/main.css";
-import "./styles/tailwind.css";
 
 import "./styles/markdown-extend.styl";
 import "./styles/back-to-top.styl";

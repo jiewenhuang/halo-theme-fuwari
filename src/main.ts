@@ -1,5 +1,6 @@
-import "./styles/tailwind.css";
 import "./styles/variables.styl";
+import "./styles/tailwind.css";
+
 import "./styles/main.css";
 
 import "./styles/markdown-extend.styl";

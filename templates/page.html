@@ -1,0 +1,21 @@
+<!doctype html>
+<html
+  xmlns:th="https://www.thymeleaf.org"
+  th:replace="~{modules/layout :: html(title = ${singlePage.spec.title +' - '+site.title}, hero = null, content = ~{::content}, head = null, footer = null, sidebar = null, contentClass = null, pageType = 'singlePage')}"
+>
+  <th:block th:fragment="content">
+    <div class="relative mb-4 flex min-h-32 w-full overflow-hidden rounded-[var(--radius-large)]">
+      <div class="card-base relative z-10 w-full px-9 py-6">
+        <div
+          class="custom-md prose prose-base mt-2 !max-w-none dark:prose-invert"
+          th:utext="${singlePage.content.content}"
+        ></div>
+      </div>
+    </div>
+
+    <div class="card-base relative z-10 w-full px-6 pb-4 pt-6 md:px-9" id="comment" th:if="${haloCommentEnabled}">
+      <h2 class="mb-2 text-base font-medium text-gray-900 dark:text-slate-50" th:text="#{common.comment}"></h2>
+      <halo:comment group="content.halo.run" kind="SinglePage" th:attr="name=${singlePage.metadata.name}" />
+    </div>
+  </th:block>
+</html>

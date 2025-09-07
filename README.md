@@ -32,7 +32,8 @@
 ### 插件支持
 Fuwari 主题支持以下 Halo 插件：
 
-- [ ] 友情链接（/links）：https://halo.run/store/apps/app-hfbQg
+- [x] 搜索插件：https://www.halo.run/store/apps/app-DlacW
+- [x] 评论插件：https://www.halo.run/store/apps/app-YXyaD
 
 
 为了获得更好的体验，你还可以安装以下插件（如果需要）：
@@ -50,7 +51,6 @@ Fuwari 主题支持以下 Halo 插件：
 - [X] [代码高亮/语言/复制](https://github.com/halo-sigs/plugin-highlightjs)（插件）
 - [x] [文章搜索](https://github.com/halo-sigs/plugin-search-widget)（插件）
 - [x] 显示字数统计
-- [x] 显示相关文章
 - [X] [评论系统](https://github.com/halo-sigs/plugin-comment-widget)（插件）
 - [ ] [友情链接](https://github.com/halo-sigs/plugin-links)
 - [x] i18n国际化
@@ -60,6 +60,8 @@ Fuwari 主题支持以下 Halo 插件：
 - [ ] 友情链接（/links）：https://halo.run/store/apps/app-hfbQg
 - [ ] 图库（/photos）：https://halo.run/store/apps/app-BmQJW
 - [ ] 瞬间（/moments）：https://halo.run/store/apps/app-SnwWD
+- [ ] 文章目录
+- [ ] 优化暗亮色切换闪烁问题
 ### 开发
 
 ```bash

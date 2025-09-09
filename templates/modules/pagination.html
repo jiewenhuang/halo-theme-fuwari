@@ -16,26 +16,26 @@
         <span class="icon-[material-symbols--chevron-left-rounded] text-[1.75rem]"></span>
       </a>
 
-      <div
-        class="flex flex-row items-center rounded-lg bg-[var(--card-bg)] font-bold text-neutral-700 dark:text-neutral-300"
-      >
-        <th:block th:each="index : ${#numbers.sequence(1, totalPages)}">
-          <th:block th:if="${index eq page}">
+      <th:block th:each="index : ${#numbers.sequence(1, totalPages)}">
+        <th:block th:if="${index eq page}">
+          <div
+            class="flex flex-row items-center rounded-lg bg-[var(--card-bg)] font-bold text-neutral-700 dark:text-neutral-300"
+          >
             <div
               class="flex h-11 w-11 items-center justify-center rounded-lg bg-[var(--primary)] font-bold text-white dark:text-black/70"
               th:text="${index}"
             ></div>
-          </th:block>
-          <th:block th:unless="${index eq page}">
-            <a
-              th:href="${context + index}"
-              th:aria-label="|Page ${index}|"
-              th:text="${index}"
-              class="btn-card h-11 w-11 overflow-hidden rounded-lg active:scale-[0.85]"
-            ></a>
-          </th:block>
+          </div>
         </th:block>
-      </div>
+        <th:block th:unless="${index eq page}">
+          <a
+            th:href="${context + index}"
+            th:aria-label="|Page ${index}|"
+            th:text="${index}"
+            class="btn-card h-11 w-11 overflow-hidden rounded-lg active:scale-[0.85]"
+          ></a>
+        </th:block>
+      </th:block>
 
       <a
         th:href="@{${nextUrl}}"

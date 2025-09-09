@@ -17,10 +17,12 @@
                 class="outline-3 z-50 mx-auto h-3 w-3 rounded-full bg-none outline -outline-offset-[2px] outline-[var(--primary)]"
               ></div>
             </div>
-            <!--        <div class="w-[70%] md:w-[80%] transition text-left text-50" -->
-            <!--             th:text="#{page.archives.postCount(${archive.postCount})}">-->
-            <!--          -->
-            <!--        </div>-->
+            <!--                    <div class="w-[70%] md:w-[80%] transition text-left text-50" -->
+            <!--                         th:text="#{page.archives.postCount(${archive.postCount})}">-->
+            <!--                      -->
+            <!--                    </div>-->
+            <!--            TODO: 这里应该是postCount，但是halo不支持，所以暂时用year代替-->
+            <div class="text-50 w-[70%] text-left transition md:w-[80%]" th:text="${archive.year}"></div>
           </div>
 
           <th:block th:each="month : ${archive.months}">

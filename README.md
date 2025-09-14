@@ -52,12 +52,11 @@ Fuwari 主题支持以下 Halo 插件：
 - [x] [文章搜索](https://github.com/halo-sigs/plugin-search-widget)（插件）
 - [x] 显示字数统计
 - [X] [评论系统](https://github.com/halo-sigs/plugin-comment-widget)（插件）
-- [ ] [友情链接](https://github.com/halo-sigs/plugin-links)
+- [x] [友情链接](https://github.com/halo-sigs/plugin-links)
 - [x] i18n国际化
 - [x] 其他功能
 
 ### TODO
-- [ ] 友情链接（/links）：https://halo.run/store/apps/app-hfbQg
 - [ ] 图库（/photos）：https://halo.run/store/apps/app-BmQJW
 - [ ] 瞬间（/moments）：https://halo.run/store/apps/app-SnwWD
 - [ ] 文章目录
@@ -78,7 +77,7 @@ pnpm dev
 
 ### 🏭 贡献
 
-> 如果你想帮助完善 `fuwari` 主题，请：
+> 我一个人的时间有限，只是业余有时间写写，如果你想帮助完善 `fuwari` 主题，请：
 
 - 点 `star`
 - 提 `issue`

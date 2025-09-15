@@ -6,19 +6,19 @@
 <div align="center">  
 
 一款 [Halo2.0](https://github.com/halo-dev/halo) 的博客主题  
-移植于 Astro  [fuwari](https://github.com/saicaca/fuwarik)同名主题
+移植于 Astro  [fuwari](https://github.com/saicaca/fuwari)同名主题
 
 </div>
 
 <p class="badge-row" align="center">
   <a href="https://halo.run" target="_blank">
-    <img src="https://img.shields.io/badge/dynamic/yaml?label=Halo&query=%24.spec.requires&url=https://raw.githubusercontent.com/jiewenhuang/halo-theme-stack/main/theme.yaml&color=113,195,71" alt="Halo"/>
+    <img src="https://img.shields.io/badge/dynamic/yaml?label=Halo&query=%24.spec.requires&url=https://raw.githubusercontent.com/jiewenhuang/halo-theme-fuwari/main/theme.yaml&color=113,195,71" alt="Halo"/>
   </a>
   <a href="https://github.com/jiewenhuang/halo-theme-fuwari/releases" target="_blank">
     <img src="https://img.shields.io/github/v/release/jiewenhuang/halo-theme-fuwari" alt="Release"/>
   </a>
-  <a href="https://github.com/jiewenhuang/halo-theme-stack/blob/main/LICENSE" target="_blank">
-<img src="https://img.shields.io/badge/License-GPL%20v3.0-green.svg" alt="GPL-3.0 License">
+  <a href="https://github.com/jiewenhuang/halo-theme-fuwari/blob/main/LICENSE" target="_blank">
+<img src="https://img.shields.io/github/license/jiewenhuang/halo-theme-fuwari" alt="GPL-3.0 License">
   </a>  </a>
 </p>
 
@@ -27,7 +27,7 @@
 
 
 ### 安裝
-直接通过后台应用市场安装或者下载[releases](https://github.com/jiewenhuang/halo-theme-stack/releases)，通过 Halo Console 后台主题安装处上传即可。
+直接通过后台应用市场安装或者下载[releases](https://github.com/jiewenhuang/halo-theme-fuwari/releases)，通过 Halo Console 后台主题安装处上传即可。
 
 ### 插件支持
 Fuwari 主题支持以下 Halo 插件：

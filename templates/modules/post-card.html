@@ -76,7 +76,9 @@
                     ${thumbnail.gen(post.spec.cover, 'm')} 800w,
                     ${thumbnail.gen(post.spec.cover, 'l')} 1200w|"
           sizes="(max-width: 1200px) 100vw, 1200px"
-          class="h-full w-full"
+          class="h-full w-full object-cover"
+          style="object-position: center"
+          loading="lazy"
         />
       </a>
     </th:block>

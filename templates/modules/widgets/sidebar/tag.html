@@ -2,7 +2,7 @@
   <div
     data-id="tags"
     x-data="{ isCollapsed: true }"
-    th:x-init="|isCollapsed = ${categoriesCount >=20}|"
+    th:x-init="|isCollapsed = ${tagsCount >=20}|"
     th:with="tagsCount = ${tags.size()}"
     th:data-is-collapsed="${tagsCount >=20}"
     class="card-base onload-animation pb-4"
@@ -31,7 +31,7 @@
       </div>
     </div>
 
-    <div class="expand-btn -mb-2 px-4" :class="isCollapsed ? 'collapsed' : 'hidden'" th:if="${categoriesCount >= 5}">
+    <div class="expand-btn -mb-2 px-4" th:if="${tagsCount >=20}">
       <button class="btn-plain h-9 w-full rounded-lg" @click="isCollapsed = ! isCollapsed">
         <div class="flex -translate-x-2 items-center justify-center gap-2 text-[var(--primary)]">
           <span class="icon-[material-symbols--more-horiz] text-[1.75rem]"></span>

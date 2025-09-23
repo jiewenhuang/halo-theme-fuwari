@@ -22,7 +22,7 @@
     >
       <th:block th:replace="~{modules/category-tree :: single(categories=${categories})}" />
     </div>
-    <div class="expand-btn -mb-2 px-4" :class="isCollapsed ? 'collapsed' : 'hidden'" th:if="${categoriesCount >= 5}">
+    <div class="expand-btn -mb-2 px-4" th:if="${categoriesCount >= 5}">
       <button class="btn-plain h-9 w-full rounded-lg" @click="isCollapsed = ! isCollapsed">
         <div class="flex -translate-x-2 items-center justify-center gap-2 text-[var(--primary)]">
           <span class="icon-[material-symbols--more-horiz] text-[1.75rem]"></span>

@@ -10,6 +10,9 @@ spec:
         - $formkit: group
           name: themeColor
           label: 主题颜色
+          value:
+            hue: 250
+            fixed: false
           children:
             - $formkit: number
               name: hue
@@ -27,21 +30,29 @@ spec:
         - $formkit: group
           name: banner
           label: Banner
+          value:
+            enable: true
+            src: "/themes/theme-fuwari/assets/images/demo-banner.png"
+            position: "center"
+            credit:
+              enable: false
+              text: "© 2022 Fuwari"
+              url: ""
           children:
             - $formkit: checkbox
               name: enable
               label: 启用
-              value: false
+              value: true
               help: "启用横幅"
             - $formkit: attachment
               name: src
               label: 图片
-              value: /themes/theme-fuwari/assets/images/demo-banner.png
+              value: "/themes/theme-fuwari/assets/images/demo-banner.png"
               help: "显示的图像"
             - $formkit: select
               name: position
               label: 位置
-              value: center
+              value: "center"
               options:
                 - value: center
                   label: 居中
@@ -61,7 +72,7 @@ spec:
                 - $formkit: text
                   name: text
                   label: 文字
-                  value: "© 2022 jiewenhuang"
+                  value: "© 2022 Fuwari"
                   help: "显示的文字"
                 - $formkit: url
                   name: url
@@ -70,6 +81,9 @@ spec:
         - $formkit: group
           name: toc
           label: 目录
+          value:
+            enable: false
+            max_depth: 2
           children:
             - $formkit: checkbox
               name: enable
@@ -82,6 +96,7 @@ spec:
               value: 2
               help: "目录的最大深度"
         - $formkit: menuRadio
+          id: menu
           name: menu
           label: 菜单
           value: ""
@@ -139,11 +154,11 @@ spec:
         - $formkit: text
           name: name
           label: 昵称
-          value: Jevon
+          value: Fuwari
         - $formkit: text
           name: bio
           label: 简介
-          value: "A modern theme for Halo."
+          value: "Lorem ipsum dolor sit amet, consectetur adipiscing elit."
         - $formkit: url
           name: url
           label: 链接
@@ -152,7 +167,12 @@ spec:
         - $formkit: repeater
           name: social_media
           label: 社交媒体
-          value: []
+          value:
+            - icon: icon-[mdi--github]
+              url: https://github.com/jiewenhuang
+              text: GitHub
+              url_type: normal
+
           children:
             - $formkit: select
               name: icon
@@ -222,6 +242,10 @@ spec:
         - $formkit: group
           name: license
           label: 版权声明
+          value:
+            enable: false
+            name: CC BY-NC-SA 4.0
+            url: https://creativecommons.org/licenses/by-nc-sa/4.0/
           children:
             - $formkit: checkbox
               name: enable

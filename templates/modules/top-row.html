@@ -16,12 +16,7 @@
         </a>
         <div
           class="hidden md:flex"
-          th:with="
-  menuName=${theme.config.base.menu},
-  menu=${#strings.isEmpty(menuName) 
-    ? @menuFinder.getPrimary() 
-    : (@menuFinder.getByName(menuName) ?: @menuFinder.getPrimary())
-  }"
+          th:with="menu = ${not #strings.isEmpty(theme.config.base.menu) ? menuFinder.getByName(theme.config.base.menu) : menuFinder.getPrimary()}"
         >
           <th:block th:if="${menu != null} and ${not #lists.isEmpty(menu.menuItems)}">
             <a
@@ -104,7 +99,7 @@
         <div
           id="nav-menu-panel"
           class="float-panel float-panel-closed absolute right-4 px-2 py-2"
-          th:with="menu = ${menuFinder.getByName(theme.config.base.menu)}"
+          th:with="menu = ${not #strings.isEmpty(theme.config.base.menu) ? menuFinder.getByName(theme.config.base.menu) : menuFinder.getPrimary()}"
         >
           <a
             th:each="menuItem : ${menu.menuItems}"

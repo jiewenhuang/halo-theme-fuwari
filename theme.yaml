@@ -14,7 +14,7 @@ spec:
   issues: https://github.com/jiewenhuang/halo-theme-fuwari/issues
   settingName: "theme-fuwari-setting"
   configMapName: "theme-fuwari-configMap"
-  version: "1.0.2"
+  version: "1.0.3"
   requires: ">=2.21.8"
   license:
     - name: "MIT"

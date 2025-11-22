@@ -234,9 +234,12 @@ spec:
               name: name
               label: 名称
             - $formkit: text
+              if: $value.icon === custom
               name: custom_icon
-              label: 自定义图标(仅在图标选择为自定义时生效)
-              help: "自定义图标的名称，请参考 https://www.iconfont.cn/ 获取图标名称"
+              label: 自定义图标
+              validation: "required"
+              value: ""
+              help: "你可以引入自己的iconfont库，然后这里填写图标的类名，例如：iconfont icon-xxx"
             - $formkit: text
               name: url
               label: 链接

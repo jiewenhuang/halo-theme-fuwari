@@ -35,7 +35,10 @@
             target="_blank"
             class="btn-regular h-10 w-10 rounded-lg active:scale-90"
           >
-            <span class="text-[1.5rem]" th:classappend="${social_media.icon}"></span>
+            <span
+              class="text-[1.5rem]"
+              th:classappend="${social_media.icon == 'custom' ? social_media.custom_icon : social_media.icon }"
+            ></span>
           </a>
           <span
             th:if="${social_media.url_type == 'image'}"
@@ -43,7 +46,10 @@
             class="btn-regular h-10 w-10 rounded-lg active:scale-90"
             @click="openImageModal = true"
           >
-            <div th:classappend="${social_media.icon}" class="text-gray-600 dark:text-slate-400"></div>
+            <div
+              th:classappend="${social_media.icon == 'custom' ? social_media.custom_icon : social_media.icon }"
+              class="text-[1.5rem] text-gray-600 dark:text-slate-400"
+            ></div>
             <th:block th:replace="~{modules/image-view-modal}" />
           </span>
         </th:block>

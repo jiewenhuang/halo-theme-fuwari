@@ -127,26 +127,36 @@ spec:
           name: widgets
           label: 小部件
           value:
-            - value: profile
             - value: categories
-            - value: tags
+            - value: tag
           children:
             - $formkit: select
               name: value
+              id: widgets_value
               label: 部件
               options:
-                - label: 个人卡片
-                  value: profile
                 - label: 热门文章（TODO）
                   value: popular-posts
                 - label: 文章分类
                   value: categories
                 - label: 文章标签
-                  value: tags
+                  value: tag
+                - label: 自定义HTML
+                  value: html
+            - $formkit: code
+              if: $value.value === html
+              name: html
+              label: HTML
+              value: "<p>自定义HTML</p>"
+              language: html
 
     - group: profile
       label: 个人设置
       formSchema:
+        - $formkit: checkbox
+          name: enable_profile
+          value: "true"
+          label: 启用个人设置
         - $formkit: attachment
           name: avatar
           value: /themes/theme-fuwari/assets/images/demo-avatar.png
@@ -218,9 +228,15 @@ spec:
                   value: icon-[fa6-brands--square-gitlab]
                 - label: RSS
                   value: icon-[streamline-plump--rss-square-solid]
+                - label: 自定义
+                  value: custom
             - $formkit: text
               name: name
               label: 名称
+            - $formkit: text
+              name: custom_icon
+              label: 自定义图标(仅在图标选择为自定义时生效)
+              help: "自定义图标的名称，请参考 https://www.iconfont.cn/ 获取图标名称"
             - $formkit: text
               name: url
               label: 链接

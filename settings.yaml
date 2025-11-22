@@ -147,21 +147,33 @@ spec:
     - group: profile
       label: 个人设置
       formSchema:
+        - $formkit: checkbox
+          name: auto_avatar
+          label: 使用用户头像
+          value: false
         - $formkit: attachment
           name: avatar
           value: /themes/theme-fuwari/assets/images/demo-avatar.png
           label: 头像
+        - $formkit: checkbox
+          name: auto_name
+          label: 使用用户昵称
+          value: false
         - $formkit: text
           name: name
           label: 昵称
           value: Fuwari
+        - $formkit: checkbox
+          name: auto_bio
+          label: 使用用户简介
+          value: false
         - $formkit: text
           name: bio
           label: 简介
           value: "Lorem ipsum dolor sit amet, consectetur adipiscing elit."
         - $formkit: url
           name: url
-          label: 链接
+          label: 链接(点击跳转登录和后台可使用 /login )
           value: /about
 
         - $formkit: repeater

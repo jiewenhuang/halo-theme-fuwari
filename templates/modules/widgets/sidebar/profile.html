@@ -15,15 +15,24 @@
     </div>
     <img
       src="/themes/theme-fuwari/assets/images/demo-avatar.png"
-      th:src="${profile.avatar}"
+      th:with="currentUser = ${contributorFinder.getContributor(#authentication.name)}"
+      th:src="${profile.auto_avatar == true ? currentUser.avatar : profile.avatar}"
       alt="Profile Image of the Author"
       class="mx-auto h-full lg:mt-0 lg:w-full"
     />
   </a>
   <div class="px-2">
-    <div class="mb-1 text-center text-xl font-bold transition dark:text-neutral-50" th:text="${profile.name}"></div>
+    <div
+      class="mb-1 text-center text-xl font-bold transition dark:text-neutral-50"
+      th:with="currentUser = ${contributorFinder.getContributor(#authentication.name)}"
+      th:text="${profile.auto_name == true ? currentUser.displayName : profile.name}"
+    ></div>
     <div class="mx-auto mb-2 h-1 w-5 rounded-full bg-[var(--primary)] transition"></div>
-    <div class="mb-2.5 text-center text-neutral-400 transition" th:text="${profile.bio}"></div>
+    <div
+      class="mb-2.5 text-center text-neutral-400 transition"
+      th:with="currentUser = ${contributorFinder.getContributor(#authentication.name)}"
+      th:text="${profile.auto_bio == true ? currentUser.bio : profile.bio}"
+    ></div>
     <div class="mb-1 flex justify-center gap-2" th:unless="${#lists.isEmpty(profile.social_media)}">
       <th:block th:if="${profile.social_media.size() > 1}">
         <th:block th:each="social_media : ${profile.social_media}">

@@ -128,6 +128,12 @@
     }
   }
 
+  .katex-display-container {
+    max-width: 100%;
+    overflow-x: auto;
+    margin: 1em 0;
+  }
+
   blockquote {
     @apply not-italic border-transparent relative;
     font-weight: inherit;

@@ -16,7 +16,7 @@
     <img
       src="/themes/theme-fuwari/assets/images/demo-avatar.png"
       th:with="currentUser = ${contributorFinder.getContributor(#authentication.name)}"
-      th:src="${profile.auto_avatar == true ? currentUser.avatar : profile.avatar}"
+      th:src="${profile.auto_avatar == true ? currentUser.avatar?:profile.avatar : profile.avatar}"
       alt="Profile Image of the Author"
       class="mx-auto h-full lg:mt-0 lg:w-full"
     />

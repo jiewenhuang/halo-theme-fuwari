@@ -116,6 +116,47 @@ function mountWidgets() {
   }
 }
 
+// 新增：初始化笔记块函数
+function initNoteBlocks() {
+  //console.log("Initializing note blocks...");
+  const blockquotes = document.querySelectorAll("blockquote");
+
+  blockquotes.forEach(function (blockquote) {
+    const paragraphs = blockquote.querySelectorAll("p");
+
+    if (paragraphs.length > 0) {
+      const firstP = paragraphs[0] as HTMLElement;
+      const firstText = firstP.textContent?.trim() || "";
+
+      if (firstText.startsWith("[!NOTE]")) {
+        blockquote.classList.add("note-block");
+
+        firstP.innerHTML = firstP.innerHTML.replace("[!NOTE]", "NOTE: "); // 示例替换
+      }
+      if (firstText.startsWith("[!TIP]")) {
+        blockquote.classList.add("tip-block");
+
+        firstP.innerHTML = firstP.innerHTML.replace("[!TIP]", "TIP: ");
+      }
+      if (firstText.startsWith("[!IMPORTANT]")) {
+        blockquote.classList.add("important-block");
+
+        firstP.innerHTML = firstP.innerHTML.replace("[!IMPORTANT]", "IMPORTANT: ");
+      }
+      if (firstText.startsWith("[!WARNING]")) {
+        blockquote.classList.add("warning-block");
+
+        firstP.innerHTML = firstP.innerHTML.replace("[!WARNING]", "WARNING: ");
+      }
+      if (firstText.startsWith("[!CAUTION]")) {
+        blockquote.classList.add("caution-block");
+
+        firstP.innerHTML = firstP.innerHTML.replace("[!CAUTION]", "CAUTION: ");
+      }
+    }
+  });
+}
+
 let currentColorScheme: LIGHT_DARK_MODE = "auto";
 
 export function initColorScheme(defaultColorScheme: LIGHT_DARK_MODE, enableChangeColorScheme: boolean) {
@@ -246,6 +287,7 @@ function init() {
   );
   loadHue();
   initCustomScrollbar();
+  initNoteBlocks(); // 新增：初始加载时初始化笔记块
   showBanner();
 }
 /* Load settings when entering the site */
@@ -294,6 +336,7 @@ const setup = () => {
     document.body?.setAttribute("date-page-type", _visit.to.document?.body?.getAttribute("date-page-type") || "");
 
     initCustomScrollbar();
+    initNoteBlocks(); // 新增：内容替换后重新初始化笔记块（SPA 路由关键）
   });
   swup.hooks.on("visit:start", () => {
     // increase the page height during page transition to prevent the scrolling animation from jumping
@@ -462,10 +505,12 @@ swup.hooks.on("visit:start", () => {
 swup.hooks.on("content:replace", () => {
   console.log("Content replaced");
   // mountWidgets();
+  initNoteBlocks(); // 新增：内容替换后额外调用（确保 Swup 钩子中已调用，但这里作为备份）
 });
 
 // 页面初始加载
 document.addEventListener("DOMContentLoaded", () => {
   console.log("DOM fully loaded and parsed");
   mountWidgets();
+  initNoteBlocks(); // 新增：DOM 加载后额外调用（确保初始加载生效）
 });

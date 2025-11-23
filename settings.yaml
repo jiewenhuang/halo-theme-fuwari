@@ -127,26 +127,36 @@ spec:
           name: widgets
           label: 小部件
           value:
-            - value: profile
             - value: categories
-            - value: tags
+            - value: tag
           children:
             - $formkit: select
               name: value
+              id: widgets_value
               label: 部件
               options:
-                - label: 个人卡片
-                  value: profile
                 - label: 热门文章（TODO）
                   value: popular-posts
                 - label: 文章分类
                   value: categories
                 - label: 文章标签
-                  value: tags
+                  value: tag
+                - label: 自定义HTML
+                  value: html
+            - $formkit: code
+              if: $value.value === html
+              name: html
+              label: HTML
+              value: "<p>自定义HTML</p>"
+              language: html
 
     - group: profile
       label: 个人设置
       formSchema:
+        - $formkit: checkbox
+          name: enable_profile
+          value: "true"
+          label: 启用个人设置
         - $formkit: checkbox
           name: auto_avatar
           label: 使用用户头像
@@ -230,9 +240,18 @@ spec:
                   value: icon-[fa6-brands--square-gitlab]
                 - label: RSS
                   value: icon-[streamline-plump--rss-square-solid]
+                - label: 自定义
+                  value: custom
             - $formkit: text
               name: name
               label: 名称
+            - $formkit: text
+              if: $value.icon === custom
+              name: custom_icon
+              label: 自定义图标
+              validation: "required"
+              value: ""
+              help: "你可以引入自己的iconfont库，然后这里填写图标的类名，例如：iconfont icon-xxx"
             - $formkit: text
               name: url
               label: 链接
@@ -307,6 +326,24 @@ spec:
           label: 启用目录
           value: false
           help: "启用目录"
+    - group: beian
+      label: 备案设置
+      formSchema:
+        - $formkit: text
+          name: icp_text
+          label: ICP备案号
+        - $formkit: text
+          name: icp_link
+          label: ICP备案跳转链接
+          value: https://beian.miit.gov.cn/
+
+        - $formkit: text
+          name: gongan_text
+          label: 公安联网备案号
+        - $formkit: text
+          name: gongan_link
+          label: 公安联网备案跳转链接
+          value: https://beian.mps.gov.cn/#/query/webSearch
 
     - group: development
       label: 开发设置

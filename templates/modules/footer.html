@@ -27,6 +27,29 @@
         href="https://github.com/jiewenhuang/halo-theme-fuwari"
         >Theme-Fuwari</a
       >
+      <br />
+      <div class="">
+        <a
+          th:if="${not #strings.isEmpty(theme.config.beian.icp_text)}"
+          class="hover:underline"
+          target="_blank"
+          href="https://beian.miit.gov.cn/"
+          th:href="${theme.config.beian.icp_link}"
+          th:text="${theme.config.beian.icp_text}"
+        ></a>
+        <th:block th:if="${not #strings.isEmpty(theme.config.beian.gongan_text)}">
+          <p class="flex items-center justify-center gap-1">
+            <img th:src="@{/assets/images/gongan_beian.png}" class="size-4" alt="gongan_beian" />
+            <a
+              href="https://beian.mps.gov.cn/#/query/webSearch"
+              class="hover:underline"
+              target="_blank"
+              th:href="${theme.config.beian.gongan_link}"
+              th:text="${theme.config.beian.gongan_text}"
+            ></a>
+          </p>
+        </th:block>
+      </div>
     </div>
   </div>
   <halo:footer />

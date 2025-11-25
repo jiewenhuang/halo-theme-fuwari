@@ -25,13 +25,13 @@
     <div
       class="mb-1 text-center text-xl font-bold transition dark:text-neutral-50"
       th:with="currentUser = ${contributorFinder.getContributor(#authentication.name)}"
-      th:text="${profile.auto_name == true ? currentUser.displayName : profile.name}"
+      th:text="${profile.auto_name == true ? (currentUser.displayName=='Anonymous User' ? profile.name : currentUser.displayName) : profile.name}"
     ></div>
     <div class="mx-auto mb-2 h-1 w-5 rounded-full bg-[var(--primary)] transition"></div>
     <div
       class="mb-2.5 text-center text-neutral-400 transition"
       th:with="currentUser = ${contributorFinder.getContributor(#authentication.name)}"
-      th:text="${profile.auto_bio == true ? currentUser.bio : profile.bio}"
+      th:text="${profile.auto_bio == true ? currentUser.bio?:profile.bio : profile.bio}"
     ></div>
     <div class="mb-1 flex justify-center gap-2" th:unless="${#lists.isEmpty(profile.social_media)}">
       <th:block th:if="${profile.social_media.size() > 1}">

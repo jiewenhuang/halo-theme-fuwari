@@ -34,30 +34,61 @@
     }
   }
 
-  /*code {*/
-  /*  @apply bg-[var(--inline-code-bg)] text-[var(--inline-code-color)] px-1 py-0.5 rounded-md overflow-hidden;*/
+  code {
+    @apply bg-[var(--inline-code-bg)] text-[var(--inline-code-color)] px-1 py-0.5 rounded-md overflow-hidden;
   
-  /*  font-family: 'JetBrains Mono Variable', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, Liberation Mono, Courier New, monospace;*/
-  /*  &:before {*/
-  /*    content:none;*/
-  /*  }*/
-  /*  &:after {*/
-  /*    content:none;*/
-  /*  }*/
+    font-family: 'JetBrains Mono Variable', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, Liberation Mono, Courier New, monospace;
+    &:before {
+      content:none;
+    }
+    &:after {
+      content:none;
+    }
   
-  /*  counter-reset: line;*/
-  /*  span.line {*/
-  /*    &:before {*/
-  /*      @apply text-white/25 mr-4 w-4 inline-block;*/
-  /*      content: counter(line);*/
-  /*      counter-increment: line;*/
-  /*      direction: rtl;*/
-  /*    }*/
-  /*    &:last-child:empty, &:last-child:has(> span:empty:only-child) {*/
-  /*      display: none;*/
-  /*    }*/
-  /*  }*/
-  /*}*/
+    counter-reset: line;
+    span.line {
+      &:before {
+        @apply text-white/25 mr-4 w-4 inline-block;
+        content: counter(line);
+        counter-increment: line;
+        direction: rtl;
+      }
+      &:last-child:empty, &:last-child:has(> span:empty:only-child) {
+        display: none;
+      }
+    }
+  }
+
+  pre code {
+    /* 覆盖 @apply 部分 */
+    background: transparent !important;  /* 无背景 */
+    color: inherit !important;  /* 继承父元素颜色 */
+    padding: 0 !important;  /* 无内边距 */
+    border-radius: 0 !important;
+    overflow: visible !important;  /* 允许溢出以保留格式 */
+
+    /* 字体保持 monospace，但可调整 */
+    font-family: inherit;  /* 或保持原字体 */
+
+    /* 重置伪元素 */
+    &:before,
+    &:after {
+        content: none !important;
+    }
+
+    /* 禁用行号计数器（针对 span.line） */
+    counter-reset: none !important;
+    & span.line:before {
+        content: none !important;
+        counter-increment: none !important;
+        display: none !important;  /* 隐藏行号 */
+    }
+    & span.line:last-child:empty,
+    & span.line:last-child:has(> span:empty:only-child) {
+        display: block !important;
+    }
+  }
+  
 
   .copy-btn {
     all: initial;
@@ -97,6 +128,12 @@
     }
   }
 
+  .katex-display-container {
+    max-width: 100%;
+    overflow-x: auto;
+    margin: 1em 0;
+  }
+
   blockquote {
     @apply not-italic border-transparent relative;
     font-weight: inherit;
@@ -111,11 +148,150 @@
     }
 
   }
-
-  .katex-display-container {
-    max-width: 100%;
-    overflow-x: auto;
+  /* 基础 Admonition 块样式（共享部分） */
+  blockquote[class*="-block"] {
+    @apply not-italic border-transparent relative;
+    font-weight: inherit;
+    position: relative;
     margin: 1em 0;
+    padding: 1em 1.5em 1em 1em;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  blockquote[class*="-block"]::before {
+    @apply absolute block transition;
+    content: '';
+    left: -1px;
+    top: 0;
+    bottom: 0;
+    width: 6px;
+    border-radius: 8px 0 0 8px;
+  }
+
+  blockquote[class*="-block"] p:first-child {
+    font-weight: bold;
+    font-size: 1.1em;
+    margin: 0 0 0.5em 1.5em;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  /* Note Block (原有) */
+  blockquote.note-block {
+    border-color: #007acc;
+    background-color: #e3f2fd70;
+  }
+
+  blockquote.note-block::before {
+    background-color: #007acc;
+  }
+
+  blockquote.note-block p:first-child {
+    color: #007acc;
+  }
+
+  blockquote.note-block::after { /* 使用 ::after 避免冲突 */
+    content: "📝";
+    @apply absolute;
+    left: 0.5em;
+    top: 0.5em;
+    font-size: 1.2em;
+  }
+
+  /* Tip Block */
+  blockquote.tip-block {
+    border-color: #10b981;
+    background-color: #d1fae570;
+  }
+
+  blockquote.tip-block::before {
+    background-color: #10b981;
+  }
+
+  blockquote.tip-block p:first-child {
+    color: #10b981;
+  }
+
+  blockquote.tip-block::after {
+    content: "💡";
+    @apply absolute;
+    left: 0.5em;
+    top: 0.5em;
+    font-size: 1.2em;
+  }
+
+  /* Important Block */
+  blockquote.important-block {
+    border-color: #f59e0b;
+    background-color: #fef3c770;
+  }
+
+  blockquote.important-block::before {
+    background-color: #f59e0b;
+  }
+
+  blockquote.important-block p:first-child {
+    color: #f59e0b;
+  }
+
+  blockquote.important-block::after {
+    content: "⭐";
+    @apply absolute;
+    left: 0.5em;
+    top: 0.5em;
+    font-size: 1.2em;
+  }
+
+  /* Warning Block */
+  blockquote.warning-block {
+    border-color: #ef4444;
+    background-color: #fee2e270;
+  }
+
+  blockquote.warning-block::before {
+    background-color: #ef4444;
+  }
+
+  blockquote.warning-block p:first-child {
+    color: #ef4444;
+  }
+
+  blockquote.warning-block::after {
+    content: "⚠️";
+    @apply absolute;
+    left: 0.5em;
+    top: 0.5em;
+    font-size: 1.2em;
+  }
+
+  /* Caution Block */
+  blockquote.caution-block {
+    border-color: #f59e0b;
+    background-color: #fef3c770;
+  }
+
+  blockquote.caution-block::before {
+    background-color: #f59e0b;
+  }
+
+  blockquote.caution-block p:first-child {
+    color: #f59e0b;
+  }
+
+  blockquote.caution-block::after {
+    content: "!";
+    @apply absolute flex items-center justify-center;
+    left: 0.5em;
+    top: 0.5em;
+    font-size: 1.2em;
+    background-color: #f59e0b;
+    color: white;
+    width: 1.5em;
+    height: 1.5em;
+    border-radius: 50%;
+    font-weight: bold;
   }
 
 }

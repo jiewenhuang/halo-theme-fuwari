@@ -68,7 +68,7 @@
                 id="light-dark-panel"
                 @mouseenter="open()"
                 @mouseleave="close()"
-                class="absolute -right-2 top-11 hidden pt-5 transition lg:block"
+                class="absolute -right-2 top-11 hidden pt-5 transition md:block"
                 :class="show ? '' : 'float-panel-closed'"
               >
                 <div class="card-base float-panel p-2">
@@ -121,6 +121,22 @@
               class="icon-[material-symbols--chevron-right-rounded] ml-1 -translate-y-[1px] text-[1.3rem] text-black/[0.2] transition dark:text-white/[0.2]"
             ></span>
           </a>
+          <!-- Mobile color scheme switcher -->
+          <th:block th:if="${theme.config.style.enable_change_color_scheme}">
+            <div class="my-1 border-t border-dashed border-black/10 transition dark:border-white/10"></div>
+            <div class="flex items-center justify-center gap-1 py-1" x-data="colorSchemeSwitcher">
+              <template x-for="colorScheme in colorSchemes">
+                <button
+                  class="btn-plain flex h-9 w-9 items-center justify-center rounded-lg active:scale-90"
+                  :class="currentValue === colorScheme.value ? 'current-theme-btn' : ''"
+                  @click="switchTheme(colorScheme.value)"
+                  :aria-label="colorScheme.label"
+                >
+                  <span :class="colorScheme.icon" class="text-[1.25rem]"></span>
+                </button>
+              </template>
+            </div>
+          </th:block>
         </div>
         <div
           id="display-setting"

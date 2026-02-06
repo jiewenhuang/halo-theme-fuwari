@@ -345,6 +345,11 @@ spec:
           label: 公安联网备案跳转链接
           value: https://beian.mps.gov.cn/#/query/webSearch
 
+        - $formkit: textarea
+          name: div
+          label: 悬挂区域
+          help: "自定义备案区域的HTML内容"
+
     - group: development
       label: 开发设置
       formSchema:

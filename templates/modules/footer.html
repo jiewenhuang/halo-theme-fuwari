@@ -27,29 +27,41 @@
         href="https://github.com/jiewenhuang/halo-theme-fuwari"
         >Theme-Fuwari</a
       >
-      <br />
-      <div class="">
-        <a
-          th:if="${not #strings.isEmpty(theme.config.beian.icp_text)}"
-          class="hover:underline"
-          target="_blank"
-          href="https://beian.miit.gov.cn/"
-          th:href="${theme.config.beian.icp_link}"
-          th:text="${theme.config.beian.icp_text}"
-        ></a>
+      <div
+        class="mt-2 flex flex-wrap items-center justify-center gap-x-4 gap-y-1 text-xs text-black/50 transition dark:text-white/50"
+        th:if="${not #strings.isEmpty(theme.config.beian.icp_text)} or ${not #strings.isEmpty(theme.config.beian.gongan_text)}"
+      >
+        <th:block th:if="${not #strings.isEmpty(theme.config.beian.icp_text)}">
+          <a
+            class="hover:underline"
+            target="_blank"
+            rel="noopener"
+            th:href="${#strings.isEmpty(theme.config.beian.icp_link) ? 'https://beian.miit.gov.cn/' : theme.config.beian.icp_link}"
+            th:text="|ICP备案号：${theme.config.beian.icp_text}|"
+          >ICP备案号</a>
+        </th:block>
         <th:block th:if="${not #strings.isEmpty(theme.config.beian.gongan_text)}">
-          <p class="flex items-center justify-center gap-1">
-            <img th:src="@{/assets/images/gongan_beian.png}" class="size-4" alt="gongan_beian" />
-            <a
-              href="https://beian.mps.gov.cn/#/query/webSearch"
-              class="hover:underline"
-              target="_blank"
-              th:href="${theme.config.beian.gongan_link}"
-              th:text="${theme.config.beian.gongan_text}"
-            ></a>
-          </p>
+          <a
+            class="inline-flex items-center gap-1 hover:underline"
+            target="_blank"
+            rel="noopener"
+            th:href="${#strings.isEmpty(theme.config.beian.gongan_link) ? 'https://beian.mps.gov.cn/#/query/webSearch' : theme.config.beian.gongan_link}"
+          >
+            <img
+              th:src="@{/assets/images/gongan_beian.png}"
+              alt="公安备案"
+              class="size-4 opacity-80 transition dark:opacity-90"
+              loading="lazy"
+            />
+            <span th:text="|公安备案：${theme.config.beian.gongan_text}|">公安备案</span>
+          </a>
         </th:block>
       </div>
+      <div
+        th:if="${not #strings.isEmpty(theme.config.beian.div)}"
+        th:utext="${theme.config.beian.div}"
+        class="mt-2 flex items-center justify-center"
+      ></div>
     </div>
   </div>
   <halo:footer />

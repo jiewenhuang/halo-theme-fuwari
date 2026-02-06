@@ -66,20 +66,23 @@ export async function displaySiteStats() {
   const stats = await fetchSiteStats();
   if (!stats) return;
 
+  const visit = typeof stats.visit === "number" ? stats.visit : 0;
+  const post = typeof stats.post === "number" ? stats.post : 0;
+  const comment = typeof stats.comment === "number" ? stats.comment : 0;
   container.innerHTML = `
     <span class="inline-flex items-center gap-1">
       <span class="icon-[material-symbols--visibility-outline-rounded] text-sm"></span>
-      总访问 ${stats.visit.toLocaleString()}
+      总访问 ${visit.toLocaleString()}
     </span>
     <span class="opacity-30">·</span>
     <span class="inline-flex items-center gap-1">
       <span class="icon-[material-symbols--article-outline-rounded] text-sm"></span>
-      文章 ${stats.post}
+      文章 ${post}
     </span>
     <span class="opacity-30">·</span>
     <span class="inline-flex items-center gap-1">
       <span class="icon-[material-symbols--chat-bubble-outline-rounded] text-sm"></span>
-      评论 ${stats.comment}
+      评论 ${comment}
     </span>
   `;
 }

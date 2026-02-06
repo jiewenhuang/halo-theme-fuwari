@@ -1,6 +1,6 @@
-<div class="flex w-full flex-col items-center justify-center">
-  <!-- Distortion text effect -->
-  <div id="distortion-text" class="distortion-container"></div>
+<div class="flex w-full flex-col items-center justify-center" th:with="beianConfig = ${(theme.config.footer != null and theme.config.footer.beian != null) ? theme.config.footer.beian : theme.config.beian}">
+  <!-- 流动文字：仅当 外观-特效 启用且填写了文字时显示 -->
+  <div id="distortion-text" class="distortion-container" th:if="${theme.config.appearance != null and theme.config.appearance.effects != null and theme.config.appearance.effects.enable_flow_text and not #strings.isEmpty(theme.config.appearance.effects.flow_text)}"></div>
 
   <div class="my-10 w-2/3 border-t border-dashed border-black/10 transition dark:border-white/15"></div>
 
@@ -39,25 +39,25 @@
 
         <div
           class="mt-3 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-xs text-black/50 transition dark:text-white/50"
-          th:if="${not #strings.isEmpty(theme.config.beian.icp_text)} or ${not #strings.isEmpty(theme.config.beian.gongan_text)}"
+          th:if="${beianConfig != null and (not #strings.isEmpty(beianConfig.icp_text) or not #strings.isEmpty(beianConfig.gongan_text))}"
         >
-          <th:block th:if="${not #strings.isEmpty(theme.config.beian.icp_text)}">
+          <th:block th:if="${beianConfig != null and not #strings.isEmpty(beianConfig.icp_text)}">
             <a
               class="link-underline"
               target="_blank"
               rel="noopener"
-              th:href="${#strings.isEmpty(theme.config.beian.icp_link) ? 'https://beian.miit.gov.cn/' : theme.config.beian.icp_link}"
-              th:text="|ICP备案号：${theme.config.beian.icp_text}|"
+              th:href="${#strings.isEmpty(beianConfig.icp_link) ? 'https://beian.miit.gov.cn/' : beianConfig.icp_link}"
+              th:text="|ICP备案号：${beianConfig.icp_text}|"
               >ICP备案号</a
             >
           </th:block>
 
-          <th:block th:if="${not #strings.isEmpty(theme.config.beian.gongan_text)}">
+          <th:block th:if="${beianConfig != null and not #strings.isEmpty(beianConfig.gongan_text)}">
             <a
               class="inline-flex items-center gap-1.5 link-underline"
               target="_blank"
               rel="noopener"
-              th:href="${#strings.isEmpty(theme.config.beian.gongan_link) ? 'https://beian.mps.gov.cn/#/query/webSearch' : theme.config.beian.gongan_link}"
+              th:href="${#strings.isEmpty(beianConfig.gongan_link) ? 'https://beian.mps.gov.cn/#/query/webSearch' : beianConfig.gongan_link}"
             >
               <img
                 th:src="@{/assets/images/gongan_beian.png}"
@@ -65,14 +65,14 @@
                 class="h-4 w-4 opacity-80 transition dark:opacity-90"
                 loading="lazy"
               />
-              <span th:text="|公安备案：${theme.config.beian.gongan_text}|">公安备案</span>
+              <span th:text="|公安备案：${beianConfig.gongan_text}|">公安备案</span>
             </a>
           </th:block>
         </div>
 
         <div
-          th:if="${not #strings.isEmpty(theme.config.beian.div)}"
-          th:utext="${theme.config.beian.div}"
+          th:if="${beianConfig != null and not #strings.isEmpty(beianConfig.div)}"
+          th:utext="${beianConfig.div}"
           class="mt-3 flex justify-center items-center"
         ></div>
 

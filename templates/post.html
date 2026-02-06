@@ -74,7 +74,7 @@
           th:utext="${post.content.content}"
         ></div>
         <div
-          th:if="${theme.config.post.license.enable}"
+          th:if="${theme.config.post != null and theme.config.post.license != null and theme.config.post.license.enable}"
           class="license-container onload-animation relative mb-6 overflow-hidden rounded-xl bg-[var(--license-block-bg)] px-6 py-5 transition"
         >
           <div class="font-bold text-black/75 transition dark:text-white/75" th:text="${post.spec.title}"></div>

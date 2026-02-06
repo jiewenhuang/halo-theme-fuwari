@@ -105,12 +105,12 @@
     </script>
 
     <script type="application/json" id="theme-config" th:utext="${theme.config}"></script>
-    <th:block th:if="${theme.config.development.enabled}">
+    <th:block th:if="${theme.config.development != null and theme.config.development.enabled}">
       <script type="module" src="http://localhost:5173/@vite/client"></script>
       <script type="module" src="http://localhost:5173/main.ts"></script>
     </th:block>
 
-    <th:block th:unless="${theme.config.development.enabled}">
+    <th:block th:unless="${theme.config.development != null and theme.config.development.enabled}">
       <link rel="stylesheet" th:href="@{/assets/dist/main.css?v={version}(version=${theme.spec.version})}" />
       <link rel="manifest" th:href="@{/assets/dist/.vite/manifest.json}" />
       <script type="module" th:src="@{/assets/dist/main.js?v={version}(version=${theme.spec.version})}"></script>
@@ -124,17 +124,18 @@
   <body
     class="min-h-screen transition"
     th:data-page-type="${pageType}"
-    th:classappend="|${pageType == 'home' ? 'is-home' : ''} ${theme.config.base.banner.enable ? ' enable-banner' : ''} ${theme.config.background != null and theme.config.background.enable ? ' has-bg-image' : ''}|"
-    th:styleappend="${theme.config.background != null and theme.config.background.enable ? '--bg-image: url(' + theme.config.background.src + '); --bg-position: ' + theme.config.background.position + '; --bg-size: ' + theme.config.background.size + '; --bg-attachment: ' + theme.config.background.attachment + '; --bg-opacity: ' + theme.config.background.opacity + ';' : ''}"
+    th:classappend="|${pageType == 'home' ? 'is-home' : ''} ${theme.config.base.banner.enable ? ' enable-banner' : ''} ${(theme.config.appearance != null and theme.config.appearance.background != null and theme.config.appearance.background.enable) or (theme.config.background != null and theme.config.background.enable) ? ' has-bg-image' : ''}|"
+    th:styleappend="${(theme.config.appearance != null and theme.config.appearance.background != null and theme.config.appearance.background.enable) or (theme.config.background != null and theme.config.background.enable) ? '--bg-image: url(' + (theme.config.appearance != null and theme.config.appearance.background != null ? theme.config.appearance.background.src : theme.config.background.src) + '); --bg-position: ' + (theme.config.appearance != null and theme.config.appearance.background != null ? theme.config.appearance.background.position : theme.config.background.position) + '; --bg-size: ' + (theme.config.appearance != null and theme.config.appearance.background != null ? theme.config.appearance.background.size : theme.config.background.size) + '; --bg-attachment: ' + (theme.config.appearance != null and theme.config.appearance.background != null ? theme.config.appearance.background.attachment : theme.config.background.attachment) + '; --bg-opacity: ' + (theme.config.appearance != null and theme.config.appearance.background != null ? theme.config.appearance.background.opacity : theme.config.background.opacity) + ';' : ''}"
     data-overlayscrollbars-initialize
   >
+    <div id="weather-effect" class="weather-effect pointer-events-none fixed inset-0 z-[35]" aria-hidden="true"></div>
     <th:block th:replace="~{modules/config-carrier}" />
     <th:block th:replace="~{modules/top-row}" />
     <!-- Announcement / Notice Bar (injected into main-grid below) -->
     <th:block th:if="${theme.config.base.banner.enable}">
       <th:block th:replace="~{modules/banner-wrapper}" />
     </th:block>
-    <div class="pointer-events-none absolute z-30 w-full" style="top: calc(35vh - 3.5rem)">
+    <div id="main-content-wrap" class="pointer-events-none absolute z-30 w-full transition-[margin]" style="top: calc(35vh - 3.5rem)">
       <div class="pointer-events-auto relative mx-auto max-w-[var(--page-width)]">
         <div
           id="main-grid"
@@ -145,7 +146,7 @@
 
           <main id="swup-container" class="transition-swup-fade col-span-2 overflow-hidden lg:col-span-1">
             <!-- Notice bar -->
-            <th:block th:if="${theme.config.notice != null and theme.config.notice.enable}">
+            <th:block th:if="${(theme.config.appearance != null and theme.config.appearance.notice != null and theme.config.appearance.notice.enable) or (theme.config.notice != null and theme.config.notice.enable)}">
               <th:block th:replace="~{modules/notice}" />
             </th:block>
             <div id="content-wrapper" class="onload-animation">

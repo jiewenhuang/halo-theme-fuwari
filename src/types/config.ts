@@ -8,6 +8,42 @@ export interface ThemeConfig {
   development: Development;
   music?: MusicConfig;
   analytics?: AnalyticsConfig;
+  navbar_behavior?: NavbarBehavior;
+  appearance?: {
+    notice?: NoticeConfig;
+    background?: BackgroundConfig;
+    effects?: {
+      enable_flow_text?: boolean;
+      flow_text?: string;
+      enable_liquid_glass?: boolean;
+      enable_weather?: boolean;
+      weather_type?: "sunny" | "cloudy" | "rain";
+    };
+  };
+  footer?: { beian?: BeianConfig; analytics?: AnalyticsConfig };
+}
+
+export interface NoticeConfig {
+  enable: boolean;
+  level: string;
+  content: string;
+}
+
+export interface BackgroundConfig {
+  enable: boolean;
+  src: string;
+  position: string;
+  size: string;
+  attachment: string;
+  opacity: number;
+}
+
+export interface BeianConfig {
+  icp_text: string;
+  icp_link: string;
+  gongan_text: string;
+  gongan_link: string;
+  div: string;
 }
 
 export interface AnalyticsConfig {
@@ -45,12 +81,19 @@ export interface Profile {
   social_media: any[];
 }
 
+export interface NavbarBehavior {
+  mode: "transparent" | "hide_after";
+  hide_after_seconds?: number;
+}
+
 export interface Base {
   menu: string;
   banner: Banner;
   toc: Toc;
   themeColor: ThemeColor;
   menu_names: any[];
+  /** @deprecated 已移至顶级 themeConfig.navbar_behavior，保留仅为兼容旧配置 */
+  navbar_behavior?: NavbarBehavior;
 }
 
 export interface Banner {

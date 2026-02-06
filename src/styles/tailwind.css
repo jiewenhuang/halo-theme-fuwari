@@ -28,8 +28,9 @@
   .navbar-hidden {
     @apply opacity-0 -translate-y-16
   }
+  /* 小横条 + 极限透明：仅保留边框/阴影去除，具体尺寸与透明度见 main.css */
   .navbar-transparent .card-base {
-    @apply !bg-transparent !border-transparent !shadow-none;
+    @apply !border-transparent !shadow-none;
     backdrop-filter: none !important;
     -webkit-backdrop-filter: none !important;
   }

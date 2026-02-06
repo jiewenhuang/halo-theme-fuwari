@@ -33,11 +33,14 @@ import PhotoSwipeLightbox from "photoswipe/lightbox";
 import { getHue, setHue, getRainbowMode, setRainbowMode, getRainbowSpeed, setRainbowSpeed, getBgBlur, setBgBlur } from "./utils/setting-utils";
 import { initMusicPlayer } from "./plugins/music-player";
 import { initDistortionText } from "./plugins/distortion-text";
+import { initLiquidGlass } from "./plugins/liquid-glass";
+import { initWeatherEffect, setWeatherType, getWeatherType } from "./plugins/weather-effect";
 import { trackPageVisit, displaySiteStats } from "./plugins/visit-tracker";
 import { loadButtonScript } from "./widgets/navbar";
 import { setClickOutsideToClose } from "./utils/base-utils";
 import dropdown from "./alpine-data/dropdown";
 import colorSchemeSwitcher from "./alpine-data/color-scheme-switcher";
+import weatherSwitcher from "./alpine-data/weather-switcher";
 import upvote from "./alpine-data/upvote";
 import share from "./alpine-data/share";
 import uiPermission from "./alpine-data/ui-permission";
@@ -59,6 +62,8 @@ window.Alpine = Alpine;
 window.fuwari = {
   setColorScheme,
   getCurrentColorScheme,
+  setWeatherType,
+  getWeatherType,
 };
 const swup = new Swup({
   animationSelector: '[class*="transition-swup-"]',
@@ -75,6 +80,7 @@ const swup = new Swup({
 });
 Alpine.data("dropdown", dropdown);
 Alpine.data("colorSchemeSwitcher", colorSchemeSwitcher);
+Alpine.data("weatherSwitcher", weatherSwitcher);
 Alpine.data("upvote", upvote);
 Alpine.data("share", share);
 Alpine.data("uiPermission", uiPermission);
@@ -310,15 +316,29 @@ function init() {
   if (themeConfig?.music && !document.getElementById("music-player")) {
     initMusicPlayer(themeConfig.music);
   }
-  // 初始化扭曲文字效果
-  const distortionEl = document.getElementById("distortion-text");
-  if (distortionEl && !distortionEl.querySelector("canvas")) {
-    initDistortionText(distortionEl, "CANZ");
+  // 流动文字（页脚扭曲特效）：仅当开启且填写了文字时初始化
+  const effects = themeConfig?.appearance?.effects;
+  const flowText = effects?.flow_text?.trim();
+  if (effects?.enable_flow_text && flowText) {
+    const distortionEl = document.getElementById("distortion-text");
+    if (distortionEl && !distortionEl.querySelector("canvas")) {
+      initDistortionText(distortionEl, flowText);
+    }
+  }
+  // 液态玻璃效果（仅导航栏 + 跟随）
+  if (effects?.enable_liquid_glass) {
+    initLiquidGlass();
+  }
+  // 天气拟真效果：配置开启或顶栏已有天气按钮时初始化（避免客户端 config 与服务端不一致导致不渲染）
+  const shouldEnableWeather = effects?.enable_weather || !!document.getElementById("weather-switch");
+  if (shouldEnableWeather) {
+    initWeatherEffect(effects?.weather_type ?? "sunny");
   }
   // Halo 内置访客统计
-  if (themeConfig?.analytics?.enable !== false) {
+  const analytics = themeConfig?.footer?.analytics ?? themeConfig?.analytics;
+  if (analytics?.enable !== false) {
     trackPageVisit();
-    if (themeConfig?.analytics?.show_site_stats !== false) {
+    if (analytics?.show_site_stats !== false) {
       displaySiteStats();
     }
   }
@@ -370,8 +390,15 @@ const setup = () => {
 
     initCustomScrollbar();
     initNoteBlocks(); // 新增：内容替换后重新初始化笔记块（SPA 路由关键）
+    if (themeConfig?.appearance?.effects?.enable_liquid_glass) {
+      initLiquidGlass();
+    }
+    const hasWeatherBtn = document.getElementById("weather-switch");
+    if (themeConfig?.appearance?.effects?.enable_weather || hasWeatherBtn) {
+      initWeatherEffect(themeConfig?.appearance?.effects?.weather_type ?? "sunny");
+    }
     // SPA 路由后重新追踪访问
-    if (themeConfig?.analytics?.enable !== false) {
+    if ((themeConfig?.footer?.analytics ?? themeConfig?.analytics)?.enable !== false) {
       trackPageVisit();
     }
   });
@@ -488,10 +515,46 @@ document.addEventListener("DOMContentLoaded", () => {
   const navbar = document.getElementById("navbar-wrapper");
   bannerEnabled = !!document.getElementById("banner-wrapper");
 
-  // Set navbar transparent initially on banner pages
-  if (bannerEnabled && navbar) {
+  const minimalToggle = document.getElementById("navbar-minimal-toggle");
+  if (minimalToggle && navbar) {
+    minimalToggle.addEventListener("click", (e) => {
+      e.stopPropagation();
+      navbar.classList.toggle("navbar-minimal");
+    });
+  }
+  if (navbar) {
+    navbar.addEventListener("click", () => {
+      if (navbar.classList.contains("navbar-minimal")) {
+        navbar.classList.remove("navbar-minimal");
+      }
+    });
+  }
+
+  const navBehavior = themeConfig?.navbar_behavior ?? themeConfig?.base?.navbar_behavior;
+  const rawMode = navBehavior?.mode;
+  const navMode = rawMode === "hide_after" ? "hide_after" : "transparent";
+  const hideAfterSeconds = Math.min(10, Math.max(1, navBehavior?.hide_after_seconds ?? 2));
+
+  let hideNavbarTimer: ReturnType<typeof setTimeout> | null = null;
+  function clearHideNavbarTimer() {
+    if (hideNavbarTimer != null) {
+      clearTimeout(hideNavbarTimer);
+      hideNavbarTimer = null;
+    }
+  }
+
+  if (bannerEnabled && navbar && navMode === "transparent") {
     navbar.classList.add("navbar-transparent");
   }
+  if (bannerEnabled && navbar && navMode === "hide_after") {
+    navbar.classList.add("navbar-transparent");
+    hideNavbarTimer = setTimeout(() => {
+      hideNavbarTimer = null;
+      navbar.classList.add("navbar-hidden");
+      navbar.classList.remove("navbar-transparent");
+    }, hideAfterSeconds * 1000);
+  }
+
   function scrollFunction() {
     const bannerHeight = window.innerHeight * (BANNER_HEIGHT / 100);
 
@@ -511,28 +574,48 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
 
-    if (!bannerEnabled) return;
-    if (navbar) {
-      const NAVBAR_HEIGHT = 72;
-      const MAIN_PANEL_EXCESS_HEIGHT = MAIN_PANEL_OVERLAPS_BANNER_HEIGHT * 16; // The height the main panel overlaps the banner
+    if (!bannerEnabled || !navbar) return;
 
-      let bannerHeight = BANNER_HEIGHT;
-      if (document.body.classList.contains("is-home") && window.innerWidth >= 1024) {
-        bannerHeight = BANNER_HEIGHT_HOME;
-      }
-      const threshold = window.innerHeight * (bannerHeight / 100) - NAVBAR_HEIGHT - MAIN_PANEL_EXCESS_HEIGHT - 16;
-      const scrollTop = document.body.scrollTop || document.documentElement.scrollTop;
+    const NAVBAR_HEIGHT = 72;
+    const MAIN_PANEL_EXCESS_HEIGHT = MAIN_PANEL_OVERLAPS_BANNER_HEIGHT * 16;
 
+    let bannerHeightNum = BANNER_HEIGHT;
+    if (document.body.classList.contains("is-home") && window.innerWidth >= 1024) {
+      bannerHeightNum = BANNER_HEIGHT_HOME;
+    }
+    const threshold =
+      window.innerHeight * (bannerHeightNum / 100) - NAVBAR_HEIGHT - MAIN_PANEL_EXCESS_HEIGHT - 16;
+    const scrollTop = document.body.scrollTop || document.documentElement.scrollTop;
+
+    if (navMode === "hide_after") {
+      clearHideNavbarTimer();
       if (scrollTop >= threshold) {
         navbar.classList.add("navbar-hidden");
         navbar.classList.remove("navbar-transparent");
       } else if (scrollTop < 200) {
         navbar.classList.remove("navbar-hidden");
         navbar.classList.add("navbar-transparent");
+        hideNavbarTimer = setTimeout(() => {
+          hideNavbarTimer = null;
+          navbar.classList.add("navbar-hidden");
+          navbar.classList.remove("navbar-transparent");
+        }, hideAfterSeconds * 1000);
       } else {
         navbar.classList.remove("navbar-hidden");
         navbar.classList.remove("navbar-transparent");
       }
+      return;
+    }
+
+    if (scrollTop >= threshold) {
+      navbar.classList.add("navbar-hidden");
+      navbar.classList.remove("navbar-transparent");
+    } else if (scrollTop < 200) {
+      navbar.classList.remove("navbar-hidden");
+      navbar.classList.add("navbar-transparent");
+    } else {
+      navbar.classList.remove("navbar-hidden");
+      navbar.classList.remove("navbar-transparent");
     }
   }
   window.onscroll = scrollFunction;

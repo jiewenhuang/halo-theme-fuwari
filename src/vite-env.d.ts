@@ -12,6 +12,8 @@ declare global {
     fuwari: {
       setColorScheme: (colorScheme: LIGHT_DARK_MODE, store: boolean) => void;
       getCurrentColorScheme: () => LIGHT_DARK_MODE;
+      setWeatherType?: (type: "sunny" | "cloudy" | "rain") => void;
+      getWeatherType?: () => "sunny" | "cloudy" | "rain";
     };
   }
 }

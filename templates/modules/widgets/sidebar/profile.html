@@ -18,7 +18,7 @@
       th:with="currentUser = ${contributorFinder.getContributor(#authentication.name)}"
       th:src="${profile.auto_avatar == true ? currentUser.avatar?:profile.avatar : profile.avatar}"
       alt="Profile Image of the Author"
-      class="mx-auto h-full lg:mt-0 lg:w-full"
+      class="mx-auto h-full transition-transform duration-500 ease-out group-hover:scale-105 lg:mt-0 lg:w-full"
     />
   </a>
   <div class="px-2">
@@ -71,7 +71,7 @@
           target="_blank"
           class="btn-regular h-10 gap-2 rounded-lg px-3 font-bold active:scale-95"
         >
-          <span class="text-[1.5rem]" th:classappend="${profile.social_media[0].icon}"></span>
+          <span class="text-[1.5rem]" th:classappend="${profile.social_media[0].icon == 'custom' ? profile.social_media[0].custom_icon : profile.social_media[0].icon}"></span>
           [[${profile.social_media[0].name}]]
         </a>
       </th:block>

@@ -1,0 +1,156 @@
+<!doctype html>
+<html
+  xmlns:th="https://www.thymeleaf.org"
+  th:replace="~{modules/layout :: html(title = ${post.spec.title +' - '+site.title}, hero = null, content = ~{::content}, head = null, footer = null, sidebar = null, contentClass = null, pageType = 'post')}"
+>
+  <th:block th:fragment="content">
+    <!-- Halo 内置访问计数数据 -->
+    <div id="halo-counter-data" style="display:none"
+         data-group="content.halo.run"
+         th:data-name="${post.metadata.name}"
+         data-plural="posts"></div>
+    <!-- Post cover image (hero) -->
+    <div
+      th:if="${not #strings.isEmpty(post.spec.cover)}"
+      id="post-cover"
+      class="onload-animation relative -mt-2 mb-4 w-full overflow-hidden rounded-[var(--radius-large)]"
+    >
+      <div class="pointer-events-none absolute inset-0 z-10 bg-gradient-to-t from-black/40 via-transparent to-transparent"></div>
+      <img
+        th:src="${post.spec.cover}"
+        th:alt="${post.spec.title}"
+        class="h-[28vh] w-full object-cover transition-transform duration-700 ease-out md:h-[36vh]"
+        style="object-position: center"
+        loading="eager"
+      />
+    </div>
+
+    <div class="relative mb-4 flex w-full overflow-hidden rounded-[var(--radius-large)]">
+      <div
+        id="post-container"
+        class="card-base relative z-10 w-full px-6 pb-4 pt-6 md:px-9"
+        x-data="articleStats('#content')"
+        x-init="init()"
+        x-on:swup:page:view.document="init()"
+      >
+        <!-- title -->
+        <div class="onload-animation relative">
+          <div
+            data-pagefind-body
+            data-pagefind-weight="10"
+            data-pagefind-meta="title"
+            class="mb-3 block w-full text-3xl font-bold leading-tight tracking-tight text-black/90 transition before:absolute before:left-[-1.125rem] before:top-[0.75rem] before:h-5 before:rounded-md before:bg-[var(--primary)] dark:text-white/90 md:text-[2.5rem]/[3rem] md:before:w-1"
+          >
+            <th:block th:text="${post.spec.title}"></th:block>
+          </div>
+        </div>
+        <!-- metadata -->
+        <div class="onload-animation">
+          <th:block th:replace="~{modules/post-meta :: post-meta(class='mb-4')}" />
+        </div>
+        <!-- word count and reading time -->
+        <div class="onload-animation mb-5 flex flex-row gap-5 text-black/30 transition dark:text-white/30">
+          <div class="flex flex-row items-center">
+            <div
+              class="mr-2 flex h-6 w-6 items-center justify-center rounded-md bg-black/5 text-black/50 transition dark:bg-white/10 dark:text-white/50"
+            >
+              <span class="icon-[material-symbols--notes-rounded]"></span>
+            </div>
+            <div class="text-sm" x-text="wordCountText">200字</div>
+          </div>
+          <div class="flex flex-row items-center">
+            <div
+              class="mr-2 flex h-6 w-6 items-center justify-center rounded-md bg-black/5 text-black/50 transition dark:bg-white/10 dark:text-white/50"
+            >
+              <span class="icon-[material-symbols--schedule-outline-rounded]"></span>
+            </div>
+            <div class="text-sm" x-text="readingTimeText"></div>
+          </div>
+        </div>
+        <div class="mb-5 border-b-[1px] border-dashed border-[var(--line-divider)]"></div>
+        <div
+          class="custom-md markdown-content onload-animation prose prose-base mb-6 !max-w-none dark:!prose-invert"
+          id="content"
+          th:utext="${post.content.content}"
+        ></div>
+        <div
+          th:if="${theme.config.post.license.enable}"
+          class="license-container onload-animation relative mb-6 overflow-hidden rounded-xl bg-[var(--license-block-bg)] px-6 py-5 transition"
+        >
+          <div class="font-bold text-black/75 transition dark:text-white/75" th:text="${post.spec.title}"></div>
+          <a th:href="${post.status.permalink}" class="link text-[var(--primary)]" x-text="window.location.href"> </a>
+          <div class="mt-2 flex gap-6">
+            <div>
+              <div class="text-sm text-black/30 transition dark:text-white/30">[[#{page.author.text}]]</div>
+              <div
+                class="line-clamp-2 text-black/75 transition dark:text-white/75"
+                th:text="${post.owner.displayName}"
+              ></div>
+            </div>
+            <div>
+              <div class="text-sm text-black/30 transition dark:text-white/30">[[#{page.post.publishedAt}]]</div>
+              <div
+                class="line-clamp-2 text-black/75 transition dark:text-white/75"
+                th:text="${#dates.format(post.spec.publishTime,'yyyy-MM-dd')}"
+              ></div>
+            </div>
+            <div>
+              <div class="text-sm text-black/30 transition dark:text-white/30">License</div>
+              <a
+                th:href="${theme.config.post.license.url}"
+                target="_blank"
+                class="link line-clamp-2 text-[var(--primary)]"
+                th:text="${theme.config.post.license.name}"
+                >CC BY-NC-SA 4.0</a
+              >
+            </div>
+          </div>
+          <span
+            class="icon-[fa6-brands--creative-commons] pointer-events-none absolute right-6 top-1/2 -translate-y-1/2 text-[15rem] text-black/5 transition dark:text-white/5"
+          ></span>
+        </div>
+      </div>
+    </div>
+    <div
+      class="mb-4 flex w-full flex-col justify-between gap-4 overflow-hidden md:flex-row"
+      th:with="postCursor = ${postFinder.cursor(post.metadata.name)}"
+    >
+      <a
+        href="#"
+        class="w-full overflow-hidden font-bold active:scale-95"
+        th:classappend="${postCursor.hasPrevious() ? '' : 'pointer-events-none '}"
+        th:href="@{${postCursor.previous.status.permalink}}"
+        th:title="${postCursor.previous.spec.title}"
+      >
+        <div class="btn-card flex h-[3.75rem] w-full max-w-full items-center !justify-start gap-4 rounded-2xl px-4">
+          <span class="icon-[material-symbols--chevron-left-rounded] !text-2xl font-black text-[var(--primary)]"></span>
+          <div
+            class="max-w-[calc(100%_-_3rem)] overflow-hidden overflow-ellipsis whitespace-nowrap text-black/75 transition dark:text-white/75"
+            th:text="${#strings.abbreviate(postCursor.previous.spec.title,20)}"
+          ></div>
+        </div>
+      </a>
+      <a
+        href=""
+        class="w-full overflow-hidden font-bold active:scale-95"
+        th:classappend="${postCursor.hasNext() ? '' : 'pointer-events-none '}"
+        th:href="@{${postCursor.next.status.permalink}}"
+        th:title="${postCursor.next.spec.title}"
+      >
+        <div class="btn-card flex h-[3.75rem] w-full max-w-full items-center !justify-end gap-4 rounded-2xl px-4">
+          <div
+            class="max-w-[calc(100%_-_3rem)] overflow-hidden overflow-ellipsis whitespace-nowrap text-black/75 transition dark:text-white/75"
+            th:text="${#strings.abbreviate(postCursor.next.spec.title,20)}"
+          ></div>
+          <span
+            class="icon-[material-symbols--chevron-right-rounded] !text-2xl font-black text-[var(--primary)]"
+          ></span>
+        </div>
+      </a>
+    </div>
+    <div class="card-base relative z-10 w-full px-6 pb-4 pt-6 md:px-9" id="comment" th:if="${haloCommentEnabled}">
+      <h2 class="mb-2 text-base font-medium text-gray-900 dark:text-slate-50" th:text="#{common.comment}"></h2>
+      <halo:comment group="content.halo.run" kind="Post" th:attr="name=${post.metadata.name}" />
+    </div>
+  </th:block>
+</html>

@@ -1,0 +1,89 @@
+<div class="flex w-full flex-col items-center justify-center">
+  <!-- Distortion text effect -->
+  <div id="distortion-text" class="distortion-container"></div>
+
+  <div class="my-10 w-2/3 border-t border-dashed border-black/10 transition dark:border-white/15"></div>
+
+  <div class="mb-12 w-full px-4 md:px-0">
+    <div class="card-base mx-auto w-full max-w-[var(--page-width)] px-6 py-6 md:px-8 md:py-7">
+      <div class="text-50 text-center text-sm leading-relaxed transition !delay-0">
+        <div>
+          &copy;
+          <span id="copyright-year" x-data="{ currentYear: new Date().getFullYear() }" x-text="currentYear"></span>
+          [[${site.title}]]. All Rights Reserved.
+        </div>
+
+        <div class="mt-1">
+          <th:block th:if="${pluginFinder.available('PluginFeed')}">
+            <a class="link font-medium text-[var(--primary)] transition" target="_blank" th:href="@{/rss.xml}">RSS</a>
+          </th:block>
+          <th:block th:if="${pluginFinder.available('PluginFeed')} and ${pluginFinder.available('PluginSitemap')}">
+            <span class="mx-1 text-black/20 transition dark:text-white/20">/</span>
+          </th:block>
+          <th:block th:if="${pluginFinder.available('PluginSitemap')}">
+            <a class="link font-medium text-[var(--primary)] transition" target="_blank" th:href="@{/sitemap.xml}">Sitemap</a>
+          </th:block>
+        </div>
+
+        <div class="mt-1">
+          Powered by
+          <a class="link font-medium text-[var(--primary)] transition" target="_blank" href="https://www.halo.run/">Halo</a>
+          <span class="mx-1 text-black/20 transition dark:text-white/20">&amp;</span>
+          <a
+            class="link font-medium text-[var(--primary)] transition"
+            target="_blank"
+            href="https://github.com/jiewenhuang/halo-theme-fuwari"
+            >Theme-Fuwari</a
+          >
+        </div>
+
+        <div
+          class="mt-3 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-xs text-black/50 transition dark:text-white/50"
+          th:if="${not #strings.isEmpty(theme.config.beian.icp_text)} or ${not #strings.isEmpty(theme.config.beian.gongan_text)}"
+        >
+          <th:block th:if="${not #strings.isEmpty(theme.config.beian.icp_text)}">
+            <a
+              class="link-underline"
+              target="_blank"
+              rel="noopener"
+              th:href="${#strings.isEmpty(theme.config.beian.icp_link) ? 'https://beian.miit.gov.cn/' : theme.config.beian.icp_link}"
+              th:text="|ICP备案号：${theme.config.beian.icp_text}|"
+              >ICP备案号</a
+            >
+          </th:block>
+
+          <th:block th:if="${not #strings.isEmpty(theme.config.beian.gongan_text)}">
+            <a
+              class="inline-flex items-center gap-1.5 link-underline"
+              target="_blank"
+              rel="noopener"
+              th:href="${#strings.isEmpty(theme.config.beian.gongan_link) ? 'https://beian.mps.gov.cn/#/query/webSearch' : theme.config.beian.gongan_link}"
+            >
+              <img
+                th:src="@{/assets/images/gongan_beian.png}"
+                alt="公安备案"
+                class="h-4 w-4 opacity-80 transition dark:opacity-90"
+                loading="lazy"
+              />
+              <span th:text="|公安备案：${theme.config.beian.gongan_text}|">公安备案</span>
+            </a>
+          </th:block>
+        </div>
+
+        <div
+          th:if="${not #strings.isEmpty(theme.config.beian.div)}"
+          th:utext="${theme.config.beian.div}"
+          class="mt-3 flex justify-center items-center"
+        ></div>
+
+        <!-- 全站统计（由 JS 动态填充） -->
+        <div
+          id="site-stats"
+          class="mt-3 flex flex-wrap items-center justify-center gap-2 text-xs text-black/40 transition dark:text-white/40"
+        ></div>
+      </div>
+    </div>
+  </div>
+
+  <halo:footer />
+</div>

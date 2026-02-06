@@ -67,5 +67,8 @@
         </div>
       </th:block>
     </div>
+    <th:block
+      th:replace="~{modules/pagination :: pagination(context = '/archives/page/', prevUrl = ${archives.prevUrl}, nextUrl = ${archives.nextUrl}, totalPages = ${archives.totalPages}, page = ${archives.page}, hasPrevious = ${archives.hasPrevious()}, hasNext = ${archives.hasNext()}, postListCount = ${archives.items.size()})}"
+    />
   </th:block>
 </html>

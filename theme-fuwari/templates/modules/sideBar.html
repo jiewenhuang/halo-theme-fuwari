@@ -1,0 +1,26 @@
+<div
+  id="sidebar"
+  class="onload-animation col-span-2 row-start-2 row-end-3 mb-4 w-full lg:col-span-1 lg:row-start-1 lg:row-end-2 lg:max-w-[17.5rem]"
+>
+  <div class="mb-4 flex w-full flex-col gap-4">
+    <th:block th:replace="~{modules/widgets/sidebar/profile}" />
+  </div>
+  <div id="sidebar-sticky" class="sticky top-4 flex w-full flex-col gap-4 transition-all duration-700">
+    <th:block th:each="sidebar : ${theme.config.sidebar.widgets}">
+      <th:block th:switch="${sidebar.value}">
+        <th:block th:case="'categories'">
+          <th:block th:replace="~{modules/widgets/sidebar/categories}" />
+        </th:block>
+        <th:block th:case="'tag'">
+          <th:block th:replace="~{modules/widgets/sidebar/tag}" />
+        </th:block>
+        <th:block th:case="'popular-posts'">
+          <th:block th:replace="~{modules/widgets/sidebar/popular-posts}" />
+        </th:block>
+        <th:block th:case="'html'">
+          <th:block th:replace="~{modules/widgets/sidebar/custom :: custom(custom_html=${sidebar.html})}" />
+        </th:block>
+      </th:block>
+    </th:block>
+  </div>
+</div>

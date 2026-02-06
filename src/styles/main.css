@@ -1,4 +1,20 @@
 
+/* ===== Distortion Text Container ===== */
+.distortion-container {
+  width: 100%;
+  max-width: var(--page-width);
+  height: 12rem;
+  margin: 0 auto;
+  cursor: default;
+  overflow: hidden;
+  user-select: none;
+  -webkit-user-select: none;
+}
+@media (max-width: 768px) {
+  .distortion-container {
+    height: 8rem;
+  }
+}
 
 #search {
   input:focus {
@@ -14,4 +30,146 @@
 
 :root {
   --halo-cw-primary-1-color: var(--primary);
+}
+
+/* ===== Rainbow Mode ===== */
+@keyframes rainbow-rotate {
+  0% { filter: hue-rotate(0deg); }
+  100% { filter: hue-rotate(360deg); }
+}
+@keyframes rainbow-rotate-reverse {
+  0% { filter: hue-rotate(0deg); }
+  100% { filter: hue-rotate(-360deg); }
+}
+
+html.is-rainbow-mode .card-base {
+  animation: rainbow-rotate linear infinite;
+  animation-duration: var(--rainbow-duration, 5s);
+}
+
+/* Reverse filter for images/videos to preserve original colors */
+html.is-rainbow-mode .card-base img,
+html.is-rainbow-mode .card-base video,
+html.is-rainbow-mode .card-base iframe,
+html.is-rainbow-mode .card-base .no-hue-rotate {
+  animation: rainbow-rotate-reverse linear infinite;
+  animation-duration: var(--rainbow-duration, 5s);
+}
+
+/* ===== Background Image ===== */
+body.has-bg-image::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background-image: var(--bg-image);
+  background-position: var(--bg-position, center);
+  background-size: var(--bg-size, cover);
+  background-repeat: var(--bg-repeat, no-repeat);
+  background-attachment: var(--bg-attachment, fixed);
+  opacity: var(--bg-opacity, 1);
+  filter: blur(var(--bg-blur, 0px));
+  transition: filter 0.3s ease, opacity 0.3s ease;
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+/* Prevent theme-switch flash: disable transitions briefly */
+html.no-transition,
+html.no-transition *,
+html.no-transition *::before,
+html.no-transition *::after {
+  transition: none !important;
+  animation: none !important;
+}
+
+/* ===== Announcement / Notice Bar ===== */
+.notice-info .notice-content { border-color: var(--admonitions-color-note); color: var(--admonitions-color-note); }
+.notice-tip .notice-content { border-color: var(--admonitions-color-tip); color: var(--admonitions-color-tip); }
+.notice-important .notice-content { border-color: var(--admonitions-color-warning); color: var(--admonitions-color-warning); }
+.notice-warning .notice-content { border-color: var(--admonitions-color-caution); color: var(--admonitions-color-caution); }
+
+.notice-happy .notice-content {
+  --notice-gradient: linear-gradient(
+    90deg,
+    oklch(0.78 0.18 calc(var(--hue) + 0)),
+    oklch(0.78 0.18 calc(var(--hue) + 60)),
+    oklch(0.78 0.18 calc(var(--hue) + 120)),
+    oklch(0.78 0.18 calc(var(--hue) + 180))
+  );
+  border: 2px solid transparent !important;
+  background: linear-gradient(var(--card-bg), var(--card-bg)) padding-box, var(--notice-gradient) border-box !important;
+}
+.notice-happy .notice-text {
+  background: var(--notice-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Keyboard focus styles */
+:where(a, button, input, textarea, select, summary, [role="button"], [tabindex]:not([tabindex="-1"])):focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 3px;
+}
+
+/* ===== 顶栏行为：小横条 + 极限透明（贴在屏幕上方） ===== */
+.navbar-transparent #navbar-wrapper .card-base {
+  height: 2.5rem;
+  min-height: 2.5rem;
+  opacity: 0.2;
+  background: rgba(255, 255, 255, 0.2);
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+}
+html.dark .navbar-transparent #navbar-wrapper .card-base {
+  background: rgba(0, 0, 0, 0.18);
+}
+.navbar-transparent #navbar-wrapper .card-base > a:first-child {
+  height: 2rem;
+  min-height: 2rem;
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem;
+  font-size: 0.875rem;
+}
+.navbar-transparent #navbar-wrapper .card-base .h-11 {
+  height: 2rem;
+  min-height: 2rem;
+  width: 2rem;
+}
+.navbar-transparent #navbar-wrapper .card-base [class*="icon-"] {
+  font-size: 1rem;
+}
+
+/* 手动触发小横条：点击顶栏按钮收缩为纯小白条（无任何文字/图标），点击小横条展开 */
+#navbar-wrapper.navbar-minimal {
+  cursor: pointer;
+}
+#navbar-wrapper.navbar-minimal .card-base {
+  height: 2.5rem;
+  min-height: 2.5rem;
+  opacity: 0.2;
+  background: rgba(255, 255, 255, 0.2);
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+  border-color: transparent;
+  box-shadow: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+html.dark #navbar-wrapper.navbar-minimal .card-base {
+  background: rgba(0, 0, 0, 0.18);
+}
+/* 小横条内不显示任何文字与图标，仅保留一条白条 */
+#navbar-wrapper.navbar-minimal .card-base > * {
+  visibility: hidden;
+  pointer-events: none;
 }

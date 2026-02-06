@@ -28,17 +28,37 @@
   .navbar-hidden {
     @apply opacity-0 -translate-y-16
   }
+  /* 小横条 + 极限透明：仅保留边框/阴影去除，具体尺寸与透明度见 main.css */
+  .navbar-transparent .card-base {
+    @apply !border-transparent !shadow-none;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+  .navbar-transparent .card-base .absolute.-top-8 {
+    @apply !bg-transparent;
+  }
 }
 
 @layer components {
   .card-base {
-    @apply rounded-[var(--radius-large)] overflow-hidden bg-[var(--card-bg)] transition;
+    @apply rounded-[var(--radius-large)] overflow-hidden bg-[var(--card-bg)] transition
+    border border-black/5 dark:border-white/10
+    shadow-[0_1px_0_rgba(0,0,0,0.02),0_12px_32px_rgba(0,0,0,0.06)] dark:shadow-none;
   }
   h1, h2, h3, h4, h5, h6, p, a, span, li, ul, ol, blockquote, code, pre, table, th, td, strong {
     @apply transition;
   }
   .card-shadow {
-    @apply drop-shadow-[0_2px_4px_rgba(0,0,0,0.005)]
+    @apply drop-shadow-[0_2px_12px_rgba(0,0,0,0.04)] dark:drop-shadow-none
+  }
+  .card-hover {
+    @apply transition-all duration-300 ease-out;
+    &:hover {
+      @apply -translate-y-1 shadow-[0_8px_30px_rgba(0,0,0,0.08)] dark:shadow-[0_8px_30px_rgba(0,0,0,0.3)];
+    }
+    &:active {
+      @apply translate-y-0;
+    }
   }
   .expand-animation {
     @apply relative before:ease-out before:transition active:bg-none hover:before:bg-[var(--btn-plain-bg-hover)] active:before:bg-[var(--btn-plain-bg-active)] z-0

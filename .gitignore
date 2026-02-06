@@ -1,4 +1,11 @@
-# Logs
+# === 依赖与构建产物 ===
+node_modules
+dist
+dist-ssr
+templates/assets/dist
+*.local
+
+# === 日志 ===
 logs
 *.log
 npm-debug.log*
@@ -7,12 +14,7 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-node_modules
-dist
-dist-ssr
-*.local
-
-# Editor directories and files
+# === 编辑器 ===
 .vscode/*
 !.vscode/extensions.json
 .idea
@@ -22,6 +24,23 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+.cursor
 
+# === Gradle (不需要) ===
 .gradle
 build
+settings.gradle
+
+# === 包管理锁文件 (项目用 pnpm) ===
+package-lock.json
+
+# === 个人部署脚本 ===
+scripts/deploy-theme.ps1
+
+# === 打包产物 ===
+*.zip
+
+# === 操作系统 ===
+Thumbs.db
+Desktop.ini
+.DS_Store

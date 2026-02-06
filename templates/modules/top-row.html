@@ -1,13 +1,15 @@
 <div
   id="top-row"
-  class="pointer-events-none relative z-50 mx-auto max-w-[var(--page-width)] px-0 transition-all duration-700 md:px-4"
+  class="relative z-50 mx-auto max-w-[var(--page-width)] px-0 transition-all duration-700 md:px-4"
 >
-  <div id="navbar-wrapper" class="pointer-events-auto sticky top-0 transition-all">
+  <!-- 仅空白区域穿透点击，导航条需可点击 -->
+  <div class="pointer-events-none absolute inset-0 z-0" aria-hidden="true"></div>
+  <div id="navbar-wrapper" class="pointer-events-auto relative z-10 sticky top-0 transition-all">
     <div id="navbar" class="onload-animation z-50">
       <div class="absolute -top-8 left-0 right-0 h-8 bg-[var(--card-bg)] transition"></div>
       <!-- used for onload animation -->
       <div
-        class="card-base mx-auto flex h-[4.5rem] max-w-[var(--page-width)] items-center justify-between !overflow-visible !rounded-t-none px-4"
+        class="card-base mx-auto flex h-[4.5rem] max-w-[var(--page-width)] items-center justify-between !overflow-visible !rounded-t-none px-4 !bg-[var(--card-bg)]/80 backdrop-blur-lg backdrop-saturate-150"
       >
         <a th:href="@{/}" class="btn-plain scale-animation h-[3.25rem] rounded-lg px-5 font-bold active:scale-95">
           <div class="text-md flex flex-row items-center text-[var(--primary)]">
@@ -47,6 +49,51 @@
           >
             <span class="icon-[material-symbols--palette-outline] text-[1.25rem]"></span>
           </button>
+          <button
+            aria-label="小横条"
+            title="顶栏缩成小横条"
+            class="btn-plain scale-animation h-11 w-11 rounded-lg active:scale-90"
+            id="navbar-minimal-toggle"
+          >
+            <span class="icon-[material-symbols--vertical-align-center] text-[1.25rem]"></span>
+          </button>
+          <th:block th:if="${theme.config.appearance != null and theme.config.appearance.effects != null and theme.config.appearance.effects.enable_weather}">
+            <div class="relative z-50" role="menu" tabindex="-1" x-data="dropdown">
+              <div x-data="weatherSwitcher">
+                <button
+                  aria-label="天气"
+                  title="切换天气效果"
+                  @mouseenter="open()"
+                  @mouseleave="close()"
+                  @click="show = !show"
+                  role="menuitem"
+                  class="btn-plain scale-animation relative h-11 w-11 rounded-lg active:scale-90"
+                  id="weather-switch"
+                >
+                  <span :class="currentOption.icon" class="text-[1.25rem]"></span>
+                </button>
+                <div
+                  @mouseenter="open()"
+                  @mouseleave="close()"
+                  class="absolute -right-2 top-11 pt-5 transition"
+                  :class="show ? 'block' : 'float-panel-closed hidden md:block'"
+                >
+                  <div class="card-base float-panel p-2">
+                    <template x-for="opt in weatherOptions" :key="opt.value">
+                      <button
+                        class="btn-plain scale-animation mb-0.5 flex h-9 w-full items-center !justify-start whitespace-nowrap rounded-lg px-3 font-medium active:scale-95"
+                        :class="currentValue === opt.value ? 'current-theme-btn' : ''"
+                        @click="switchWeather(opt.value)"
+                      >
+                        <span :class="opt.icon" class="mr-3 text-[1.25rem]"></span>
+                        <span x-text="opt.label"></span>
+                      </button>
+                    </template>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </th:block>
           <div x-data="colorSchemeSwitcher">
             <div class="relative z-50" role="menu" tabindex="-1" x-data="dropdown">
               <button
@@ -54,10 +101,10 @@
                 aria-label="Light/Dark Mode"
                 @mouseenter="open()"
                 @mouseleave="close()"
+                @click="show = !show"
                 role="menuitem"
                 class="btn-plain scale-animation relative h-11 w-11 rounded-lg active:scale-90"
                 id="scheme-switch"
-                x-on:click="open = true"
               >
                 <div class="absolute flex items-center justify-center">
                   <span :class="colorScheme.icon" class="text-[1.25rem]"></span>
@@ -68,8 +115,8 @@
                 id="light-dark-panel"
                 @mouseenter="open()"
                 @mouseleave="close()"
-                class="absolute -right-2 top-11 hidden pt-5 transition lg:block"
-                :class="show ? '' : 'float-panel-closed'"
+                class="absolute -right-2 top-11 pt-5 transition"
+                :class="show ? 'block' : 'float-panel-closed hidden md:block'"
               >
                 <div class="card-base float-panel p-2">
                   <template x-for="colorScheme in colorSchemes">
@@ -121,6 +168,22 @@
               class="icon-[material-symbols--chevron-right-rounded] ml-1 -translate-y-[1px] text-[1.3rem] text-black/[0.2] transition dark:text-white/[0.2]"
             ></span>
           </a>
+          <!-- Mobile color scheme switcher -->
+          <th:block th:if="${theme.config.style.enable_change_color_scheme}">
+            <div class="my-1 border-t border-dashed border-black/10 transition dark:border-white/10"></div>
+            <div class="flex items-center justify-center gap-1 py-1" x-data="colorSchemeSwitcher">
+              <template x-for="colorScheme in colorSchemes">
+                <button
+                  class="btn-plain flex h-9 w-9 items-center justify-center rounded-lg active:scale-90"
+                  :class="currentValue === colorScheme.value ? 'current-theme-btn' : ''"
+                  @click="switchTheme(colorScheme.value)"
+                  :aria-label="colorScheme.label"
+                >
+                  <span :class="colorScheme.icon" class="text-[1.25rem]"></span>
+                </button>
+              </template>
+            </div>
+          </th:block>
         </div>
         <div
           id="display-setting"

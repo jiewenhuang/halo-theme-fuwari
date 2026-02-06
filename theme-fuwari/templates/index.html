@@ -1,0 +1,18 @@
+<!doctype html>
+<html
+  xmlns:th="https://www.thymeleaf.org"
+  th:replace="~{modules/layout :: html(title = ${site.title}, hero = null, content = ~{::content}, head = null, footer = null, sidebar = null, contentClass = null, pageType = 'home')}"
+>
+  <th:block th:fragment="content">
+    <div
+      class="mb-4 flex flex-col rounded-[var(--radius-large)] bg-[var(--card-bg)] py-1 transition md:gap-4 md:bg-transparent md:py-0"
+    >
+      <th:block th:each="post,postStat : ${posts.items}">
+        <th:block th:replace="~{modules/post-card :: card(post = ${post}, index = ${postStat.index})}" />
+      </th:block>
+    </div>
+    <th:block
+      th:replace="~{modules/pagination :: pagination(context = '/page/', prevUrl = ${posts.prevUrl}, nextUrl = ${posts.nextUrl}, totalPages = ${posts.totalPages}, page = ${posts.page}, hasPrevious = ${posts.hasPrevious()}, hasNext = ${posts.hasNext()}, postListCount = ${posts.items.size()})}"
+    />
+  </th:block>
+</html>

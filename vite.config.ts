@@ -8,7 +8,7 @@ export default ({ mode }: { mode: string }) => {
 
   return defineConfig({
     root: "./src",
-    base: isProduction ? "/themes/theme-fuwari-2/assets/dist/" : "",
+    base: isProduction ? "/themes/theme-fuwari/assets/dist/" : "",
     plugins: [preact()],
     css: {
       preprocessorOptions: {
@@ -18,7 +18,7 @@ export default ({ mode }: { mode: string }) => {
       },
     },
     define: {
-      "process.env": process.env,
+      "process.env.NODE_ENV": JSON.stringify(mode),
     },
     build: {
       manifest: isProduction,

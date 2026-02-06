@@ -1,0 +1,176 @@
+<!-- 分页主容器 -->
+<div
+  th:fragment="pagination(context,prevUrl,nextUrl,totalPages,page,hasPrevious,hasNext,postListCount)"
+  class="onload-animation mx-auto flex flex-row justify-center gap-3"
+  th:style="|animation-delay: calc(var(--content-delay) + ${postListCount*50}ms)|"
+>
+  <th:block th:if="${hasPrevious || hasNext}">
+    <!--        页面总数小于等于7-->
+    <th:block th:if="${(totalPages le 7) && (totalPages gt 0)}">
+      <a
+        th:href="@{${prevUrl}}"
+        th:aria-label="${hasPrevious ? 'Previous Page' : null}"
+        class="btn-card h-11 w-11 overflow-hidden rounded-lg"
+        th:classappend="${hasPrevious ? 'text-[var(--primary)]' : 'disabled'}"
+      >
+        <span class="icon-[material-symbols--chevron-left-rounded] text-[1.75rem]"></span>
+      </a>
+
+      <th:block th:each="index : ${#numbers.sequence(1, totalPages)}">
+        <th:block th:if="${index eq page}">
+          <div
+            class="flex flex-row items-center rounded-lg bg-[var(--card-bg)] font-bold text-neutral-700 dark:text-neutral-300"
+          >
+            <div
+              class="flex h-11 w-11 items-center justify-center rounded-lg bg-[var(--primary)] font-bold text-white dark:text-black/70"
+              th:text="${index}"
+            ></div>
+          </div>
+        </th:block>
+        <th:block th:unless="${index eq page}">
+          <a
+            th:href="${context + index}"
+            th:aria-label="|Page ${index}|"
+            th:text="${index}"
+            class="btn-card h-11 w-11 overflow-hidden rounded-lg active:scale-[0.85]"
+          ></a>
+        </th:block>
+      </th:block>
+
+      <a
+        th:href="@{${nextUrl}}"
+        th:aria-label="${hasNext ? 'Next Page' : null}"
+        class="btn-card h-11 w-11 overflow-hidden rounded-lg"
+        th:classappend="${hasNext ? 'text-[var(--primary)]' : 'disabled'}"
+      >
+        <span class="icon-[material-symbols--chevron-right-rounded] text-[1.75rem]"></span>
+      </a>
+    </th:block>
+    <!--        页面总数大于7-->
+    <th:block th:if="${totalPages gt 7}">
+      <a
+        th:href="@{${prevUrl}}"
+        th:aria-label="${hasPrevious ? 'Previous Page' : null}"
+        class="btn-card h-11 w-11 overflow-hidden rounded-lg"
+        th:classappend="${hasPrevious ? 'text-[var(--primary)]' : 'disabled'}"
+      >
+        <span class="icon-[material-symbols--chevron-left-rounded] text-[1.75rem]"></span>
+      </a>
+      <th:block>
+        <th:block th:if="${1 eq page}">
+          <div
+            class="flex h-11 w-11 items-center justify-center rounded-lg bg-[var(--primary)] font-bold text-white dark:text-black/70"
+            th:text="${1}"
+          ></div>
+        </th:block>
+        <th:block th:unless="${1 eq page}">
+          <a
+            th:href="${context + 1}"
+            th:aria-label="|Page ${index}|"
+            th:text="${1}"
+            class="btn-card h-11 w-11 overflow-hidden rounded-lg active:scale-[0.85]"
+          ></a>
+        </th:block>
+      </th:block>
+
+      <!-- 当前页面小于等于4 -->
+      <th:block th:each="index : ${#numbers.sequence(2,5)}" th:if="${page le 4}">
+        <th:block th:if="${index eq page}">
+          <div
+            class="flex h-11 w-11 items-center justify-center rounded-lg bg-[var(--primary)] font-bold text-white dark:text-black/70"
+            th:text="${index}"
+          ></div>
+        </th:block>
+        <th:block th:unless="${index eq page}">
+          <a
+            th:href="${context + index}"
+            th:aria-label="|Page ${index}|"
+            th:text="${index}"
+            class="btn-card h-11 w-11 overflow-hidden rounded-lg active:scale-[0.85]"
+          ></a>
+        </th:block>
+      </th:block>
+      <span th:if="${page le 4}" class="icon-[material-symbols--more-horiz] mx-1 my-auto text-lg"></span>
+
+      <!-- 最后一页与当前页面之差小于等于3 -->
+      <span th:if="${totalPages - page le 3}" class="icon-[material-symbols--more-horiz] mx-1 my-auto"></span>
+
+      <th:block
+        th:each="index : ${#numbers.sequence(totalPages - 4, totalPages - 1)}"
+        th:if="${totalPages - page le 3}"
+      >
+        <th:block th:if="${index eq page}">
+          <div
+            class="flex h-11 w-11 items-center justify-center rounded-lg bg-[var(--primary)] font-bold text-white dark:text-black/70"
+            th:text="${index}"
+          ></div>
+        </th:block>
+        <th:block th:unless="${index eq page}">
+          <a
+            th:href="${context + index}"
+            th:aria-label="|Page ${index}|"
+            th:text="${index}"
+            class="btn-card h-11 w-11 overflow-hidden rounded-lg active:scale-[0.85]"
+          ></a>
+        </th:block>
+      </th:block>
+
+      <!-- 最后一页与当前页面之差大于3 且当前页面大于4 -->
+      <span
+        th:if="${(page gt 4) && (totalPages - page gt 3)}"
+        class="icon-[material-symbols--more-horiz] mx-1 my-auto"
+      ></span>
+
+      <th:block
+        th:each="index : ${#numbers.sequence(page - 1,page + 1)}"
+        th:if="${(page gt 4) && (totalPages - page gt 3)}"
+      >
+        <th:block th:if="${index eq page}">
+          <div
+            class="flex h-11 w-11 items-center justify-center rounded-lg bg-[var(--primary)] font-bold text-white dark:text-black/70"
+            th:text="${index}"
+          ></div>
+        </th:block>
+        <th:block th:unless="${index eq page}">
+          <a
+            th:href="${context + index}"
+            th:aria-label="|Page ${index}|"
+            th:text="${index}"
+            class="btn-card h-11 w-11 overflow-hidden rounded-lg active:scale-[0.85]"
+          ></a>
+        </th:block>
+      </th:block>
+
+      <span
+        th:if="${(page gt 4) && (totalPages - page gt 3)}"
+        class="icon-[material-symbols--more-horiz] mx-1 my-auto"
+      ></span>
+      <!-- 尾页 -->
+      <th:block>
+        <th:block th:if="${totalPages eq page}">
+          <div
+            class="flex h-11 w-11 items-center justify-center rounded-lg bg-[var(--primary)] font-bold text-white dark:text-black/70"
+            th:text="${totalPages}"
+          ></div>
+        </th:block>
+        <th:block th:unless="${totalPages eq page}">
+          <a
+            th:href="${context + totalPages}"
+            th:aria-label="|Page ${totalPages}|"
+            th:text="${totalPages}"
+            class="btn-card h-11 w-11 overflow-hidden rounded-lg active:scale-[0.85]"
+          ></a>
+        </th:block>
+      </th:block>
+
+      <a
+        th:href="@{${nextUrl}}"
+        th:aria-label="${hasNext ? 'Next Page' : null}"
+        class="btn-card h-11 w-11 overflow-hidden rounded-lg"
+        th:classappend="${hasNext ? 'text-[var(--primary)]' : 'disabled'}"
+      >
+        <span class="icon-[material-symbols--chevron-right-rounded] text-[1.75rem]"></span>
+      </a>
+    </th:block>
+  </th:block>
+</div>

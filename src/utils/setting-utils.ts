@@ -21,6 +21,35 @@ export function setHue(hue: number): void {
   r.style.setProperty("--hue", String(hue));
 }
 
+/* ===== Rainbow Mode ===== */
+export function getRainbowMode(): boolean {
+  return localStorage.getItem("rainbow-mode") === "true";
+}
+export function setRainbowMode(enabled: boolean): void {
+  localStorage.setItem("rainbow-mode", String(enabled));
+  if (enabled) {
+    document.documentElement.classList.add("is-rainbow-mode");
+  } else {
+    document.documentElement.classList.remove("is-rainbow-mode");
+  }
+}
+export function getRainbowSpeed(): number {
+  return Number.parseInt(localStorage.getItem("rainbow-speed") || "20");
+}
+export function setRainbowSpeed(speed: number): void {
+  localStorage.setItem("rainbow-speed", String(speed));
+  document.documentElement.style.setProperty("--rainbow-duration", `${120 / speed}s`);
+}
+
+/* ===== Background Blur ===== */
+export function getBgBlur(): number {
+  return Number.parseInt(localStorage.getItem("bg-blur") || "0");
+}
+export function setBgBlur(blur: number): void {
+  localStorage.setItem("bg-blur", String(blur));
+  document.documentElement.style.setProperty("--bg-blur", `${blur}px`);
+}
+
 // export function applyThemeToDocument(theme: LIGHT_DARK_MODE) {
 //   switch (theme) {
 //     case LIGHT_MODE:

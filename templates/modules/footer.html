@@ -1,56 +1,89 @@
-<div class="flex w-full flex-col items-center justify-center">
-  <!--<div class="border-t border-[var(&#45;&#45;primary)] mx-16 border-dashed py-8 max-w-[var(&#45;&#45;page-width)] flex flex-col items-center justify-center px-6">-->
+<div class="flex w-full flex-col items-center justify-center" th:with="beianConfig = ${(theme.config.footer != null and theme.config.footer.beian != null) ? theme.config.footer.beian : theme.config.beian}">
+  <!-- 流动文字：仅当 外观-特效 启用且填写了文字时显示 -->
+  <div id="distortion-text" class="distortion-container" th:if="${theme.config.appearance != null and theme.config.appearance.effects != null and theme.config.appearance.effects.enable_flow_text and not #strings.isEmpty(theme.config.appearance.effects.flow_text)}"></div>
+
   <div class="my-10 w-2/3 border-t border-dashed border-black/10 transition dark:border-white/15"></div>
-  <!--<div class="transition bg-[oklch(92%_0.01_var(&#45;&#45;hue))] dark:bg-black rounded-2xl py-8 mt-4 mb-8 flex flex-col items-center justify-center px-6">-->
-  <div
-    class="mb-12 flex flex-col items-center justify-center rounded-2xl border-dashed border-[oklch(85%_0.01_var(--hue))] px-6 transition dark:border-white/15"
-  >
-    <div class="text-50 text-center text-sm transition !delay-0">
-      &copy;
-      <span id="copyright-year" x-data="{ currentYear: new Date().getFullYear() }" x-text="currentYear"></span>
-      [[${site.title}]]. All Rights Reserved. /
-      <th:block th:if="${pluginFinder.available('PluginFeed')}">
-        <a class="link font-medium text-[var(--primary)] transition" target="_blank" th:href="@{/rss.xml}">RSS</a> /
-      </th:block>
-      <a
-        class="link font-medium text-[var(--primary)]"
-        target="_blank"
-        th:if="${pluginFinder.available('PluginSitemap')}"
-        th:href="@{/sitemap.xml}"
-        >Sitemap</a
-      ><br />
-      Powered by
-      <a class="link font-medium text-[var(--primary)]" target="_blank" href="https://www.halo.run/">Halo</a> &
-      <a
-        class="link font-medium text-[var(--primary)]"
-        target="_blank"
-        href="https://github.com/jiewenhuang/halo-theme-fuwari"
-        >Theme-Fuwari</a
-      >
-      <br />
-      <div class="">
-        <a
-          th:if="${not #strings.isEmpty(theme.config.beian.icp_text)}"
-          class="hover:underline"
-          target="_blank"
-          href="https://beian.miit.gov.cn/"
-          th:href="${theme.config.beian.icp_link}"
-          th:text="${theme.config.beian.icp_text}"
-        ></a>
-        <th:block th:if="${not #strings.isEmpty(theme.config.beian.gongan_text)}">
-          <p class="flex items-center justify-center gap-1">
-            <img th:src="@{/assets/images/gongan_beian.png}" class="size-4" alt="gongan_beian" />
+
+  <div class="mb-12 w-full px-4 md:px-0">
+    <div class="card-base mx-auto w-full max-w-[var(--page-width)] px-6 py-6 md:px-8 md:py-7">
+      <div class="text-50 text-center text-sm leading-relaxed transition !delay-0">
+        <div>
+          &copy;
+          <span id="copyright-year" x-data="{ currentYear: new Date().getFullYear() }" x-text="currentYear"></span>
+          [[${site.title}]]. All Rights Reserved.
+        </div>
+
+        <div class="mt-1">
+          <th:block th:if="${pluginFinder.available('PluginFeed')}">
+            <a class="link font-medium text-[var(--primary)] transition" target="_blank" th:href="@{/rss.xml}">RSS</a>
+          </th:block>
+          <th:block th:if="${pluginFinder.available('PluginFeed')} and ${pluginFinder.available('PluginSitemap')}">
+            <span class="mx-1 text-black/20 transition dark:text-white/20">/</span>
+          </th:block>
+          <th:block th:if="${pluginFinder.available('PluginSitemap')}">
+            <a class="link font-medium text-[var(--primary)] transition" target="_blank" th:href="@{/sitemap.xml}">Sitemap</a>
+          </th:block>
+        </div>
+
+        <div class="mt-1">
+          Powered by
+          <a class="link font-medium text-[var(--primary)] transition" target="_blank" href="https://www.halo.run/">Halo</a>
+          <span class="mx-1 text-black/20 transition dark:text-white/20">&amp;</span>
+          <a
+            class="link font-medium text-[var(--primary)] transition"
+            target="_blank"
+            href="https://github.com/jiewenhuang/halo-theme-fuwari"
+            >Theme-Fuwari</a
+          >
+        </div>
+
+        <div
+          class="mt-3 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-xs text-black/50 transition dark:text-white/50"
+          th:if="${beianConfig != null and (not #strings.isEmpty(beianConfig.icp_text) or not #strings.isEmpty(beianConfig.gongan_text))}"
+        >
+          <th:block th:if="${beianConfig != null and not #strings.isEmpty(beianConfig.icp_text)}">
             <a
-              href="https://beian.mps.gov.cn/#/query/webSearch"
-              class="hover:underline"
+              class="link-underline"
               target="_blank"
-              th:href="${theme.config.beian.gongan_link}"
-              th:text="${theme.config.beian.gongan_text}"
-            ></a>
-          </p>
-        </th:block>
+              rel="noopener"
+              th:href="${#strings.isEmpty(beianConfig.icp_link) ? 'https://beian.miit.gov.cn/' : beianConfig.icp_link}"
+              th:text="|ICP备案号：${beianConfig.icp_text}|"
+              >ICP备案号</a
+            >
+          </th:block>
+
+          <th:block th:if="${beianConfig != null and not #strings.isEmpty(beianConfig.gongan_text)}">
+            <a
+              class="inline-flex items-center gap-1.5 link-underline"
+              target="_blank"
+              rel="noopener"
+              th:href="${#strings.isEmpty(beianConfig.gongan_link) ? 'https://beian.mps.gov.cn/#/query/webSearch' : beianConfig.gongan_link}"
+            >
+              <img
+                th:src="@{/assets/images/gongan_beian.png}"
+                alt="公安备案"
+                class="h-4 w-4 opacity-80 transition dark:opacity-90"
+                loading="lazy"
+              />
+              <span th:text="|公安备案：${beianConfig.gongan_text}|">公安备案</span>
+            </a>
+          </th:block>
+        </div>
+
+        <div
+          th:if="${beianConfig != null and not #strings.isEmpty(beianConfig.div)}"
+          th:utext="${beianConfig.div}"
+          class="mt-3 flex justify-center items-center"
+        ></div>
+
+        <!-- 全站统计（由 JS 动态填充） -->
+        <div
+          id="site-stats"
+          class="mt-3 flex flex-wrap items-center justify-center gap-2 text-xs text-black/40 transition dark:text-white/40"
+        ></div>
       </div>
     </div>
   </div>
+
   <halo:footer />
 </div>

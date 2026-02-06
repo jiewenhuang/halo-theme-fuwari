@@ -1,0 +1,204 @@
+<!doctype html>
+<html
+  lang="en"
+  th:lang="${#locale.toLanguageTag}"
+  class="bg-[var(--page-bg)] no-transition text-[14px] transition md:text-[16px]"
+  th:fragment="html (title,hero,content,head,footer,sidebar,contentClass,pageType)"
+  data-overlayscrollbars-initialize
+>
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title th:text="${title}"></title>
+    <script th:inline="javascript">
+      window.i18nResources = {
+        "jsModule.colorSchemeSwitcher.dark": `[(#{jsModule.colorSchemeSwitcher.dark})]`,
+        "jsModule.colorSchemeSwitcher.light": `[(#{jsModule.colorSchemeSwitcher.light})]`,
+        "jsModule.colorSchemeSwitcher.auto": `[(#{jsModule.colorSchemeSwitcher.auto})]`,
+        "jsModule.share.qzone": `[(#{jsModule.share.qzone})]`,
+        "jsModule.share.weibo": `[(#{jsModule.share.weibo})]`,
+        "jsModule.share.douban": `[(#{jsModule.share.douban})]`,
+        "jsModule.share.wechat": `[(#{jsModule.share.wechat})]`,
+        "jsModule.share.native": `[(#{jsModule.share.native})]`,
+        "jsModule.share.windowTitle": `[(#{jsModule.share.windowTitle})]`,
+        "jsModule.upvote.networkError": `[(#{jsModule.upvote.networkError})]`,
+      };
+    </script>
+    <!--/* 获取主题设置中的所有属性保存在 JS 变量中 */-->
+    <script th:inline="javascript">
+      const themeConfig = /*[(${theme.config})]*/ {};
+    </script>
+    <!--/* 每页可变属性 */-->
+    <!--    <script th:inline="javascript">-->
+    <!--        let pageData = {-->
+    <!--                '_templateId': '[(${_templateId})]',-->
+    <!--                [#th:if = "${_templateId == 'post'}"]-->
+    <!--                "postLastModifyTime": "[(${#dates.format(post.status.lastModifyTime, 'yyyy-MM-dd HH:mm:ss')})]",-->
+
+    <!--                [/]-->
+    <!--                    'version': '[(${theme.spec.version})]',-->
+    <!--                }-->
+    <!--    </script>-->
+    <!-- Set the theme before the page is rendered to avoid a flash -->
+    <script th:inline="javascript">
+      (function () {
+        const DEFAULT_THEME = /*[[${theme.config.style.color_scheme}]]*/ "auto";
+        const LIGHT_MODE = "light";
+        const DARK_MODE = "dark";
+        const AUTO_MODE = "auto";
+        const ENABLE_CHANGE_COLOR_SCHEME = /*[[${theme.config.style.enable_change_color_scheme}]]*/ true;
+        const BANNER_HEIGHT = 35;
+        const BANNER_HEIGHT_EXTEND = 30;
+        const BANNER_HEIGHT_HOME = BANNER_HEIGHT + BANNER_HEIGHT_EXTEND;
+        const PAGE_WIDTH = 75;
+        const configHue = /*[[${theme.config.base.themeColor.hue}]]*/ 250;
+        const banner_position = /*[[${theme.config.base.banner.position}]]*/ "center";
+        const bannerOffsetByPosition = {
+          top: `${BANNER_HEIGHT_EXTEND}vh`,
+          center: `${BANNER_HEIGHT_EXTEND / 2}vh`,
+          bottom: "0",
+        };
+        const bannerOffset = bannerOffsetByPosition[banner_position || "center"];
+
+        // Load the theme from local storage (optional) or use configured default
+        const storedTheme = localStorage.getItem("color-scheme-fuwari");
+        const theme = ENABLE_CHANGE_COLOR_SCHEME && storedTheme ? storedTheme : DEFAULT_THEME;
+        switch (theme) {
+          case LIGHT_MODE:
+            document.documentElement.classList.add("light");
+            document.documentElement.classList.remove("dark");
+            break;
+          case DARK_MODE:
+            document.documentElement.classList.add("dark");
+            document.documentElement.classList.remove("light");
+            break;
+          case AUTO_MODE:
+            if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+              document.documentElement.classList.add("dark");
+              document.documentElement.classList.remove("light");
+            } else {
+              document.documentElement.classList.remove("dark");
+              document.documentElement.classList.add("light");
+            }
+        }
+
+        // Load the hue from local storage
+        const hue = localStorage.getItem("hue") || configHue;
+        document.documentElement.style.setProperty("--hue", hue);
+
+        // calculate the --banner-height-extend, which needs to be a multiple of 4 to avoid blurry text
+        let offset = Math.floor(window.innerHeight * (BANNER_HEIGHT_EXTEND / 100));
+        offset = offset - (offset % 4);
+        document.documentElement.style.setProperty("--banner-height-extend", `${offset}px`);
+        document.documentElement.style.setProperty("--page-width", `${PAGE_WIDTH}rem`);
+        document.documentElement.style.setProperty("--configHue", `${configHue}`);
+        document.documentElement.style.setProperty("--banner-height", `${BANNER_HEIGHT}vh`);
+        document.documentElement.style.setProperty("--banner-height-home", `${BANNER_HEIGHT_HOME}vh`);
+        document.documentElement.style.setProperty("--bannerOffset", bannerOffset);
+
+        // Re-enable transitions after initial paint to avoid flicker
+        requestAnimationFrame(() => {
+          document.documentElement.classList.remove("no-transition");
+        });
+      })();
+    </script>
+
+    <script type="application/json" id="theme-config" th:utext="${theme.config}"></script>
+    <th:block th:if="${theme.config.development.enabled}">
+      <script type="module" src="http://localhost:5173/@vite/client"></script>
+      <script type="module" src="http://localhost:5173/main.ts"></script>
+    </th:block>
+
+    <th:block th:unless="${theme.config.development.enabled}">
+      <link rel="stylesheet" th:href="@{/assets/dist/main.css?v={version}(version=${theme.spec.version})}" />
+      <link rel="manifest" th:href="@{/assets/dist/.vite/manifest.json}" />
+      <script type="module" th:src="@{/assets/dist/main.js?v={version}(version=${theme.spec.version})}"></script>
+    </th:block>
+    <th:block th:if="${head != null}">
+      <th:block th:replace="${head}" />
+    </th:block>
+    <!-- 访客统计由 Halo 内置 API 驱动，无需外部脚本 -->
+  </head>
+
+  <body
+    class="min-h-screen transition"
+    th:data-page-type="${pageType}"
+    th:classappend="|${pageType == 'home' ? 'is-home' : ''} ${theme.config.base.banner.enable ? ' enable-banner' : ''} ${theme.config.background != null and theme.config.background.enable ? ' has-bg-image' : ''}|"
+    th:styleappend="${theme.config.background != null and theme.config.background.enable ? '--bg-image: url(' + theme.config.background.src + '); --bg-position: ' + theme.config.background.position + '; --bg-size: ' + theme.config.background.size + '; --bg-attachment: ' + theme.config.background.attachment + '; --bg-opacity: ' + theme.config.background.opacity + ';' : ''}"
+    data-overlayscrollbars-initialize
+  >
+    <th:block th:replace="~{modules/config-carrier}" />
+    <th:block th:replace="~{modules/top-row}" />
+    <!-- Announcement / Notice Bar (injected into main-grid below) -->
+    <th:block th:if="${theme.config.base.banner.enable}">
+      <th:block th:replace="~{modules/banner-wrapper}" />
+    </th:block>
+    <div class="pointer-events-none absolute z-30 w-full" style="top: calc(35vh - 3.5rem)">
+      <div class="pointer-events-auto relative mx-auto max-w-[var(--page-width)]">
+        <div
+          id="main-grid"
+          class="left-0 right-0 mx-auto grid w-full grid-cols-[17.5rem_auto] grid-rows-[auto_1fr_auto] gap-4 px-0 transition duration-700 md:px-4 lg:grid-rows-[auto]"
+        >
+          <th:block th:if="${theme.config.base.banner.credit.enable}" th:replace="~{modules/widgets/banner-credit}" />
+          <th:block th:replace="~{modules/sideBar}" />
+
+          <main id="swup-container" class="transition-swup-fade col-span-2 overflow-hidden lg:col-span-1">
+            <!-- Notice bar -->
+            <th:block th:if="${theme.config.notice != null and theme.config.notice.enable}">
+              <th:block th:replace="~{modules/notice}" />
+            </th:block>
+            <div id="content-wrapper" class="onload-animation">
+              <!-- the overflow-hidden here prevent long text break the layout-->
+              <!-- make id different from windows.swup global property -->
+              <th:block th:replace="${content}" />
+
+              <div class="footer onload-animation col-span-2 hidden lg:block">
+                <th:block th:replace="~{modules/footer}" />
+              </div>
+            </div>
+          </main>
+          <div class="footer onload-animation col-span-2 block lg:hidden">
+            <th:block th:replace="~{modules/footer}" />
+          </div>
+        </div>
+        <th:block th:replace="~{modules/widgets/back-to-top}" />
+      </div>
+
+      <!-- The things that should be under the banner, only the TOC for now -->
+
+      <div class="absolute z-0 hidden w-full 2xl:block">
+        <div class="relative mx-auto max-w-[var(--page-width)]">
+          <!-- TOC component -->
+          <th:block th:if="${theme.config.post.enable_toc}">
+            <div
+              id="toc-wrapper"
+              class="absolute -right-[var(--toc-width)] top-0 hidden w-[var(--toc-width)] items-center transition lg:block"
+              th:classappend="|${theme.config.base.banner.enable ? 'toc-hide' : ''}|"
+            >
+              <div
+                id="toc-inner-wrapper"
+                class="hide-scrollbar fixed top-14 h-[calc(100vh_-_20rem)] w-[var(--toc-width)] overflow-x-hidden overflow-y-scroll"
+              >
+                <div id="toc" class="transition-swup-fade h-full w-full">
+                  <div class="h-8 w-full"></div>
+                  <div class="toc"></div>
+
+                  <div class="h-8 w-full"></div>
+                </div>
+              </div>
+            </div>
+          </th:block>
+
+          <!-- #toc needs to exist for Swup to work normally -->
+          <th:block th:unless="${theme.config.post.enable_toc}">
+            <div id="toc"></div>
+          </th:block>
+        </div>
+      </div>
+    </div>
+
+    <!-- INCREASE THE PAGE HEIGHT DURING PAGE TRANSITION TO PREVENT THE SCROLLING ANIMATION FROM JUMPING -->
+    <div id="page-height-extend" class="hidden h-[300vh]"></div>
+  </body>
+</html>

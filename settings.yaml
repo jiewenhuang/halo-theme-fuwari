@@ -33,6 +33,7 @@ spec:
           value:
             enable: true
             src: "/themes/theme-fuwari/assets/images/demo-banner.png"
+            src_url: ""
             position: "center"
             credit:
               enable: false
@@ -46,9 +47,14 @@ spec:
               help: "启用横幅"
             - $formkit: attachment
               name: src
-              label: 图片
+              label: 图片（附件选择）
               value: "/themes/theme-fuwari/assets/images/demo-banner.png"
-              help: "显示的图像"
+              help: "从附件库选择图片，优先级低于下方的自定义URL"
+            - $formkit: text
+              name: src_url
+              label: 图片（自定义URL）
+              value: ""
+              help: "填写任意图片URL（支持外部链接），填写后将覆盖上方附件选择的图片"
             - $formkit: select
               name: position
               label: 位置
@@ -101,6 +107,26 @@ spec:
           label: 菜单
           value: ""
           help: "选择菜单(仅支持一级菜单)"
+    - group: navbar_behavior
+      label: 顶栏行为
+      formSchema:
+        - $formkit: select
+          name: mode
+          label: 有 Banner 时顶栏行为
+          value: transparent
+          options:
+            - label: 小横条（极限透明）
+              value: transparent
+            - label: 指定时间后隐藏
+              value: hide_after
+          help: "小横条：顶部时顶栏缩成细条并极限透明贴在屏幕上方；指定时间后隐藏：停留顶部 N 秒后自动隐藏"
+        - $formkit: number
+          name: hide_after_seconds
+          label: 多少秒后隐藏
+          value: 2
+          min: 1
+          max: 10
+          help: "仅当选择「指定时间后隐藏」时生效"
     - group: style
       label: 样式
       formSchema:
@@ -326,24 +352,235 @@ spec:
           label: 启用目录
           value: false
           help: "启用目录"
-    - group: beian
-      label: 备案设置
+    - group: appearance
+      label: 外观
       formSchema:
-        - $formkit: text
-          name: icp_text
-          label: ICP备案号
-        - $formkit: text
-          name: icp_link
-          label: ICP备案跳转链接
-          value: https://beian.miit.gov.cn/
+        - $formkit: group
+          name: notice
+          label: 公告栏
+          value:
+            enable: false
+            level: info
+            content: ""
+          children:
+            - $formkit: checkbox
+              name: enable
+              label: 启用公告栏
+              value: false
+            - $formkit: select
+              name: level
+              label: 公告级别
+              value: info
+              options:
+                - label: 信息 (蓝色)
+                  value: info
+                - label: 提示 (绿色)
+                  value: tip
+                - label: 重要 (黄色)
+                  value: important
+                - label: 警告 (红色)
+                  value: warning
+                - label: 庆祝 (渐变彩色)
+                  value: happy
+              help: "选择公告栏的显示级别，不同级别会有不同的颜色样式"
+            - $formkit: textarea
+              name: content
+              label: 公告内容
+              value: ""
+              help: "支持HTML内容"
+        - $formkit: group
+          name: background
+          label: 背景图
+          value:
+            enable: false
+            src: ""
+            position: center
+            size: cover
+            attachment: fixed
+            opacity: 1
+          children:
+            - $formkit: checkbox
+              name: enable
+              label: 启用背景图
+              value: false
+            - $formkit: text
+              name: src
+              label: 图片URL
+              value: ""
+              help: "背景图片的URL地址（支持外部链接）"
+            - $formkit: select
+              name: position
+              label: 位置
+              value: center
+              options:
+                - label: 居中
+                  value: center
+                - label: 顶部
+                  value: top
+                - label: 底部
+                  value: bottom
+            - $formkit: select
+              name: size
+              label: 尺寸
+              value: cover
+              options:
+                - label: 覆盖
+                  value: cover
+                - label: 包含
+                  value: contain
+                - label: 自动
+                  value: auto
+            - $formkit: select
+              name: attachment
+              label: 固定方式
+              value: fixed
+              options:
+                - label: 固定（视差效果）
+                  value: fixed
+                - label: 跟随滚动
+                  value: scroll
+            - $formkit: number
+              name: opacity
+              label: 透明度
+              value: 1
+              min: 0
+              max: 1
+              step: 0.1
+              help: "0为完全透明，1为完全不透明"
+        - $formkit: group
+          name: effects
+          label: 特效
+          value:
+            enable_flow_text: false
+            flow_text: ""
+            enable_liquid_glass: false
+            enable_weather: false
+            weather_type: sunny
+          children:
+            - $formkit: checkbox
+              name: enable_flow_text
+              label: 启用流动文字
+              value: false
+              help: "页脚鼠标跟随扭曲文字，留空不显示"
+            - $formkit: text
+              name: flow_text
+              label: 流动文字内容
+              value: ""
+              help: "填写要显示的文字（如 CANZ），留空则不显示"
+            - $formkit: checkbox
+              name: enable_liquid_glass
+              label: 启用液态玻璃（仅导航栏）
+              value: false
+              help: "导航栏一块液态玻璃，悬停菜单项时玻璃跟随"
+            - $formkit: checkbox
+              name: enable_weather
+              label: 启用天气拟真效果
+              value: false
+              help: "全局天气模拟（晴天/多云/下雨），顶栏可切换；后续可接天气 API"
+            - $formkit: select
+              name: weather_type
+              label: 默认天气
+              value: sunny
+              options:
+                - value: sunny
+                  label: 晴天
+                - value: cloudy
+                  label: 多云
+                - value: rain
+                  label: 下雨
 
+    - group: footer
+      label: 页脚
+      formSchema:
+        - $formkit: group
+          name: beian
+          label: 备案
+          value:
+            icp_text: ""
+            icp_link: "https://beian.miit.gov.cn/"
+            gongan_text: ""
+            gongan_link: "https://beian.mps.gov.cn/#/query/webSearch"
+            div: ""
+          children:
+            - $formkit: text
+              name: icp_text
+              label: ICP备案号
+            - $formkit: text
+              name: icp_link
+              label: ICP备案跳转链接
+              value: https://beian.miit.gov.cn/
+            - $formkit: text
+              name: gongan_text
+              label: 公安联网备案号
+            - $formkit: text
+              name: gongan_link
+              label: 公安联网备案跳转链接
+              value: https://beian.mps.gov.cn/#/query/webSearch
+            - $formkit: textarea
+              name: div
+              label: 悬挂区域
+              help: "自定义备案区域的HTML内容"
+        - $formkit: group
+          name: analytics
+          label: 访客统计
+          value:
+            enable: true
+            show_site_stats: true
+          children:
+            - $formkit: checkbox
+              name: enable
+              label: 启用访客统计
+              value: true
+              help: "使用 Halo 内置 API 记录页面浏览量，无需第三方服务"
+            - $formkit: checkbox
+              name: show_site_stats
+              label: 在页脚显示全站统计
+              value: true
+              help: "在页脚展示总访问量、文章数、评论数"
+
+    - group: music
+      label: 音乐播放器
+      formSchema:
+        - $formkit: checkbox
+          name: enable
+          label: 启用音乐播放器
+          value: false
+          help: "启用后会在页面右下角显示悬浮音乐播放器（Navidrome/Subsonic API）"
         - $formkit: text
-          name: gongan_text
-          label: 公安联网备案号
+          name: server_url
+          label: 服务器地址
+          value: ""
+          help: "Navidrome 服务器地址，例如: https://music.example.com"
         - $formkit: text
-          name: gongan_link
-          label: 公安联网备案跳转链接
-          value: https://beian.mps.gov.cn/#/query/webSearch
+          name: username
+          label: 用户名
+          value: ""
+        - $formkit: password
+          name: password
+          label: 密码
+          value: ""
+        - $formkit: select
+          name: mode
+          label: 播放模式
+          value: random
+          options:
+            - label: 随机播放
+              value: random
+            - label: 指定歌单
+              value: playlist
+          help: "随机播放从曲库随机获取歌曲，指定歌单则播放选定的播放列表"
+        - $formkit: text
+          name: playlist_id
+          label: 歌单 ID
+          value: ""
+          help: "播放模式为「指定歌单」时填写，在 Navidrome 后台获取"
+        - $formkit: number
+          name: song_count
+          label: 加载歌曲数
+          value: 20
+          min: 1
+          max: 100
+          help: "每次加载的歌曲数量"
 
     - group: development
       label: 开发设置

@@ -1,0 +1,65 @@
+<th:block th:fragment="post-meta(class)">
+  <div
+    class="mb-4 flex flex-wrap items-center gap-4 gap-x-4 gap-y-2 text-neutral-500 dark:text-neutral-400"
+    th:classappend="${class}"
+  >
+    <!-- publish date -->
+    <div class="flex items-center">
+      <div class="meta-icon">
+        <span class="icon-[material-symbols--calendar-today-outline-rounded] text-xl"></span>
+      </div>
+      <span class="text-50 text-sm font-medium" th:text="${#dates.format(post.spec.publishTime,'yyyy-MM-dd')}"></span>
+    </div>
+
+    <!-- update date -->
+    <div class="flex items-center">
+      <div class="meta-icon">
+        <span class="icon-[material-symbols--edit-calendar-outline-rounded] text-xl"></span>
+      </div>
+      <span
+        class="text-50 text-sm font-medium"
+        th:text="${#dates.format(post.status.lastModifyTime,'yyyy-MM-dd')}"
+      ></span>
+    </div>
+
+    <!-- categories -->
+    <div class="flex items-center" th:if="${not #lists.isEmpty(post.categories)}">
+      <div class="meta-icon">
+        <span class="icon-[material-symbols--book-2-outline-rounded] text-xl"></span>
+      </div>
+      <div class="flex flex-row flex-nowrap items-center">
+        <a
+          th:href="@{${post.categories[0].status.permalink}}"
+          th:title="${post.categories[0].spec.displayName}"
+          th:text="${post.categories[0].spec.displayName}"
+          th:aria-label="|View all posts in the ${post.categories[0].spec.displayName} category|"
+          class="link-lg text-50 whitespace-nowrap text-sm font-medium transition hover:text-[var(--primary)] dark:hover:text-[var(--primary)]"
+        >
+        </a>
+      </div>
+    </div>
+
+    <!-- tags -->
+    <div class="hidden items-center md:flex">
+      <div class="meta-icon">
+        <span class="icon-[material-symbols--tag-rounded] text-xl"></span>
+      </div>
+      <div class="flex flex-row flex-nowrap items-center">
+        <th:block th:each="tag, index : ${post.tags}" th:if="${not #lists.isEmpty(post.tags)}">
+          <div class="mx-1.5 text-sm text-[var(--meta-divider)]" th:if="${index.index > 0}">/</div>
+          <a
+            th:href="@{${tag.status.permalink}}"
+            th:title="${tag.spec.displayName}"
+            th:text="${tag.spec.displayName}"
+            th:aria-label="|View all posts with the ${tag.spec.displayName} tag|"
+            class="link-lg text-50 whitespace-nowrap text-sm font-medium transition hover:text-[var(--primary)] dark:hover:text-[var(--primary)]"
+          >
+          </a>
+        </th:block>
+        <th:block th:unless="${not #lists.isEmpty(post.tags)}">
+          <div class="text-50 text-sm font-medium transition">[[#{page.tag.noTags}]]</div>
+        </th:block>
+      </div>
+    </div>
+  </div>
+</th:block>

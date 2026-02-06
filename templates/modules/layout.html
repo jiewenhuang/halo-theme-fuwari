@@ -2,7 +2,7 @@
 <html
   lang="en"
   th:lang="${#locale.toLanguageTag}"
-  class="bg-[var(--page-bg)] text-[14px] transition md:text-[16px]"
+  class="bg-[var(--page-bg)] no-transition text-[14px] transition md:text-[16px]"
   th:fragment="html (title,hero,content,head,footer,sidebar,contentClass,pageType)"
   data-overlayscrollbars-initialize
 >
@@ -43,10 +43,11 @@
     <!-- Set the theme before the page is rendered to avoid a flash -->
     <script th:inline="javascript">
       (function () {
-        const DEFAULT_THEME = "auto";
+        const DEFAULT_THEME = /*[[${theme.config.style.color_scheme}]]*/ "auto";
         const LIGHT_MODE = "light";
         const DARK_MODE = "dark";
         const AUTO_MODE = "auto";
+        const ENABLE_CHANGE_COLOR_SCHEME = /*[[${theme.config.style.enable_change_color_scheme}]]*/ true;
         const BANNER_HEIGHT = 35;
         const BANNER_HEIGHT_EXTEND = 30;
         const BANNER_HEIGHT_HOME = BANNER_HEIGHT + BANNER_HEIGHT_EXTEND;
@@ -59,22 +60,26 @@
           bottom: "0",
         };
         const bannerOffset = bannerOffsetByPosition[banner_position || "center"];
-        console.log(bannerOffset);
 
-        // Load the theme from local storage
-        const theme = localStorage.getItem("color-scheme-fuwari") || DEFAULT_THEME;
+        // Load the theme from local storage (optional) or use configured default
+        const storedTheme = localStorage.getItem("color-scheme-fuwari");
+        const theme = ENABLE_CHANGE_COLOR_SCHEME && storedTheme ? storedTheme : DEFAULT_THEME;
         switch (theme) {
           case LIGHT_MODE:
+            document.documentElement.classList.add("light");
             document.documentElement.classList.remove("dark");
             break;
           case DARK_MODE:
             document.documentElement.classList.add("dark");
+            document.documentElement.classList.remove("light");
             break;
           case AUTO_MODE:
             if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
               document.documentElement.classList.add("dark");
+              document.documentElement.classList.remove("light");
             } else {
               document.documentElement.classList.remove("dark");
+              document.documentElement.classList.add("light");
             }
         }
 
@@ -91,16 +96,21 @@
         document.documentElement.style.setProperty("--banner-height", `${BANNER_HEIGHT}vh`);
         document.documentElement.style.setProperty("--banner-height-home", `${BANNER_HEIGHT_HOME}vh`);
         document.documentElement.style.setProperty("--bannerOffset", bannerOffset);
+
+        // Re-enable transitions after initial paint to avoid flicker
+        requestAnimationFrame(() => {
+          document.documentElement.classList.remove("no-transition");
+        });
       })();
     </script>
 
     <script type="application/json" id="theme-config" th:utext="${theme.config}"></script>
-    <th:block th:if="${theme.config.development.enabled}">
+    <th:block th:if="${theme.config.development != null and theme.config.development.enabled}">
       <script type="module" src="http://localhost:5173/@vite/client"></script>
       <script type="module" src="http://localhost:5173/main.ts"></script>
     </th:block>
 
-    <th:block th:unless="${theme.config.development.enabled}">
+    <th:block th:unless="${theme.config.development != null and theme.config.development.enabled}">
       <link rel="stylesheet" th:href="@{/assets/dist/main.css?v={version}(version=${theme.spec.version})}" />
       <link rel="manifest" th:href="@{/assets/dist/.vite/manifest.json}" />
       <script type="module" th:src="@{/assets/dist/main.js?v={version}(version=${theme.spec.version})}"></script>
@@ -108,20 +118,24 @@
     <th:block th:if="${head != null}">
       <th:block th:replace="${head}" />
     </th:block>
+    <!-- 访客统计由 Halo 内置 API 驱动，无需外部脚本 -->
   </head>
 
   <body
     class="min-h-screen transition"
-    th:date-page-type="${pageType}"
-    th:classappend="|${pageType == 'home' ? 'is-home' : ''} ${theme.config.base.banner.enable ? ' enable-banner' : ''}|"
+    th:data-page-type="${pageType}"
+    th:classappend="|${pageType == 'home' ? 'is-home' : ''} ${theme.config.base.banner.enable ? ' enable-banner' : ''} ${(theme.config.appearance != null and theme.config.appearance.background != null and theme.config.appearance.background.enable) or (theme.config.background != null and theme.config.background.enable) ? ' has-bg-image' : ''}|"
+    th:styleappend="${(theme.config.appearance != null and theme.config.appearance.background != null and theme.config.appearance.background.enable) or (theme.config.background != null and theme.config.background.enable) ? '--bg-image: url(' + (theme.config.appearance != null and theme.config.appearance.background != null ? theme.config.appearance.background.src : theme.config.background.src) + '); --bg-position: ' + (theme.config.appearance != null and theme.config.appearance.background != null ? theme.config.appearance.background.position : theme.config.background.position) + '; --bg-size: ' + (theme.config.appearance != null and theme.config.appearance.background != null ? theme.config.appearance.background.size : theme.config.background.size) + '; --bg-attachment: ' + (theme.config.appearance != null and theme.config.appearance.background != null ? theme.config.appearance.background.attachment : theme.config.background.attachment) + '; --bg-opacity: ' + (theme.config.appearance != null and theme.config.appearance.background != null ? theme.config.appearance.background.opacity : theme.config.background.opacity) + ';' : ''}"
     data-overlayscrollbars-initialize
   >
+    <div id="weather-effect" class="weather-effect pointer-events-none fixed inset-0 z-[35]" aria-hidden="true"></div>
     <th:block th:replace="~{modules/config-carrier}" />
     <th:block th:replace="~{modules/top-row}" />
+    <!-- Announcement / Notice Bar (injected into main-grid below) -->
     <th:block th:if="${theme.config.base.banner.enable}">
       <th:block th:replace="~{modules/banner-wrapper}" />
     </th:block>
-    <div class="pointer-events-none absolute z-30 w-full" style="top: calc(35vh - 3.5rem)">
+    <div id="main-content-wrap" class="pointer-events-none absolute z-30 w-full transition-[margin]" style="top: calc(35vh - 3.5rem)">
       <div class="pointer-events-auto relative mx-auto max-w-[var(--page-width)]">
         <div
           id="main-grid"
@@ -131,6 +145,10 @@
           <th:block th:replace="~{modules/sideBar}" />
 
           <main id="swup-container" class="transition-swup-fade col-span-2 overflow-hidden lg:col-span-1">
+            <!-- Notice bar -->
+            <th:block th:if="${(theme.config.appearance != null and theme.config.appearance.notice != null and theme.config.appearance.notice.enable) or (theme.config.notice != null and theme.config.notice.enable)}">
+              <th:block th:replace="~{modules/notice}" />
+            </th:block>
             <div id="content-wrapper" class="onload-animation">
               <!-- the overflow-hidden here prevent long text break the layout-->
               <!-- make id different from windows.swup global property -->

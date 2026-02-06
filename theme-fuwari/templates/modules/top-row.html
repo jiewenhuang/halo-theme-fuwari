@@ -1,0 +1,132 @@
+<div
+  id="top-row"
+  class="pointer-events-none relative z-50 mx-auto max-w-[var(--page-width)] px-0 transition-all duration-700 md:px-4"
+>
+  <div id="navbar-wrapper" class="pointer-events-auto sticky top-0 transition-all">
+    <div id="navbar" class="onload-animation z-50">
+      <div class="absolute -top-8 left-0 right-0 h-8 bg-[var(--card-bg)] transition"></div>
+      <!-- used for onload animation -->
+      <div
+        class="card-base mx-auto flex h-[4.5rem] max-w-[var(--page-width)] items-center justify-between !overflow-visible !rounded-t-none px-4 !bg-[var(--card-bg)]/80 backdrop-blur-lg backdrop-saturate-150"
+      >
+        <a th:href="@{/}" class="btn-plain scale-animation h-[3.25rem] rounded-lg px-5 font-bold active:scale-95">
+          <div class="text-md flex flex-row items-center text-[var(--primary)]">
+            <span class="icon-[tabler--smart-home] mb-1 mr-2 text-[1.75rem]"></span> [[${site.title}]]
+          </div>
+        </a>
+        <div
+          class="hidden md:flex"
+          th:with="menu = ${not #strings.isEmpty(theme.config.base.menu) ? menuFinder.getByName(theme.config.base.menu) : menuFinder.getPrimary()}"
+        >
+          <th:block th:if="${menu != null} and ${not #lists.isEmpty(menu.menuItems)}">
+            <a
+              th:each="menuItem : ${menu.menuItems}"
+              th:href="@{${menuItem.status.href}}"
+              th:target="${menuItem.spec.target?.value}"
+              class="btn-plain scale-animation h-11 rounded-lg px-5 font-bold active:scale-95"
+            >
+              <div class="flex items-center">
+                [[${menuItem.status.displayName}]]
+                <span
+                  th:if="${menuItem.spec.target?.value == '_blank'}"
+                  class="icon-[tabler--external-link] ml-1 -translate-y-[1px] text-[1.3rem] text-black/[0.2] transition dark:text-white/[0.2]"
+                ></span>
+              </div>
+            </a>
+          </th:block>
+        </div>
+        <div class="flex">
+          <!--<SearchPanel>-->
+          <div id="search" th:if="${pluginFinder.available('PluginSearchWidget')}"></div>
+
+          <button
+            th:unless="${theme.config.base.themeColor.fixed}"
+            aria-label="Display Settings"
+            class="btn-plain scale-animation h-11 w-11 rounded-lg active:scale-90"
+            id="display-settings-switch"
+          >
+            <span class="icon-[material-symbols--palette-outline] text-[1.25rem]"></span>
+          </button>
+          <div x-data="colorSchemeSwitcher">
+            <div class="relative z-50" role="menu" tabindex="-1" x-data="dropdown">
+              <button
+                th:if="${theme.config.style.enable_change_color_scheme}"
+                aria-label="Light/Dark Mode"
+                @mouseenter="open()"
+                @mouseleave="close()"
+                role="menuitem"
+                class="btn-plain scale-animation relative h-11 w-11 rounded-lg active:scale-90"
+                id="scheme-switch"
+                x-on:click="open = true"
+              >
+                <div class="absolute flex items-center justify-center">
+                  <span :class="colorScheme.icon" class="text-[1.25rem]"></span>
+                </div>
+              </button>
+
+              <div
+                id="light-dark-panel"
+                @mouseenter="open()"
+                @mouseleave="close()"
+                class="absolute -right-2 top-11 hidden pt-5 transition lg:block"
+                :class="show ? '' : 'float-panel-closed'"
+              >
+                <div class="card-base float-panel p-2">
+                  <template x-for="colorScheme in colorSchemes">
+                    <button
+                      class="btn-plain scale-animation mb-0.5 flex h-9 w-full items-center !justify-start whitespace-nowrap rounded-lg px-3 font-medium active:scale-95"
+                      :class="currentValue === colorScheme.value ? 'current-theme-btn' : ''"
+                      @click="switchTheme(colorScheme.value)"
+                    >
+                      <span :class="colorScheme.icon" class="mr-3 text-[1.25rem]"></span>
+                      <span x-text="colorScheme.label"></span>
+                    </button>
+                  </template>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <button
+            aria-label="Menu"
+            name="Nav Menu"
+            class="btn-plain scale-animation h-11 w-11 rounded-lg active:scale-90 md:!hidden"
+            id="nav-menu-switch"
+          >
+            <span class="icon-[material-symbols--menu-rounded] text-[1.25rem]"></span>
+          </button>
+        </div>
+        <div
+          id="nav-menu-panel"
+          class="float-panel float-panel-closed absolute right-4 px-2 py-2"
+          th:with="menu = ${not #strings.isEmpty(theme.config.base.menu) ? menuFinder.getByName(theme.config.base.menu) : menuFinder.getPrimary()}"
+        >
+          <a
+            th:each="menuItem : ${menu.menuItems}"
+            th:href="@{${menuItem.status.href}}"
+            th:target="${menuItem.spec.target?.value}"
+            class="group flex items-center justify-between gap-8 rounded-lg py-2 pl-3 pr-1 transition hover:bg-[var(--btn-plain-bg-hover)] active:bg-[var(--btn-plain-bg-active)]"
+          >
+            <div
+              class="font-bold text-black/75 transition group-hover:text-[var(--primary)] group-active:text-[var(--primary)] dark:text-white/75"
+            >
+              [[${menuItem.status.displayName}]]
+            </div>
+            <span
+              th:if="${menuItem.spec.target?.value == '_blank'}"
+              class="icon-[tabler--external-link] ml-1 -translate-y-[1px] text-[1.3rem] text-black/[0.2] transition dark:text-white/[0.2]"
+            ></span>
+            <span
+              th:unless="${menuItem.spec.target?.value == '_blank'}"
+              class="icon-[material-symbols--chevron-right-rounded] ml-1 -translate-y-[1px] text-[1.3rem] text-black/[0.2] transition dark:text-white/[0.2]"
+            ></span>
+          </a>
+        </div>
+        <div
+          id="display-setting"
+          class="float-panel float-panel-closed absolute right-4 w-80 px-4 py-4 transition-all"
+        ></div>
+      </div>
+    </div>
+  </div>
+</div>

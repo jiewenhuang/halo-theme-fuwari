@@ -1,0 +1,30 @@
+<th:block th:fragment="notice">
+  <div
+    class="notice-card onload-animation relative mb-4 transition-all duration-300 hover:shadow-lg"
+    th:classappend="|notice-${theme.config.notice.level}|"
+  >
+    <div
+      class="notice-content card-base flex items-center rounded-xl border p-4 transition"
+      th:classappend="${theme.config.notice.level == 'happy' ? 'notice-happy' : ''}"
+    >
+      <div class="mr-4 flex shrink-0 items-center justify-center">
+        <th:block th:if="${theme.config.notice.level == 'happy'}">
+          <span class="text-2xl" aria-hidden="true">🎉</span>
+        </th:block>
+        <th:block th:if="${theme.config.notice.level == 'info'}">
+          <span class="icon-[material-symbols--info-outline-rounded] text-2xl text-[var(--admonitions-color-note)]"></span>
+        </th:block>
+        <th:block th:if="${theme.config.notice.level == 'tip'}">
+          <span class="icon-[material-symbols--lightbulb-outline-rounded] text-2xl text-[var(--admonitions-color-tip)]"></span>
+        </th:block>
+        <th:block th:if="${theme.config.notice.level == 'important'}">
+          <span class="icon-[material-symbols--warning-outline-rounded] text-2xl text-[var(--admonitions-color-warning)]"></span>
+        </th:block>
+        <th:block th:if="${theme.config.notice.level == 'warning'}">
+          <span class="icon-[material-symbols--error-outline-rounded] text-2xl text-[var(--admonitions-color-caution)]"></span>
+        </th:block>
+      </div>
+      <div class="notice-text grow text-sm font-bold md:text-base" th:utext="${theme.config.notice.content}"></div>
+    </div>
+  </div>
+</th:block>

@@ -1,0 +1,21 @@
+apiVersion: theme.halo.run/v1alpha1
+kind: Theme
+metadata:
+  name: theme-fuwari
+spec:
+  displayName: theme-fuwari
+  author:
+    name: Jiewenhuang
+    website: https://www.jiewen.run
+  description: A modern theme for Halo.
+  logo: /themes/theme-fuwari/assets/images/favicon-light-192.png
+  homepage: https://github.com/jiewenhuang/halo-theme-fuwari#readme
+  repo: https://github.com/jiewenhuang/halo-theme-fuwari
+  issues: https://github.com/jiewenhuang/halo-theme-fuwari/issues
+  settingName: "theme-fuwari-setting"
+  configMapName: "theme-fuwari-configMap"
+  version: "1.0.3"
+  requires: ">=2.21.8"
+  license:
+    - name: "MIT"
+      url: "https://github.com/jiewenhuang/halo-theme-fuwari/blob/main/LICENSE"

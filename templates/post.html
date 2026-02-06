@@ -4,6 +4,27 @@
   th:replace="~{modules/layout :: html(title = ${post.spec.title +' - '+site.title}, hero = null, content = ~{::content}, head = null, footer = null, sidebar = null, contentClass = null, pageType = 'post')}"
 >
   <th:block th:fragment="content">
+    <!-- Halo 内置访问计数数据 -->
+    <div id="halo-counter-data" style="display:none"
+         data-group="content.halo.run"
+         th:data-name="${post.metadata.name}"
+         data-plural="posts"></div>
+    <!-- Post cover image (hero) -->
+    <div
+      th:if="${not #strings.isEmpty(post.spec.cover)}"
+      id="post-cover"
+      class="onload-animation relative -mt-2 mb-4 w-full overflow-hidden rounded-[var(--radius-large)]"
+    >
+      <div class="pointer-events-none absolute inset-0 z-10 bg-gradient-to-t from-black/40 via-transparent to-transparent"></div>
+      <img
+        th:src="${post.spec.cover}"
+        th:alt="${post.spec.title}"
+        class="h-[28vh] w-full object-cover transition-transform duration-700 ease-out md:h-[36vh]"
+        style="object-position: center"
+        loading="eager"
+      />
+    </div>
+
     <div class="relative mb-4 flex w-full overflow-hidden rounded-[var(--radius-large)]">
       <div
         id="post-container"
@@ -12,8 +33,23 @@
         x-init="init()"
         x-on:swup:page:view.document="init()"
       >
+        <!-- title -->
+        <div class="onload-animation relative">
+          <div
+            data-pagefind-body
+            data-pagefind-weight="10"
+            data-pagefind-meta="title"
+            class="mb-3 block w-full text-3xl font-bold leading-tight tracking-tight text-black/90 transition before:absolute before:left-[-1.125rem] before:top-[0.75rem] before:h-5 before:rounded-md before:bg-[var(--primary)] dark:text-white/90 md:text-[2.5rem]/[3rem] md:before:w-1"
+          >
+            <th:block th:text="${post.spec.title}"></th:block>
+          </div>
+        </div>
+        <!-- metadata -->
+        <div class="onload-animation">
+          <th:block th:replace="~{modules/post-meta :: post-meta(class='mb-4')}" />
+        </div>
         <!-- word count and reading time -->
-        <div class="onload-animation mb-3 flex flex-row gap-5 text-black/30 transition dark:text-white/30">
+        <div class="onload-animation mb-5 flex flex-row gap-5 text-black/30 transition dark:text-white/30">
           <div class="flex flex-row items-center">
             <div
               class="mr-2 flex h-6 w-6 items-center justify-center rounded-md bg-black/5 text-black/50 transition dark:bg-white/10 dark:text-white/50"
@@ -31,32 +67,14 @@
             <div class="text-sm" x-text="readingTimeText"></div>
           </div>
         </div>
-        <!-- title -->
-        <div class="onload-animation relative">
-          <div
-            data-pagefind-body
-            data-pagefind-weight="10"
-            data-pagefind-meta="title"
-            class="mb-3 block w-full text-3xl font-bold text-black/90 transition before:absolute before:left-[-1.125rem] before:top-[0.75rem] before:h-5 before:rounded-md before:bg-[var(--primary)] dark:text-white/90 md:text-[2.25rem]/[2.75rem] md:before:w-1"
-          >
-            <th:block th:text="${post.spec.title}"></th:block>
-          </div>
-        </div>
-        <!-- metadata -->
-        <div class="onload-animation">
-          <th:block th:replace="~{modules/post-meta :: post-meta(class='mb-5')}" />
-          <div
-            th:if="${not #strings.isEmpty(post.spec.cover)}"
-            class="mb-5 border-b-[1px] border-dashed border-[var(--line-divider)]"
-          ></div>
-        </div>
+        <div class="mb-5 border-b-[1px] border-dashed border-[var(--line-divider)]"></div>
         <div
           class="custom-md markdown-content onload-animation prose prose-base mb-6 !max-w-none dark:!prose-invert"
           id="content"
           th:utext="${post.content.content}"
         ></div>
         <div
-          th:if="${theme.config.post.license.enable}"
+          th:if="${theme.config.post != null and theme.config.post.license != null and theme.config.post.license.enable}"
           class="license-container onload-animation relative mb-6 overflow-hidden rounded-xl bg-[var(--license-block-bg)] px-6 py-5 transition"
         >
           <div class="font-bold text-black/75 transition dark:text-white/75" th:text="${post.spec.title}"></div>

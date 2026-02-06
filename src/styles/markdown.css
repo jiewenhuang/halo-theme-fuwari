@@ -20,7 +20,7 @@
   }
 
   a:not(.no-styling) {
-    @apply relative bg-none link font-medium text-[var(--primary)]
+    @apply relative bg-none transition rounded-md p-1 -m-1 font-medium text-[var(--primary)]
     underline decoration-[var(--link-underline)] decoration-1 decoration-dashed underline-offset-4;
     box-decoration-break: clone;
     -webkit-box-decoration-break: clone;
@@ -178,10 +178,14 @@
     letter-spacing: 0.5px;
   }
 
-  /* Note Block (原有) */
+  /* Note Block */
   blockquote.note-block {
     border-color: #007acc;
     background-color: #e3f2fd70;
+  }
+  :root.dark blockquote.note-block {
+    background-color: rgba(0, 122, 204, 0.1);
+    border-color: #3a9ad9;
   }
 
   blockquote.note-block::before {
@@ -191,8 +195,11 @@
   blockquote.note-block p:first-child {
     color: #007acc;
   }
+  :root.dark blockquote.note-block p:first-child {
+    color: #5cb3e6;
+  }
 
-  blockquote.note-block::after { /* 使用 ::after 避免冲突 */
+  blockquote.note-block::after {
     content: "📝";
     @apply absolute;
     left: 0.5em;
@@ -205,6 +212,10 @@
     border-color: #10b981;
     background-color: #d1fae570;
   }
+  :root.dark blockquote.tip-block {
+    background-color: rgba(16, 185, 129, 0.1);
+    border-color: #34d399;
+  }
 
   blockquote.tip-block::before {
     background-color: #10b981;
@@ -212,6 +223,9 @@
 
   blockquote.tip-block p:first-child {
     color: #10b981;
+  }
+  :root.dark blockquote.tip-block p:first-child {
+    color: #34d399;
   }
 
   blockquote.tip-block::after {
@@ -227,6 +241,10 @@
     border-color: #f59e0b;
     background-color: #fef3c770;
   }
+  :root.dark blockquote.important-block {
+    background-color: rgba(245, 158, 11, 0.1);
+    border-color: #fbbf24;
+  }
 
   blockquote.important-block::before {
     background-color: #f59e0b;
@@ -234,6 +252,9 @@
 
   blockquote.important-block p:first-child {
     color: #f59e0b;
+  }
+  :root.dark blockquote.important-block p:first-child {
+    color: #fbbf24;
   }
 
   blockquote.important-block::after {
@@ -249,6 +270,10 @@
     border-color: #ef4444;
     background-color: #fee2e270;
   }
+  :root.dark blockquote.warning-block {
+    background-color: rgba(239, 68, 68, 0.1);
+    border-color: #f87171;
+  }
 
   blockquote.warning-block::before {
     background-color: #ef4444;
@@ -256,6 +281,9 @@
 
   blockquote.warning-block p:first-child {
     color: #ef4444;
+  }
+  :root.dark blockquote.warning-block p:first-child {
+    color: #f87171;
   }
 
   blockquote.warning-block::after {
@@ -271,6 +299,10 @@
     border-color: #f59e0b;
     background-color: #fef3c770;
   }
+  :root.dark blockquote.caution-block {
+    background-color: rgba(245, 158, 11, 0.1);
+    border-color: #fbbf24;
+  }
 
   blockquote.caution-block::before {
     background-color: #f59e0b;
@@ -278,6 +310,9 @@
 
   blockquote.caution-block p:first-child {
     color: #f59e0b;
+  }
+  :root.dark blockquote.caution-block p:first-child {
+    color: #fbbf24;
   }
 
   blockquote.caution-block::after {

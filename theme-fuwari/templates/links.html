@@ -1,0 +1,36 @@
+<!doctype html>
+<html
+  xmlns:th="https://www.thymeleaf.org"
+  th:replace="~{modules/layout :: html(title = |#{page.links.title} - ${site.title}|, hero = null, content = ~{::content}, head = null, footer = null, sidebar = null, contentClass = null, pageType = 'archives')}"
+>
+  <th:block th:fragment="content">
+    <div class="card-base px-8 py-6">
+      <th:block th:each="group : ${groups}">
+        <div class="mt-5">
+          <h2 th:text="${group.spec.displayName}" class="my-2 text-lg font-medium md:text-xl"></h2>
+          <div class="grid grid-cols-2 gap-4 md:grid-cols-3">
+            <th:block th:each="link : ${group.links}" :key="i">
+              <a th:href="${link.spec.url}" target="_blank" th:title="${link.spec.displayName}" class="group">
+                <div
+                  class="flex aspect-[7/3] items-center justify-start space-x-3 rounded-xl p-3 shadow-md group-hover:bg-[var(--btn-plain-bg-hover)]"
+                >
+                  <div class="aspect-square overflow-hidden rounded-full">
+                    <img
+                      class="size-16 transform bg-cover object-cover transition-all duration-500 group-hover:size-0"
+                      th:src="${link.spec.logo}"
+                      th:alt="${link.spec.displayName}"
+                    />
+                  </div>
+                  <div class="group-hover:text-[var(--primary)]">
+                    <div th:text="${link.spec.displayName}" class="line-clamp-1 font-medium"></div>
+                    <div th:text="${link.spec.description}" class="line-clamp-2 text-[var(--)]"></div>
+                  </div>
+                </div>
+              </a>
+            </th:block>
+          </div>
+        </div>
+      </th:block>
+    </div>
+  </th:block>
+</html>

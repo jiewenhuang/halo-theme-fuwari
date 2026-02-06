@@ -12,6 +12,7 @@ import "./styles/photoswipe.css";
 
 import "overlayscrollbars/overlayscrollbars.css";
 import "photoswipe/style.css";
+import "./styles/music-player.css";
 
 import Alpine from "alpinejs";
 import Swup from "swup";
@@ -29,11 +30,17 @@ import {
 } from "overlayscrollbars";
 import PhotoSwipeLightbox from "photoswipe/lightbox";
 
-import { getHue, setHue } from "./utils/setting-utils";
+import { getHue, setHue, getRainbowMode, setRainbowMode, getRainbowSpeed, setRainbowSpeed, getBgBlur, setBgBlur } from "./utils/setting-utils";
+import { initMusicPlayer } from "./plugins/music-player";
+import { initDistortionText } from "./plugins/distortion-text";
+import { initLiquidGlass } from "./plugins/liquid-glass";
+import { initWeatherEffect, setWeatherType, getWeatherType } from "./plugins/weather-effect";
+import { trackPageVisit, displaySiteStats } from "./plugins/visit-tracker";
 import { loadButtonScript } from "./widgets/navbar";
 import { setClickOutsideToClose } from "./utils/base-utils";
 import dropdown from "./alpine-data/dropdown";
 import colorSchemeSwitcher from "./alpine-data/color-scheme-switcher";
+import weatherSwitcher from "./alpine-data/weather-switcher";
 import upvote from "./alpine-data/upvote";
 import share from "./alpine-data/share";
 import uiPermission from "./alpine-data/ui-permission";
@@ -55,6 +62,8 @@ window.Alpine = Alpine;
 window.fuwari = {
   setColorScheme,
   getCurrentColorScheme,
+  setWeatherType,
+  getWeatherType,
 };
 const swup = new Swup({
   animationSelector: '[class*="transition-swup-"]',
@@ -71,6 +80,7 @@ const swup = new Swup({
 });
 Alpine.data("dropdown", dropdown);
 Alpine.data("colorSchemeSwitcher", colorSchemeSwitcher);
+Alpine.data("weatherSwitcher", weatherSwitcher);
 Alpine.data("upvote", upvote);
 Alpine.data("share", share);
 Alpine.data("uiPermission", uiPermission);
@@ -91,10 +101,11 @@ function getThemeConfig(): ThemeConfig | undefined {
 
 // 使用
 const themeConfig = getThemeConfig();
-console.log("主题配置：", themeConfig);
+const debugEnabled = !!themeConfig?.development?.enabled;
+if (debugEnabled) console.log("主题配置：", themeConfig);
 
 function mountWidgets() {
-  console.log("Mounting widgets...");
+  if (debugEnabled) console.log("Mounting widgets...");
   const counterContainer = document.querySelector("#counter");
   if (counterContainer) {
     mountCounter(counterContainer as HTMLElement);
@@ -279,16 +290,58 @@ function showBanner() {
 
   banner.classList.remove("opacity-0", "scale-105");
 }
+function initRainbowMode() {
+  if (getRainbowMode()) {
+    setRainbowMode(true);
+    setRainbowSpeed(getRainbowSpeed());
+  }
+}
+
+function initBgBlur() {
+  setBgBlur(getBgBlur());
+}
+
 function init() {
-  // disableAnimation()()		// TODO
   initColorScheme(
     themeConfig?.style.color_scheme as LIGHT_DARK_MODE,
     themeConfig?.style.enable_change_color_scheme as boolean,
   );
   loadHue();
+  initRainbowMode();
+  initBgBlur();
   initCustomScrollbar();
-  initNoteBlocks(); // 新增：初始加载时初始化笔记块
+  initNoteBlocks();
   showBanner();
+  // 初始化音乐播放器（仅初始化一次）
+  if (themeConfig?.music && !document.getElementById("music-player")) {
+    initMusicPlayer(themeConfig.music);
+  }
+  // 流动文字（页脚扭曲特效）：仅当开启且填写了文字时初始化
+  const effects = themeConfig?.appearance?.effects;
+  const flowText = effects?.flow_text?.trim();
+  if (effects?.enable_flow_text && flowText) {
+    const distortionEl = document.getElementById("distortion-text");
+    if (distortionEl && !distortionEl.querySelector("canvas")) {
+      initDistortionText(distortionEl, flowText);
+    }
+  }
+  // 液态玻璃效果（仅导航栏 + 跟随）
+  if (effects?.enable_liquid_glass) {
+    initLiquidGlass();
+  }
+  // 天气拟真效果：配置开启或顶栏已有天气按钮时初始化（避免客户端 config 与服务端不一致导致不渲染）
+  const shouldEnableWeather = effects?.enable_weather || !!document.getElementById("weather-switch");
+  if (shouldEnableWeather) {
+    initWeatherEffect(effects?.weather_type ?? "sunny");
+  }
+  // Halo 内置访客统计
+  const analytics = themeConfig?.footer?.analytics ?? themeConfig?.analytics;
+  if (analytics?.enable !== false) {
+    trackPageVisit();
+    if (analytics?.show_site_stats !== false) {
+      displaySiteStats();
+    }
+  }
 }
 /* Load settings when entering the site */
 
@@ -325,7 +378,7 @@ const setup = () => {
   });
   swup.hooks.on("content:replace", (_visit) => {
     // change banner height immediately when a link is clicked
-    const _pageType = _visit.to.document?.body?.getAttribute("date-page-type");
+    const _pageType = _visit.to.document?.body?.getAttribute("data-page-type");
     const bodyElement = document.querySelector("body");
     if (_pageType === "home") {
       bodyElement?.classList.add("is-home");
@@ -333,10 +386,21 @@ const setup = () => {
       bodyElement?.classList.remove("is-home");
     }
     // set the page type to the body element
-    document.body?.setAttribute("date-page-type", _visit.to.document?.body?.getAttribute("date-page-type") || "");
+    document.body?.setAttribute("data-page-type", _visit.to.document?.body?.getAttribute("data-page-type") || "");
 
     initCustomScrollbar();
     initNoteBlocks(); // 新增：内容替换后重新初始化笔记块（SPA 路由关键）
+    if (themeConfig?.appearance?.effects?.enable_liquid_glass) {
+      initLiquidGlass();
+    }
+    const hasWeatherBtn = document.getElementById("weather-switch");
+    if (themeConfig?.appearance?.effects?.enable_weather || hasWeatherBtn) {
+      initWeatherEffect(themeConfig?.appearance?.effects?.weather_type ?? "sunny");
+    }
+    // SPA 路由后重新追踪访问
+    if ((themeConfig?.footer?.analytics ?? themeConfig?.analytics)?.enable !== false) {
+      trackPageVisit();
+    }
   });
   swup.hooks.on("visit:start", () => {
     // increase the page height during page transition to prevent the scrolling animation from jumping
@@ -450,6 +514,47 @@ document.addEventListener("DOMContentLoaded", () => {
   const toc = document.getElementById("toc-wrapper");
   const navbar = document.getElementById("navbar-wrapper");
   bannerEnabled = !!document.getElementById("banner-wrapper");
+
+  const minimalToggle = document.getElementById("navbar-minimal-toggle");
+  if (minimalToggle && navbar) {
+    minimalToggle.addEventListener("click", (e) => {
+      e.stopPropagation();
+      navbar.classList.toggle("navbar-minimal");
+    });
+  }
+  if (navbar) {
+    navbar.addEventListener("click", () => {
+      if (navbar.classList.contains("navbar-minimal")) {
+        navbar.classList.remove("navbar-minimal");
+      }
+    });
+  }
+
+  const navBehavior = themeConfig?.navbar_behavior ?? themeConfig?.base?.navbar_behavior;
+  const rawMode = navBehavior?.mode;
+  const navMode = rawMode === "hide_after" ? "hide_after" : "transparent";
+  const hideAfterSeconds = Math.min(10, Math.max(1, navBehavior?.hide_after_seconds ?? 2));
+
+  let hideNavbarTimer: ReturnType<typeof setTimeout> | null = null;
+  function clearHideNavbarTimer() {
+    if (hideNavbarTimer != null) {
+      clearTimeout(hideNavbarTimer);
+      hideNavbarTimer = null;
+    }
+  }
+
+  if (bannerEnabled && navbar && navMode === "transparent") {
+    navbar.classList.add("navbar-transparent");
+  }
+  if (bannerEnabled && navbar && navMode === "hide_after") {
+    navbar.classList.add("navbar-transparent");
+    hideNavbarTimer = setTimeout(() => {
+      hideNavbarTimer = null;
+      navbar.classList.add("navbar-hidden");
+      navbar.classList.remove("navbar-transparent");
+    }, hideAfterSeconds * 1000);
+  }
+
   function scrollFunction() {
     const bannerHeight = window.innerHeight * (BANNER_HEIGHT / 100);
 
@@ -469,21 +574,48 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
 
-    if (!bannerEnabled) return;
-    if (navbar) {
-      const NAVBAR_HEIGHT = 72;
-      const MAIN_PANEL_EXCESS_HEIGHT = MAIN_PANEL_OVERLAPS_BANNER_HEIGHT * 16; // The height the main panel overlaps the banner
+    if (!bannerEnabled || !navbar) return;
 
-      let bannerHeight = BANNER_HEIGHT;
-      if (document.body.classList.contains("is-home") && window.innerWidth >= 1024) {
-        bannerHeight = BANNER_HEIGHT_HOME;
-      }
-      const threshold = window.innerHeight * (bannerHeight / 100) - NAVBAR_HEIGHT - MAIN_PANEL_EXCESS_HEIGHT - 16;
-      if (document.body.scrollTop >= threshold || document.documentElement.scrollTop >= threshold) {
+    const NAVBAR_HEIGHT = 72;
+    const MAIN_PANEL_EXCESS_HEIGHT = MAIN_PANEL_OVERLAPS_BANNER_HEIGHT * 16;
+
+    let bannerHeightNum = BANNER_HEIGHT;
+    if (document.body.classList.contains("is-home") && window.innerWidth >= 1024) {
+      bannerHeightNum = BANNER_HEIGHT_HOME;
+    }
+    const threshold =
+      window.innerHeight * (bannerHeightNum / 100) - NAVBAR_HEIGHT - MAIN_PANEL_EXCESS_HEIGHT - 16;
+    const scrollTop = document.body.scrollTop || document.documentElement.scrollTop;
+
+    if (navMode === "hide_after") {
+      clearHideNavbarTimer();
+      if (scrollTop >= threshold) {
         navbar.classList.add("navbar-hidden");
+        navbar.classList.remove("navbar-transparent");
+      } else if (scrollTop < 200) {
+        navbar.classList.remove("navbar-hidden");
+        navbar.classList.add("navbar-transparent");
+        hideNavbarTimer = setTimeout(() => {
+          hideNavbarTimer = null;
+          navbar.classList.add("navbar-hidden");
+          navbar.classList.remove("navbar-transparent");
+        }, hideAfterSeconds * 1000);
       } else {
         navbar.classList.remove("navbar-hidden");
+        navbar.classList.remove("navbar-transparent");
       }
+      return;
+    }
+
+    if (scrollTop >= threshold) {
+      navbar.classList.add("navbar-hidden");
+      navbar.classList.remove("navbar-transparent");
+    } else if (scrollTop < 200) {
+      navbar.classList.remove("navbar-hidden");
+      navbar.classList.add("navbar-transparent");
+    } else {
+      navbar.classList.remove("navbar-hidden");
+      navbar.classList.remove("navbar-transparent");
     }
   }
   window.onscroll = scrollFunction;
@@ -497,20 +629,4 @@ document.addEventListener("DOMContentLoaded", () => {
   scrollToTopButton.addEventListener("click", () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   });
-});
-
-swup.hooks.on("visit:start", () => {
-  console.log(window.location.href);
-});
-swup.hooks.on("content:replace", () => {
-  console.log("Content replaced");
-  // mountWidgets();
-  initNoteBlocks(); // 新增：内容替换后额外调用（确保 Swup 钩子中已调用，但这里作为备份）
-});
-
-// 页面初始加载
-document.addEventListener("DOMContentLoaded", () => {
-  console.log("DOM fully loaded and parsed");
-  mountWidgets();
-  initNoteBlocks(); // 新增：DOM 加载后额外调用（确保初始加载生效）
 });

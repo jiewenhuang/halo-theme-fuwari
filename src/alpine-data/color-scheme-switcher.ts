@@ -31,4 +31,13 @@ export default () => ({
     // 调用主题切换函数
     window.fuwari.setColorScheme(value, true);
   },
+
+  // 循环切换到下一个主题（用于移动端）
+  toggleNextTheme: function () {
+    const values = this.colorSchemes.map((s) => s.value);
+    const currentIndex = values.indexOf(this.currentValue);
+    const nextIndex = (currentIndex + 1) % values.length;
+    const nextValue = values[nextIndex];
+    this.switchTheme(nextValue);
+  },
 });

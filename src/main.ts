@@ -216,32 +216,28 @@ export function initColorScheme(defaultColorScheme: LIGHT_DARK_MODE, enableChang
 }
 
 export function setColorScheme(colorScheme: LIGHT_DARK_MODE, store: boolean) {
-  // Temporarily disable transitions to prevent text flickering during theme switch
-  const style = document.createElement("style");
-  style.id = "disable-transitions";
-  style.textContent = "*, *::before, *::after { transition: none !important; }";
-  document.head.appendChild(style);
+  const applyScheme = () => {
+    if (colorScheme === "auto") {
+      const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+      // Remove old class first, then add new one to avoid dual-class flicker
+      document.documentElement.classList.remove(prefersDark ? "light" : "dark");
+      document.documentElement.classList.add(prefersDark ? "dark" : "light");
+    } else {
+      document.documentElement.classList.remove(colorScheme === "dark" ? "light" : "dark");
+      document.documentElement.classList.add(colorScheme);
+    }
+    currentColorScheme = colorScheme;
+    if (store) {
+      localStorage.setItem("color-scheme-fuwari", colorScheme);
+    }
+  };
 
-  if (colorScheme === "auto") {
-    const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-    document.documentElement.classList.add(prefersDark ? "dark" : "light");
-    document.documentElement.classList.remove(prefersDark ? "light" : "dark");
+  // Use View Transition API for smooth theme switching if available
+  if (document.startViewTransition) {
+    document.startViewTransition(applyScheme);
   } else {
-    document.documentElement.classList.add(colorScheme);
-    document.documentElement.classList.remove(colorScheme === "dark" ? "light" : "dark");
+    applyScheme();
   }
-  currentColorScheme = colorScheme;
-  if (store) {
-    localStorage.setItem("color-scheme-fuwari", colorScheme);
-  }
-
-  // Re-enable transitions after the browser has painted the new theme
-  requestAnimationFrame(() => {
-    requestAnimationFrame(() => {
-      const el = document.getElementById("disable-transitions");
-      if (el) el.remove();
-    });
-  });
 }
 
 export function getCurrentColorScheme(): LIGHT_DARK_MODE {

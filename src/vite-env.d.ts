@@ -6,6 +6,9 @@ import type { LIGHT_DARK_MODE } from "./types/config";
 export {};
 
 declare global {
+  interface Document {
+    startViewTransition?: (callback: () => void) => void;
+  }
   interface Window {
     Alpine: Alpine;
     i18nResources: Record<string, string>;

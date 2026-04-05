@@ -8,7 +8,7 @@ export default ({ mode }: { mode: string }) => {
 
   return defineConfig({
     root: "./src",
-    base: isProduction ? "/themes/theme-fuwari-2/assets/dist/" : "",
+    base: isProduction ? "/themes/theme-fuwari/assets/static/" : "",
     plugins: [preact()],
     css: {
       preprocessorOptions: {
@@ -33,7 +33,7 @@ export default ({ mode }: { mode: string }) => {
         treeshake: false,
         preserveEntrySignatures: "allow-extension",
       },
-      outDir: fileURLToPath(new URL("./templates/assets/dist", import.meta.url)),
+      outDir: fileURLToPath(new URL("./templates/assets/static", import.meta.url)),
       emptyOutDir: true,
     },
     server: {

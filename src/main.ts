@@ -216,6 +216,12 @@ export function initColorScheme(defaultColorScheme: LIGHT_DARK_MODE, enableChang
 }
 
 export function setColorScheme(colorScheme: LIGHT_DARK_MODE, store: boolean) {
+  // Temporarily disable transitions to prevent text flickering during theme switch
+  const style = document.createElement("style");
+  style.id = "disable-transitions";
+  style.textContent = "*, *::before, *::after { transition: none !important; }";
+  document.head.appendChild(style);
+
   if (colorScheme === "auto") {
     const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
     document.documentElement.classList.add(prefersDark ? "dark" : "light");
@@ -228,6 +234,14 @@ export function setColorScheme(colorScheme: LIGHT_DARK_MODE, store: boolean) {
   if (store) {
     localStorage.setItem("color-scheme-fuwari", colorScheme);
   }
+
+  // Re-enable transitions after the browser has painted the new theme
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      const el = document.getElementById("disable-transitions");
+      if (el) el.remove();
+    });
+  });
 }
 
 export function getCurrentColorScheme(): LIGHT_DARK_MODE {

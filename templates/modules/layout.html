@@ -101,9 +101,8 @@
     </th:block>
 
     <th:block th:unless="${theme.config.development.enabled}">
-      <link rel="stylesheet" th:href="@{/assets/dist/main.css?v={version}(version=${theme.spec.version})}" />
-      <link rel="manifest" th:href="@{/assets/dist/.vite/manifest.json}" />
-      <script type="module" th:src="@{/assets/dist/main.js?v={version}(version=${theme.spec.version})}"></script>
+      <link rel="stylesheet" th:href="@{/assets/static/main.css?v={version}(version=${theme.spec.version})}" />
+      <script type="module" th:src="@{/assets/static/main.js?v={version}(version=${theme.spec.version})}"></script>
     </th:block>
     <th:block th:if="${head != null}">
       <th:block th:replace="${head}" />

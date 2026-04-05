@@ -22,18 +22,21 @@
             <th:block th:each="link : ${group.links}" :key="i">
               <a th:href="${link.spec.url}" target="_blank" th:title="${link.spec.displayName}" class="group">
                 <div
-                  class="flex aspect-[7/3] items-center justify-start space-x-3 rounded-xl p-3 shadow-md group-hover:bg-[var(--btn-plain-bg-hover)]"
+                  class="flex items-center justify-start space-x-3 rounded-xl p-3 shadow-md transition-all group-hover:bg-[var(--btn-plain-bg-hover)]"
                 >
-                  <div class="aspect-square overflow-hidden rounded-full">
+                  <div class="h-14 w-14 shrink-0 overflow-hidden rounded-full">
                     <img
-                      class="size-16 transform bg-cover object-cover transition-all duration-500 group-hover:size-0"
+                      class="h-full w-full object-cover transition-all duration-500 group-hover:scale-110"
                       th:src="${link.spec.logo}"
                       th:alt="${link.spec.displayName}"
                     />
                   </div>
-                  <div class="group-hover:text-[var(--primary)]">
+                  <div class="flex-1 overflow-hidden group-hover:text-[var(--primary)]">
                     <div th:text="${link.spec.displayName}" class="line-clamp-1 font-medium"></div>
-                    <div th:text="${link.spec.description}" class="line-clamp-2 text-[var(--)]"></div>
+                    <div
+                      th:text="${link.spec.description}"
+                      class="line-clamp-2 text-sm text-black/50 dark:text-white/50"
+                    ></div>
                   </div>
                 </div>
               </a>

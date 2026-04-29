@@ -1,0 +1,148 @@
+---
+import BackToTop from "../components/control/BackToTop.astro";
+import Footer from "../components/Footer.astro";
+import ImageWrapper from "../components/misc/ImageWrapper.astro";
+import Navbar from "../components/Navbar.astro";
+import SideBar from "../components/widget/SideBar.astro";
+import TOC from "../components/widget/TOC.astro";
+import {
+  BANNER_HEIGHT,
+  BANNER_HEIGHT_EXTEND,
+  MAIN_PANEL_OVERLAPS_BANNER_HEIGHT,
+} from "../constants/constants";
+import Layout from "./Layout.astro";
+
+interface Props {
+  title?: string;
+  description?: string;
+  setOGTypeArticle?: boolean;
+  isHomePage?: boolean;
+  showToc?: boolean;
+}
+
+const {
+  title,
+  description,
+  setOGTypeArticle = false,
+  isHomePage = false,
+  showToc = false,
+} = Astro.props;
+const mainPanelTop = `calc(${BANNER_HEIGHT}vh - ${MAIN_PANEL_OVERLAPS_BANNER_HEIGHT}rem)`;
+---
+
+<Layout
+  title={title}
+  description={description}
+  setOGTypeArticle={setOGTypeArticle}
+  isHomePage={isHomePage}
+>
+  <slot slot="head" name="head" />
+
+  <div
+    id="top-row"
+    class="pointer-events-none relative z-50 mx-auto max-w-(--page-width) px-0 transition-all duration-700 md:px-4"
+  >
+    <div id="navbar-wrapper" class="pointer-events-auto sticky top-0 transition-all">
+      <Navbar />
+    </div>
+  </div>
+
+  <div
+    id="banner-wrapper"
+    th:if="${theme.config.base.banner.enable}"
+    class="absolute z-10 w-full overflow-hidden transition duration-700"
+    style={`top: -${BANNER_HEIGHT_EXTEND}vh`}
+  >
+    <ImageWrapper
+      id="banner"
+      src="${theme.config.base.banner.src}"
+      alt="${site.title}"
+      position="${theme.config.base.banner.position}"
+      class="h-full object-cover opacity-0 scale-105 transition duration-700"
+    />
+  </div>
+
+  <div
+    id="main-panel-wrapper"
+    class="pointer-events-none absolute z-30 w-full"
+    style={`top: ${mainPanelTop}`}
+    th:style="${theme.config.base.banner.enable ? 'top: calc(35vh - 3.5rem)' : 'top: 5.5rem'}"
+  >
+    <div class="pointer-events-auto relative mx-auto max-w-(--page-width)">
+      <div
+        id="main-grid"
+        class="left-0 right-0 mx-auto grid w-full grid-cols-[17.5rem_auto] grid-rows-[auto_1fr_auto] gap-4 px-0 transition duration-700 md:px-4 lg:grid-rows-[auto]"
+      >
+        <a
+          id="banner-credit"
+          th:if="${theme.config.base.banner.enable and theme.config.base.banner.credit.enable}"
+          th:href="${theme.config.base.banner.credit.url}"
+          target="_blank"
+          rel="noopener"
+          aria-label="Visit image source"
+          class="group onload-animation absolute -top-13 right-4 flex h-9 items-center justify-center rounded-full bg-black/60 px-3 transition-all hover:bg-black/70 hover:pr-9 active:bg-black/80"
+        >
+          <span class="icon-[material-symbols--copyright-outline-rounded] mr-1 text-[1.25rem] text-white/75"></span>
+          <span class="text-xs text-white/75" th:text="${theme.config.base.banner.credit.text}"></span>
+          <span
+            class="icon-[fa6-solid--arrow-up-right-from-square] absolute right-4 text-[0.75rem] text-[oklch(0.75_0.14_var(--hue))] opacity-0 transition group-hover:opacity-100"
+          ></span>
+        </a>
+
+        <SideBar
+          class="onload-animation col-span-2 row-start-2 row-end-3 mb-4 lg:col-span-1 lg:row-start-1 lg:row-end-2 lg:max-w-70"
+        />
+
+        <main id="swup-container" class="transition-swup-fade col-span-2 overflow-hidden lg:col-span-1">
+          <div id="content-wrapper" class="onload-animation">
+            <slot />
+            <div class="footer onload-animation col-span-2 hidden lg:block">
+              <Footer />
+            </div>
+          </div>
+        </main>
+
+        <div class="footer onload-animation col-span-2 block lg:hidden">
+          <Footer />
+        </div>
+      </div>
+
+      <BackToTop />
+    </div>
+  </div>
+
+  <div id="toc-container">
+    {
+      showToc ? (
+        <div class="absolute z-0 hidden w-full xl:block">
+          <div
+            class="relative mx-auto max-w-(--page-width)"
+            th:with="tocEnabled=${theme.config.post == null or theme.config.post.enable_toc == null or theme.config.post.enable_toc}"
+          >
+            <div
+              id="toc-wrapper"
+              th:if="${tocEnabled}"
+              class="pointer-events-auto absolute -right-(--toc-width) top-0 hidden w-(--toc-width) items-center transition lg:block"
+              th:classappend="${theme.config.base.banner.enable ? ' toc-hide' : ''}"
+            >
+              <div
+                id="toc-inner-wrapper"
+                data-toc-scroll
+                class="hide-scrollbar fixed top-14 h-[calc(100vh-20rem)] w-(--toc-width) overflow-x-hidden overflow-y-scroll"
+              >
+                <div id="toc" class="transition-swup-fade h-full w-full">
+                  <div class="h-8 w-full"></div>
+                  <TOC />
+                  <div class="h-8 w-full"></div>
+                </div>
+              </div>
+            </div>
+            <div id="toc" th:unless="${tocEnabled}"></div>
+          </div>
+        </div>
+      ) : (
+        <div id="toc"></div>
+      )
+    }
+  </div>
+</Layout>

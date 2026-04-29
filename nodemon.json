@@ -1,0 +1,5 @@
+{
+  "verbose": false,
+  "watch": ["src/**/*", "public/**/*"],
+  "ext": "astro,ts,html"
+}

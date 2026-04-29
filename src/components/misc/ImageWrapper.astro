@@ -1,0 +1,25 @@
+---
+interface Props {
+  id?: string;
+  src: string;
+  class?: string;
+  alt?: string;
+  position?: string;
+}
+
+const { id, src, alt = "", position = "center" } = Astro.props;
+const className = Astro.props.class;
+const imageStyle = `object-position: ${position}`;
+---
+
+<div id={id} class:list={[className, "overflow-hidden relative"]}>
+  <div class="pointer-events-none absolute inset-0 bg-opacity-50 transition dark:bg-black/10"></div>
+  <img
+    th:src={src}
+    th:alt={alt}
+    th:style={`|object-position: ${position}|`}
+    class="h-full w-full object-cover"
+    style={imageStyle}
+    alt=""
+  />
+</div>

@@ -22,7 +22,7 @@ spec:
               label: 色调(Halo表单好像目前不支持 colorpicker)
               value: 250
               help: "主题颜色的默认色调，从0到360。红色：0，蓝绿色：200，青色：250，粉红色：345"
-            - $formkit: checkbox
+            - $formkit: switch
               name: fixed
               label: 固定色调
               value: false
@@ -39,7 +39,7 @@ spec:
               text: "© 2022 Fuwari"
               url: ""
           children:
-            - $formkit: checkbox
+            - $formkit: switch
               name: enable
               label: 启用
               value: true
@@ -64,7 +64,7 @@ spec:
               name: credit
               label: 版权信息
               children:
-                - $formkit: checkbox
+                - $formkit: switch
                   name: enable
                   label: 启用
                   value: false
@@ -78,23 +78,6 @@ spec:
                   name: url
                   label: 链接
                   value:
-        - $formkit: group
-          name: toc
-          label: 目录
-          value:
-            enable: false
-            max_depth: 2
-          children:
-            - $formkit: checkbox
-              name: enable
-              label: 启用
-              value: false
-              help: "启用目录"
-            - $formkit: number
-              name: max_depth
-              label: 最大深度
-              value: 2
-              help: "目录的最大深度"
         - $formkit: menuRadio
           id: menu
           name: menu
@@ -116,14 +99,14 @@ spec:
             - label: 浅色
               value: light
 
-        - $formkit: checkbox
+        - $formkit: switch
           name: enable_change_color_scheme
           label: 允许访客切换配色
           value: true
     - group: sidebar
       label: 侧边栏
       formSchema:
-        - $formkit: repeater
+        - $formkit: array
           name: widgets
           label: 小部件
           value:
@@ -153,28 +136,40 @@ spec:
     - group: profile
       label: 个人设置
       formSchema:
-        - $formkit: checkbox
+        - $formkit: switch
           name: enable_profile
           value: "true"
           label: 启用个人设置
+        - $formkit: switch
+          name: auto_avatar
+          label: 使用用户头像
+          value: false
         - $formkit: attachment
           name: avatar
           value: /themes/theme-fuwari/assets/images/demo-avatar.png
           label: 头像
+        - $formkit: switch
+          name: auto_name
+          label: 使用用户昵称
+          value: false
         - $formkit: text
           name: name
           label: 昵称
           value: Fuwari
+        - $formkit: switch
+          name: auto_bio
+          label: 使用用户简介
+          value: false
         - $formkit: text
           name: bio
           label: 简介
           value: "Lorem ipsum dolor sit amet, consectetur adipiscing elit."
         - $formkit: url
           name: url
-          label: 链接
+          label: 链接(点击跳转登录和后台可使用 /login )
           value: /about
 
-        - $formkit: repeater
+        - $formkit: array
           name: social_media
           label: 社交媒体
           value:
@@ -266,7 +261,7 @@ spec:
             name: CC BY-NC-SA 4.0
             url: https://creativecommons.org/licenses/by-nc-sa/4.0/
           children:
-            - $formkit: checkbox
+            - $formkit: switch
               name: enable
               label: 启用
               value: false
@@ -309,11 +304,16 @@ spec:
               label: prose-neutral
             - value: prose-stone
               label: prose-stone
-        - $formkit: checkbox
+        - $formkit: switch
           name: enable_toc
           label: 启用目录
-          value: false
+          value: true
           help: "启用目录"
+        - $formkit: number
+          name: toc_depth
+          label: 目录最大深度
+          value: 2
+          help: "目录的最大深度"
     - group: beian
       label: 备案设置
       formSchema:
@@ -332,12 +332,3 @@ spec:
           name: gongan_link
           label: 公安联网备案跳转链接
           value: https://beian.mps.gov.cn/#/query/webSearch
-
-    - group: development
-      label: 开发设置
-      formSchema:
-        - $formkit: checkbox
-          name: enabled
-          label: 启用开发模式
-          value: false
-          help: 仅供开发环境使用，开启此设置后，所有静态资源由 Vite 开发服务器提供，所以需要在本地启动 Vite 服务（pnpm dev）

@@ -1,0 +1,78 @@
+---
+interface Props {
+  id: string;
+  name?: string;
+  nameKey?: string;
+  isCollapsed?: boolean;
+  collapsedHeight?: string;
+  class?: string;
+  style?: string;
+}
+
+const {
+  id,
+  name,
+  nameKey,
+  isCollapsed = false,
+  collapsedHeight = "7.5rem",
+  style,
+} = Astro.props;
+const className = Astro.props.class;
+---
+
+<widget-layout
+  data-id={id}
+  data-is-collapsed={String(isCollapsed)}
+  class:list={["card-base pb-4", className]}
+  style={style}
+>
+  <div
+    class="relative mb-2 ml-8 mt-4 text-lg font-bold text-neutral-900 transition before:absolute before:left-[-16px] before:top-[5.5px] before:h-4 before:w-1 before:rounded-md before:bg-(--primary) dark:text-neutral-100"
+    th:text={nameKey ? `#{${nameKey}}` : undefined}
+  >
+    {name}
+  </div>
+  <div
+    id={id}
+    class:list={["collapse-wrapper overflow-hidden px-4", { collapsed: isCollapsed }]}
+  >
+    <slot />
+  </div>
+  {
+    isCollapsed && (
+      <div class="expand-btn -mb-2 px-4">
+        <button class="btn-plain h-9 w-full rounded-lg" type="button">
+          <div class="-translate-x-2 flex items-center justify-center gap-2 text-(--primary)">
+            <span class="icon-[material-symbols--more-horiz] text-[1.75rem]"></span>
+            <span th:text="#{common.more}">More</span>
+          </div>
+        </button>
+      </div>
+    )
+  }
+</widget-layout>
+
+<style define:vars={{ collapsedHeight }}>
+  .collapsed {
+    height: var(--collapsedHeight);
+  }
+</style>
+
+<script>
+  class WidgetLayout extends HTMLElement {
+    connectedCallback() {
+      if (this.dataset.isCollapsed !== "true") return;
+      const id = this.dataset.id;
+      const btn = this.querySelector(".expand-btn");
+      const wrapper = this.querySelector(`#${id}`);
+      btn?.addEventListener("click", () => {
+        wrapper?.classList.remove("collapsed");
+        btn.classList.add("hidden");
+      });
+    }
+  }
+
+  if (!customElements.get("widget-layout")) {
+    customElements.define("widget-layout", WidgetLayout);
+  }
+</script>

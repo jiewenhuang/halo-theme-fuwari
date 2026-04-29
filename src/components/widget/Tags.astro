@@ -1,0 +1,25 @@
+---
+import WidgetLayout from "./WidgetLayout.astro";
+
+interface Props {
+  class?: string;
+  style?: string;
+}
+
+const className = Astro.props.class;
+const style = Astro.props.style;
+---
+
+<WidgetLayout name="标签" nameKey="widget.tags.title" id="tags" class={className} style={style}>
+  <div class="flex flex-wrap gap-2" th:with="tags = ${tagFinder.listAll()}">
+    <a
+      th:each="tag : ${tags}"
+      th:href="@{${tag.status.permalink}}"
+      th:title="${tag.spec.displayName}"
+      class="btn-regular h-8 rounded-lg px-3 text-sm"
+      th:text="${tag.spec.displayName}"
+    >
+      Tag
+    </a>
+  </div>
+</WidgetLayout>

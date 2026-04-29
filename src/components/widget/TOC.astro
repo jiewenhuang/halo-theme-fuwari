@@ -1,0 +1,267 @@
+---
+interface Props {
+  class?: string;
+}
+
+const className = Astro.props.class;
+---
+
+<table-of-contents
+  class:list={[className, "group relative block"]}
+  th:attr="data-max-depth=${theme.config.post != null and theme.config.post.toc_depth != null ? theme.config.post.toc_depth : 2}"
+>
+  <div
+    id="active-indicator"
+    style="opacity: 0"
+    class="-z-10 absolute left-0 right-0 rounded-xl border-2 border-dashed border-(--toc-btn-hover) bg-(--toc-btn-hover) transition-all group-hover:border-(--toc-btn-active) group-hover:bg-transparent"
+  ></div>
+</table-of-contents>
+
+<script>
+  class TableOfContents extends HTMLElement {
+    tocEl: HTMLElement | null = null;
+    visibleClass = "visible";
+    observer?: IntersectionObserver;
+    mutationObserver?: MutationObserver;
+    scrollHandler?: () => void;
+    resizeHandler?: () => void;
+    anchorNavTarget: HTMLElement | null = null;
+    headings: HTMLElement[] = [];
+    tocEntries: HTMLAnchorElement[] = [];
+    active: boolean[] = [];
+    activeIndicator: HTMLElement | null = null;
+
+    connectedCallback() {
+      if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", this.refresh);
+      } else {
+        this.refresh();
+      }
+      document.addEventListener("astro:page-load", this.refresh);
+      document.addEventListener("astro:after-swap", this.refresh);
+      document.addEventListener("swup:contentReplaced", this.refresh);
+    }
+
+    disconnectedCallback() {
+      this.observer?.disconnect();
+      this.mutationObserver?.disconnect();
+      this.removeWindowListeners();
+      this.tocEl?.removeEventListener("click", this.handleAnchorClick);
+      document.removeEventListener("DOMContentLoaded", this.refresh);
+      document.removeEventListener("astro:page-load", this.refresh);
+      document.removeEventListener("astro:after-swap", this.refresh);
+      document.removeEventListener("swup:contentReplaced", this.refresh);
+    }
+
+    refresh = () => {
+      requestAnimationFrame(() =>
+        requestAnimationFrame(() => {
+          if (!this.isConnected) return;
+          if (!this.init()) {
+            window.setTimeout(() => this.isConnected && this.init(), 80);
+          }
+        }),
+      );
+    };
+
+    reset() {
+      this.observer?.disconnect();
+      this.mutationObserver?.disconnect();
+      this.removeWindowListeners();
+      this.tocEl?.removeEventListener("click", this.handleAnchorClick);
+      this.querySelectorAll("[data-toc-entry]").forEach((entry) => entry.remove());
+      this.headings = [];
+      this.tocEntries = [];
+      this.active = [];
+      this.anchorNavTarget = null;
+      this.activeIndicator = this.querySelector("#active-indicator");
+      this.activeIndicator?.setAttribute("style", "opacity: 0");
+    }
+
+    removeWindowListeners() {
+      if (this.scrollHandler) {
+        window.removeEventListener("scroll", this.scrollHandler);
+        this.scrollHandler = undefined;
+      }
+      if (this.resizeHandler) {
+        window.removeEventListener("resize", this.resizeHandler);
+        this.resizeHandler = undefined;
+      }
+    }
+
+    init() {
+      this.reset();
+      const content = document.querySelector<HTMLElement>("#content, .custom-md");
+      const scrollParent = this.closest("[data-toc-scroll]");
+      this.tocEl = scrollParent instanceof HTMLElement ? scrollParent : document.getElementById("toc-inner-wrapper");
+      if (!content || !this.tocEl) {
+        return false;
+      }
+
+      this.mutationObserver = new MutationObserver(() => {
+        if (!this.headings.length) this.refresh();
+      });
+      this.mutationObserver.observe(content, {
+        childList: true,
+        subtree: true,
+      });
+
+      const allHeadings = Array.from(content.querySelectorAll<HTMLElement>("h1, h2, h3, h4, h5, h6")).filter(
+        (heading) => heading.textContent?.trim(),
+      );
+      const maxDepth = Math.max(1, Number(this.dataset.maxDepth || "4"));
+      const minDepth = allHeadings.length
+        ? Math.min(...allHeadings.map((heading) => Number(heading.tagName.substring(1))))
+        : 1;
+      this.headings = allHeadings.filter(
+        (heading) => Number(heading.tagName.substring(1)) < minDepth + maxDepth,
+      );
+      this.active = this.headings.map(() => false);
+
+      if (!this.headings.length) {
+        return true;
+      }
+
+      this.tocEl.addEventListener("click", this.handleAnchorClick, {
+        capture: true,
+      });
+      this.headings.forEach((heading, index) => {
+        if (!heading.id) {
+          heading.id = `heading-${index}`;
+        }
+
+        const depth = Number(heading.tagName.substring(1));
+        const title = heading.textContent?.trim() || "";
+        const link = document.createElement("a");
+        link.dataset.tocEntry = "true";
+        link.href = `#${heading.id}`;
+        link.className =
+          "px-2 flex gap-2 relative transition w-full min-h-9 rounded-xl hover:bg-(--toc-btn-hover) active:bg-(--toc-btn-active) py-2";
+        link.innerHTML = `
+          <div class="transition w-5 h-5 shrink-0 rounded-lg text-xs flex items-center justify-center font-bold ${
+            depth === minDepth ? "bg-(--toc-badge-bg) text-(--btn-content)" : ""
+          } ${depth === minDepth + 1 ? "ml-4" : ""} ${depth >= minDepth + 2 ? "ml-8" : ""}">
+            ${depth === minDepth ? String(index + 1) : ""}
+            ${depth === minDepth + 1 ? '<div class="transition w-2 h-2 rounded-[0.1875rem] bg-(--toc-badge-bg)"></div>' : ""}
+            ${depth >= minDepth + 2 ? '<div class="transition w-1.5 h-1.5 rounded-sm bg-black/5 dark:bg-white/10"></div>' : ""}
+          </div>
+          <div class="toc-title transition text-sm ${depth >= minDepth + 2 ? "text-30" : "text-50"}"></div>
+        `;
+        const titleEl = link.querySelector(".toc-title");
+        if (titleEl) {
+          titleEl.textContent = title;
+        }
+        this.insertBefore(link, this.activeIndicator);
+        this.tocEntries.push(link);
+      });
+
+      this.scrollHandler = () => this.updateActiveByScroll();
+      this.resizeHandler = () => this.updateActiveByScroll();
+      window.addEventListener("scroll", this.scrollHandler, { passive: true });
+      window.addEventListener("resize", this.resizeHandler);
+      this.updateActiveByScroll();
+      return true;
+    }
+
+    update() {
+      requestAnimationFrame(() => {
+        this.toggleActiveHeading();
+        this.scrollToActiveHeading();
+      });
+    }
+
+    toggleActiveHeading() {
+      let i = this.active.length - 1;
+      let min = this.active.length - 1;
+      let max = -1;
+      while (i >= 0 && !this.active[i]) {
+        this.tocEntries[i]?.classList.remove(this.visibleClass);
+        i--;
+      }
+      while (i >= 0 && this.active[i]) {
+        this.tocEntries[i]?.classList.add(this.visibleClass);
+        min = Math.min(min, i);
+        max = Math.max(max, i);
+        i--;
+      }
+      while (i >= 0) {
+        this.tocEntries[i]?.classList.remove(this.visibleClass);
+        i--;
+      }
+
+      if (min > max || !this.tocEl || !this.activeIndicator) {
+        this.activeIndicator?.setAttribute("style", "opacity: 0");
+        return;
+      }
+
+      const parentOffset = this.getBoundingClientRect().top;
+      const top = this.tocEntries[min].getBoundingClientRect().top - parentOffset;
+      const bottom = this.tocEntries[max].getBoundingClientRect().bottom - parentOffset;
+      this.activeIndicator.setAttribute("style", `top: ${top}px; height: ${bottom - top}px`);
+    }
+
+    scrollToActiveHeading() {
+      if (this.anchorNavTarget || !this.tocEl) return;
+      const activeHeading = this.querySelectorAll<HTMLElement>(`.${this.visibleClass}`);
+      if (!activeHeading.length) return;
+
+      const topmost = activeHeading[0];
+      const bottommost = activeHeading[activeHeading.length - 1];
+      const tocHeight = this.tocEl.clientHeight;
+      const top =
+        bottommost.getBoundingClientRect().bottom - topmost.getBoundingClientRect().top < 0.9 * tocHeight
+          ? topmost.offsetTop - 32
+          : bottommost.offsetTop - tocHeight * 0.8;
+
+      this.tocEl.scrollTo({
+        top,
+        left: 0,
+        behavior: "smooth",
+      });
+    }
+
+    handleAnchorClick = (event: Event) => {
+      const anchor = event.composedPath().find((element) => element instanceof HTMLAnchorElement);
+      if (!(anchor instanceof HTMLAnchorElement)) return;
+
+      const id = decodeURIComponent(anchor.hash?.substring(1));
+      this.anchorNavTarget = this.headings.find((heading) => heading.id === id) || null;
+      const activeIndex = this.headings.findIndex((heading) => heading.id === id);
+      if (activeIndex >= 0) {
+        this.active = this.tocEntries.map((_, index) => index === activeIndex);
+        this.update();
+      }
+    }
+
+    currentHeadingIndex() {
+      if (!this.headings.length) return -1;
+
+      const offset = 96;
+      let activeIndex = 0;
+      for (let index = 0; index < this.headings.length; index++) {
+        if (this.headings[index].getBoundingClientRect().top <= offset) {
+          activeIndex = index;
+        } else {
+          break;
+        }
+      }
+
+      return activeIndex;
+    }
+
+    updateActiveByScroll = () => {
+      const activeIndex = this.currentHeadingIndex();
+      if (activeIndex < 0) return;
+
+      this.active = this.tocEntries.map((_, index) => index === activeIndex);
+      if (this.anchorNavTarget && this.anchorNavTarget.getBoundingClientRect().top <= 100) {
+        this.anchorNavTarget = null;
+      }
+      this.update();
+    };
+  }
+
+  if (!customElements.get("table-of-contents")) {
+    customElements.define("table-of-contents", TableOfContents);
+  }
+</script>

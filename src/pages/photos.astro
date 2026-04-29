@@ -1,0 +1,68 @@
+---
+import Pagination from "../components/control/Pagination.astro";
+import MainGridLayout from "../layouts/MainGridLayout.astro";
+---
+
+<MainGridLayout title="${title + ' - ' + site.title}">
+  <Fragment slot="head">
+    <title th:text="${title + ' - ' + site.title}"></title>
+  </Fragment>
+
+  <section class="card-base onload-animation mb-4 px-6 py-6 md:px-9">
+    <div class="mb-6 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+      <div>
+        <h1 class="text-3xl font-bold text-90" th:text="${title}">图库</h1>
+        <div class="mt-1 text-sm text-50">
+          <span th:text="#{page.photos.count(${photos.total})}">0 张图片</span>
+        </div>
+      </div>
+    </div>
+
+    <div th:if="${not #lists.isEmpty(groups)}" class="mb-6 flex flex-wrap gap-2">
+      <a
+        th:href="@{/photos}"
+        th:classappend="${#lists.isEmpty(param.group) ? ' bg-(--primary) text-white dark:text-black/70' : ''}"
+        class="btn-card h-9 rounded-lg px-3 text-sm font-bold text-75"
+        th:text="#{common.all}"
+      >全部</a>
+      <a
+        th:each="group : ${groups}"
+        th:href="@{/photos(group=${group.metadata.name})}"
+        th:classappend="${#lists.contains(param.group, group.metadata.name) ? ' bg-(--primary) text-white dark:text-black/70' : ''}"
+        class="btn-card h-9 rounded-lg px-3 text-sm font-bold text-75"
+      >
+        <span th:text="${group.spec.displayName}">Group</span>
+        <span class="ml-1 text-30" th:text="${group.status.photoCount}">0</span>
+      </a>
+    </div>
+
+    <div id="photos-gallery" th:if="${not #lists.isEmpty(photos.items)}" class="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+      <figure
+        th:each="photo, photoStat : ${photos.items}"
+        class="group relative overflow-hidden rounded-2xl bg-(--btn-regular-bg)"
+        th:style="|animation-delay: calc(var(--content-delay) + ${photoStat.index * 50}ms)|"
+      >
+        <img
+          th:src="${not #strings.isEmpty(photo.spec.cover) ? photo.spec.cover : photo.spec.url}"
+          th:attr="data-pswp-src=${photo.spec.url}"
+          th:alt="${photo.spec.displayName}"
+          loading="lazy"
+          class="aspect-[4/3] w-full cursor-zoom-in object-cover transition duration-300 group-hover:scale-105"
+        />
+        <figcaption
+          th:if="${not #strings.isEmpty(photo.spec.displayName) or not #strings.isEmpty(photo.spec.description)}"
+          class="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent px-4 pb-3 pt-10 text-white transition"
+        >
+          <div class="font-bold" th:if="${not #strings.isEmpty(photo.spec.displayName)}" th:text="${photo.spec.displayName}">Photo</div>
+          <div class="line-clamp-2 text-sm text-white/75" th:if="${not #strings.isEmpty(photo.spec.description)}" th:text="${photo.spec.description}"></div>
+        </figcaption>
+      </figure>
+    </div>
+
+    <div th:if="${#lists.isEmpty(photos.items)}" class="py-12 text-center text-50">
+      <span th:text="#{page.photos.empty}">暂无图片</span>
+    </div>
+  </section>
+
+  <Pagination context="photos" class="mb-4 onload-animation" />
+</MainGridLayout>

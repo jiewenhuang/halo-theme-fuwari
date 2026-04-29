@@ -1,0 +1,60 @@
+---
+import PostMeta from "./PostMeta.astro";
+---
+
+<article
+  class="card-base relative flex w-full flex-col-reverse overflow-hidden rounded-(--radius-large) md:flex-col"
+  th:classappend="${#strings.isEmpty(post.spec.cover) ? ' no-cover' : ' has-cover'}"
+>
+  <div class="relative w-full pb-6 pl-6 pr-6 pt-6 md:pb-6 md:pl-9 md:pr-2 md:pt-7 md:w-[calc(100%_-_var(--post-card-cover-width)_-_12px)]">
+    <a
+      th:href="@{${post.status.permalink}}"
+      class="group mb-3 block w-full text-3xl font-bold text-90 transition before:absolute before:left-[18px] before:top-[35px] before:hidden before:h-5 before:w-1 before:rounded-md before:bg-(--primary) hover:text-(--primary) active:text-(--title-active) dark:hover:text-(--primary) dark:active:text-(--title-active) md:before:block"
+    >
+      <span th:text="${post.spec.title}">Post title</span>
+      <span class="icon-[material-symbols--chevron-right-rounded] absolute inline translate-y-0.5 text-[2rem] text-(--primary) md:hidden"></span>
+      <span class="icon-[material-symbols--chevron-right-rounded] absolute hidden -translate-x-1 translate-y-0.5 text-[2rem] text-(--primary) opacity-0 transition group-hover:translate-x-0 group-hover:opacity-100 md:inline"></span>
+    </a>
+
+    <PostMeta hideTagsForMobile={true} hideUpdateDate={true} class="mb-4" />
+
+    <div class="mb-3.5 pr-4 text-75 transition line-clamp-2 md:line-clamp-1" th:text="${post.status.excerpt}">
+      Excerpt
+    </div>
+
+    <div class="flex gap-4 text-sm text-black/30 transition dark:text-white/30">
+      <div th:if="${post.stats != null}">
+        <span class="icon-[material-symbols--visibility-outline-rounded] mr-1"></span>
+        <span th:text="${post.stats.visit}">0</span>
+      </div>
+      <div th:if="${post.stats != null}">|</div>
+      <div th:if="${post.stats != null}">
+        <span class="icon-[material-symbols--chat-bubble-outline-rounded] mr-1"></span>
+        <span th:text="${post.stats.comment}">0</span>
+      </div>
+    </div>
+  </div>
+
+  <a
+    th:if="${not #strings.isEmpty(post.spec.cover)}"
+    th:href="@{${post.status.permalink}}"
+    th:aria-label="${post.spec.title}"
+    class="group relative mx-4 -mb-2 mt-4 max-h-[20vh] overflow-hidden rounded-xl active:scale-95 md:absolute md:bottom-3 md:right-3 md:top-3 md:mx-0 md:mb-0 md:mt-0 md:max-h-none md:w-(--post-card-cover-width)"
+  >
+    <div class="pointer-events-none absolute z-10 h-full w-full transition group-hover:bg-black/30 group-active:bg-black/50"></div>
+    <div class="pointer-events-none absolute z-20 flex h-full w-full items-center justify-center">
+      <span class="icon-[material-symbols--chevron-right-rounded] scale-50 text-5xl text-white opacity-0 transition group-hover:scale-100 group-hover:opacity-100"></span>
+    </div>
+    <img th:src="${post.spec.cover}" th:alt="${post.spec.title}" class="h-full w-full object-cover" />
+  </a>
+
+  <a
+    th:if="${#strings.isEmpty(post.spec.cover)}"
+    th:href="@{${post.status.permalink}}"
+    th:aria-label="${post.spec.title}"
+    class="btn-regular absolute bottom-3 right-3 top-3 !hidden w-[3.25rem] rounded-xl bg-(--enter-btn-bg) hover:bg-(--enter-btn-bg-hover) active:scale-95 active:bg-(--enter-btn-bg-active) md:!flex"
+  >
+    <span class="icon-[material-symbols--chevron-right-rounded] mx-auto text-4xl text-(--primary) transition"></span>
+  </a>
+</article>
+<div class="mx-6 border-t-[1px] border-dashed border-black/10 transition last:border-t-0 dark:border-white/15 md:hidden"></div>

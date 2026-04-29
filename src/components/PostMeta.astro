@@ -1,0 +1,65 @@
+---
+interface Props {
+  class?: string;
+  hideTagsForMobile?: boolean;
+  hideUpdateDate?: boolean;
+}
+
+const {
+  hideTagsForMobile = false,
+  hideUpdateDate = false,
+} = Astro.props;
+const className = Astro.props.class;
+---
+
+<div class:list={["flex flex-wrap items-center gap-4 gap-x-4 gap-y-2 text-neutral-500 dark:text-neutral-400", className]}>
+  <div class="flex items-center">
+    <div class="meta-icon">
+      <span class="icon-[material-symbols--calendar-today-outline-rounded] text-xl"></span>
+    </div>
+    <span class="text-sm font-medium text-50" th:text="${#dates.format(post.spec.publishTime, 'yyyy-MM-dd')}">2026-01-01</span>
+  </div>
+
+  <div
+    class="flex items-center"
+    th:unless="${#strings.equals(#dates.format(post.spec.publishTime, 'yyyy-MM-dd HH:mm:ss'), #dates.format(post.status.lastModifyTime, 'yyyy-MM-dd HH:mm:ss'))}"
+    hidden={hideUpdateDate}
+  >
+    <div class="meta-icon">
+      <span class="icon-[material-symbols--edit-calendar-outline-rounded] text-xl"></span>
+    </div>
+    <span class="text-sm font-medium text-50" th:text="${#dates.format(post.status.lastModifyTime, 'yyyy-MM-dd')}">2026-01-01</span>
+  </div>
+
+  <div class="flex items-center" th:if="${not #lists.isEmpty(post.categories)}">
+    <div class="meta-icon">
+      <span class="icon-[material-symbols--book-2-outline-rounded] text-xl"></span>
+    </div>
+    <div class="flex flex-row flex-nowrap items-center">
+      <span class="contents" th:each="category, categoryStat : ${post.categories}">
+        <span th:if="${categoryStat.index > 0}" class="mx-1.5 text-sm text-(--meta-divider) transition">/</span>
+        <a
+          th:href="@{${category.status.permalink}}"
+          class="link-lg whitespace-nowrap text-sm font-medium text-50 transition hover:text-(--primary) dark:hover:text-(--primary)"
+          th:text="${category.spec.displayName}"
+        >Category</a>
+      </span>
+    </div>
+  </div>
+
+  <div class:list={["items-center", { "hidden md:flex": hideTagsForMobile, flex: !hideTagsForMobile }]} th:if="${not #lists.isEmpty(post.tags)}">
+    <div class="meta-icon">
+      <span class="icon-[material-symbols--tag-rounded] text-xl"></span>
+    </div>
+    <div class="flex flex-row flex-nowrap items-center">
+      <span class="contents" th:each="tag, tagStat : ${post.tags}">
+        <span th:if="${tagStat.index > 0}" class="mx-1.5 text-sm text-(--meta-divider) transition">/</span>
+        <a
+          th:href="@{${tag.status.permalink}}"
+          class="link-lg whitespace-nowrap text-sm font-medium text-50 transition hover:text-(--primary) dark:hover:text-(--primary)"
+          th:text="${tag.spec.displayName}"
+        >Tag</a>
+      </span>
+    </div>
+  </div>
+</div>

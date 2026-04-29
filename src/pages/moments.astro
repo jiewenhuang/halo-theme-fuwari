@@ -1,0 +1,136 @@
+---
+import Pagination from "../components/control/Pagination.astro";
+import MainGridLayout from "../layouts/MainGridLayout.astro";
+---
+
+<MainGridLayout title="${title + ' - ' + site.title}">
+  <Fragment slot="head">
+    <title th:text="${title + ' - ' + site.title}"></title>
+  </Fragment>
+
+  <section class="card-base onload-animation mb-4 px-6 py-6 md:px-9">
+    <div class="mb-6 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+      <div>
+        <h1 class="text-3xl font-bold text-90" th:text="${title}">瞬间</h1>
+        <div class="mt-1 text-sm text-50">
+          <span th:text="#{page.moments.count(${moments.total})}">0 条动态</span>
+        </div>
+      </div>
+      <a th:href="@{/moments/rss.xml}" class="btn-regular h-9 rounded-lg px-3 text-sm font-bold active:scale-95">
+        <span class="icon-[streamline-plump--rss-square-solid] mr-1.5 text-base"></span>
+        <span>RSS</span>
+      </a>
+    </div>
+
+    <div th:if="${not #lists.isEmpty(tags)}" class="mb-6 flex flex-wrap gap-2">
+      <a
+        th:href="@{/moments}"
+        th:classappend="${#lists.isEmpty(param.tag) ? ' bg-(--primary) text-white dark:text-black/70' : ''}"
+        class="btn-card h-9 rounded-lg px-3 text-sm font-bold text-75"
+        th:text="#{common.all}"
+      >全部</a>
+      <a
+        th:each="tag : ${tags}"
+        th:href="@{/moments(tag=${tag.name})}"
+        th:classappend="${#lists.contains(param.tag, tag.name) ? ' bg-(--primary) text-white dark:text-black/70' : ''}"
+        class="btn-card h-9 rounded-lg px-3 text-sm font-bold text-75"
+      >
+        <span th:text="${tag.name}">Tag</span>
+        <span class="ml-1 text-30" th:text="${tag.momentCount}">0</span>
+      </a>
+    </div>
+
+    <div th:if="${not #lists.isEmpty(moments.items)}" class="space-y-4">
+      <article
+        th:each="moment, momentStat : ${moments.items}"
+        th:with="content=${moment.spec.content}"
+        class="rounded-2xl bg-(--btn-card-bg-hover) p-4 transition dark:bg-white/5 md:p-5"
+        th:style="|animation-delay: calc(var(--content-delay) + ${momentStat.index * 50}ms)|"
+      >
+        <div class="mb-4 flex items-start gap-3">
+          <img
+            th:if="${moment.owner != null and not #strings.isEmpty(moment.owner.avatar)}"
+            th:src="${moment.owner.avatar}"
+            th:alt="${moment.owner.displayName}"
+            class="h-11 w-11 rounded-full object-cover"
+          />
+          <div
+            th:unless="${moment.owner != null and not #strings.isEmpty(moment.owner.avatar)}"
+            class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-(--btn-regular-bg) text-(--primary)"
+          >
+            <span class="icon-[material-symbols--account-circle] text-2xl"></span>
+          </div>
+          <div class="min-w-0 flex-1">
+            <div class="font-bold text-90" th:text="${moment.owner != null ? moment.owner.displayName : #messages.msg('page.moments.title')}">Fuwari</div>
+            <a
+              th:href="@{/moments/{name}(name=${moment.metadata.name})}"
+              class="link -ml-1 inline-flex items-center text-sm text-50"
+            >
+              <time
+                th:datetime="${moment.spec.releaseTime}"
+                th:text="${moment.spec.releaseTime != null ? #dates.format(moment.spec.releaseTime, 'yyyy-MM-dd HH:mm') : ''}"
+              >2026-04-29 22:00</time>
+              <span class="icon-[material-symbols--chevron-right-rounded] text-lg"></span>
+            </a>
+          </div>
+        </div>
+
+        <div
+          th:if="${content != null and not #strings.isEmpty(content.html)}"
+          class="custom-md markdown-content prose prose-base mb-4 !max-w-none dark:!prose-invert"
+          th:utext="${content.html}"
+        ></div>
+
+        <div th:if="${content != null and not #lists.isEmpty(content.medium)}" class="moment-media mb-4 grid gap-2 sm:grid-cols-2">
+          <div class="contents" th:each="momentItem : ${content.medium}">
+            <figure th:if="${momentItem.type.name == 'PHOTO'}" class="overflow-hidden rounded-xl bg-(--btn-regular-bg)">
+              <img th:src="${momentItem.url}" alt="" loading="lazy" class="h-full max-h-80 w-full cursor-zoom-in object-cover" />
+            </figure>
+            <video
+              th:if="${momentItem.type.name == 'VIDEO'}"
+              th:src="${momentItem.url}"
+              controls
+              class="w-full rounded-xl bg-black"
+            ></video>
+            <audio th:if="${momentItem.type.name == 'AUDIO'}" th:src="${momentItem.url}" controls class="w-full"></audio>
+            <a
+              th:if="${momentItem.type.name == 'POST'}"
+              th:href="${momentItem.url}"
+              class="btn-regular min-h-20 rounded-xl px-4 font-bold"
+            >
+              <span class="icon-[material-symbols--article-outline-rounded] mr-2 text-xl"></span>
+              <span class="truncate" th:text="${momentItem.url}">Post</span>
+            </a>
+          </div>
+        </div>
+
+        <div class="flex flex-wrap items-center justify-between gap-3 text-sm text-50">
+          <div th:if="${not #lists.isEmpty(moment.spec.tags)}" class="flex flex-wrap gap-2">
+            <a
+              th:each="tagName : ${moment.spec.tags}"
+              th:href="@{/moments(tag=${tagName})}"
+              class="link rounded-md font-medium text-(--primary)"
+              th:text="${'#' + tagName}"
+            >#Tag</a>
+          </div>
+          <div th:if="${moment.stats != null}" class="ml-auto flex gap-4">
+            <span>
+              <span class="icon-[material-symbols--favorite-outline-rounded] mr-1"></span>
+              <span th:text="${moment.stats.upvote}">0</span>
+            </span>
+            <span>
+              <span class="icon-[material-symbols--chat-bubble-outline-rounded] mr-1"></span>
+              <span th:text="${moment.stats.approvedComment}">0</span>
+            </span>
+          </div>
+        </div>
+      </article>
+    </div>
+
+    <div th:if="${#lists.isEmpty(moments.items)}" class="py-12 text-center text-50">
+      <span th:text="#{page.moments.empty}">暂无瞬间</span>
+    </div>
+  </section>
+
+  <Pagination context="moments" class="mb-4 onload-animation" />
+</MainGridLayout>

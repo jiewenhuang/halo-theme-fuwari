@@ -8,7 +8,6 @@ import Icons from "unplugin-icons/vite";
 import svelte from "@astrojs/svelte";
 import icon from "astro-icon";
 
-
 export default defineConfig({
   base: "/themes/theme-fuwari",
   build: {

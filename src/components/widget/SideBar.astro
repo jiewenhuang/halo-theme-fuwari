@@ -18,7 +18,10 @@ const className = Astro.props.class;
     id="sidebar-sticky"
     class="sticky top-4 flex w-full flex-col gap-4 transition-all duration-700"
   >
-    <div class="contents" th:each="widget, widgetStat : ${theme.config.sidebar.widgets}">
+    <div
+      class="contents"
+      th:each="widget, widgetStat : ${theme.config.sidebar.widgets}"
+    >
       <div class="contents" th:switch="${widget.value}">
         <div class="contents" th:case="'categories'">
           <Categories class="onload-animation" />
@@ -26,7 +29,12 @@ const className = Astro.props.class;
         <div class="contents" th:case="'tag'">
           <Tags class="onload-animation" />
         </div>
-        <div th:case="'html'" class="card-base onload-animation p-4" th:utext="${widget.html}"></div>
+        <div
+          th:case="'html'"
+          class="card-base onload-animation p-4"
+          th:utext="${widget.html}"
+        >
+        </div>
       </div>
     </div>
   </div>

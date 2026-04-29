@@ -12,8 +12,8 @@
     >
       <span
         class="font-bold text-black/75 transition group-hover:text-(--primary) group-active:text-(--primary) dark:text-white/75"
-        th:text="${menuItem.status.displayName}"
-      >Menu</span>
+        th:text="${menuItem.status.displayName}">Menu</span
+      >
       <span
         th:if="${menuItem.spec.target?.value == '_blank'}"
         class="icon-[tabler--external-link] ml-1 -translate-y-px text-[1.3rem] text-black/20 transition dark:text-white/20"

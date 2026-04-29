@@ -8,7 +8,9 @@ import MainGridLayout from "../layouts/MainGridLayout.astro";
   </Fragment>
 
   <section class="card-base onload-animation mb-4 px-6 py-6 md:px-9">
-    <h1 class="mb-6 text-3xl font-bold text-90" th:text="#{page.tags.title}">标签</h1>
+    <h1 class="mb-6 text-3xl font-bold text-90" th:text="#{page.tags.title}">
+      标签
+    </h1>
     <div class="flex flex-wrap gap-3">
       <a
         th:each="tag : ${tags}"

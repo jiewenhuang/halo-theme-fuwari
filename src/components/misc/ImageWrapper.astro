@@ -13,7 +13,10 @@ const imageStyle = `object-position: ${position}`;
 ---
 
 <div id={id} class:list={[className, "overflow-hidden relative"]}>
-  <div class="pointer-events-none absolute inset-0 bg-opacity-50 transition dark:bg-black/10"></div>
+  <div
+    class="pointer-events-none absolute inset-0 bg-opacity-50 transition dark:bg-black/10"
+  >
+  </div>
   <img
     th:src={src}
     th:alt={alt}

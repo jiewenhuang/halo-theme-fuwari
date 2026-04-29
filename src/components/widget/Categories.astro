@@ -10,7 +10,13 @@ const className = Astro.props.class;
 const style = Astro.props.style;
 ---
 
-<WidgetLayout name="分类" nameKey="widget.categories.title" id="categories" class={className} style={style}>
+<WidgetLayout
+  name="分类"
+  nameKey="widget.categories.title"
+  id="categories"
+  class={className}
+  style={style}
+>
   <div th:with="categories = ${categoryFinder.listAll()}">
     <a
       th:each="category : ${categories}"
@@ -18,13 +24,18 @@ const style = Astro.props.style;
       class="group block"
       th:aria-label="#{widget.categories.viewPosts(${category.spec.displayName})}"
     >
-      <div class="h-10 rounded-lg pl-2 transition-all group-hover:bg-(--btn-plain-bg-hover) group-hover:pl-3 group-active:bg-(--btn-plain-bg-active)">
+      <div
+        class="h-10 rounded-lg pl-2 transition-all group-hover:bg-(--btn-plain-bg-hover) group-hover:pl-3 group-active:bg-(--btn-plain-bg-active)"
+      >
         <div class="relative mr-2 flex h-full items-center justify-between">
-          <span class="overflow-hidden overflow-ellipsis whitespace-nowrap text-left text-neutral-700 transition group-hover:text-(--primary) dark:text-neutral-300 dark:group-hover:text-(--primary)" th:text="${category.spec.displayName}">Category</span>
+          <span
+            class="overflow-hidden overflow-ellipsis whitespace-nowrap text-left text-neutral-700 transition group-hover:text-(--primary) dark:text-neutral-300 dark:group-hover:text-(--primary)"
+            th:text="${category.spec.displayName}">Category</span
+          >
           <span
             class="ml-4 flex h-7 min-w-8 items-center justify-center rounded-lg bg-(--btn-regular-bg) px-2 text-sm font-bold text-(--btn-content) transition dark:bg-(--primary) dark:text-(--deep-text)"
-            th:text="${category.postCount ?: 0}"
-          >0</span>
+            th:text="${category.postCount ?: 0}">0</span
+          >
         </div>
       </div>
     </a>

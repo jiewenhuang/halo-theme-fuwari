@@ -10,7 +10,13 @@ const className = Astro.props.class;
 const style = Astro.props.style;
 ---
 
-<WidgetLayout name="标签" nameKey="widget.tags.title" id="tags" class={className} style={style}>
+<WidgetLayout
+  name="标签"
+  nameKey="widget.tags.title"
+  id="tags"
+  class={className}
+  style={style}
+>
   <div class="flex flex-wrap gap-2" th:with="tags = ${tagFinder.listAll()}">
     <a
       th:each="tag : ${tags}"

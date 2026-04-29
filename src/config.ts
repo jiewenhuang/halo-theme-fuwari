@@ -1,6 +1,6 @@
-import type {ThemeConfig} from "./types/config.ts";
+import type { ThemeConfig } from "./types/config.ts";
 
-let themeConfig: ThemeConfig | undefined= undefined;
+let themeConfig: ThemeConfig | undefined = undefined;
 
 function getThemeConfig(): ThemeConfig | undefined {
   const el = document.querySelector<HTMLScriptElement>("#theme-config");
@@ -18,6 +18,4 @@ function getThemeConfig(): ThemeConfig | undefined {
 themeConfig = getThemeConfig();
 console.log("主题配置：", themeConfig);
 
-export {themeConfig}
-
-
+export { themeConfig };

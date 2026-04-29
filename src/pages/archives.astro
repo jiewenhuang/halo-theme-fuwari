@@ -23,9 +23,17 @@ import MainGridLayout from "../layouts/MainGridLayout.astro";
             2026
           </div>
           <div class="w-[15%] md:w-[10%]">
-            <div class="z-50 mx-auto h-3 w-3 rounded-full bg-none outline-3 -outline-offset-[2px] outline outline-(--primary)"></div>
+            <div
+              class="z-50 mx-auto h-3 w-3 rounded-full bg-none outline-3 -outline-offset-[2px] outline outline-(--primary)"
+            >
+            </div>
           </div>
-          <div class="w-[70%] text-left text-50 transition md:w-[80%]" th:text="#{page.archives.count(${postCount})}">1 篇文章</div>
+          <div
+            class="w-[70%] text-left text-50 transition md:w-[80%]"
+            th:text="#{page.archives.count(${postCount})}"
+          >
+            1 篇文章
+          </div>
         </div>
 
         <div class="contents" th:each="month : ${archive.months}">
@@ -43,7 +51,9 @@ import MainGridLayout from "../layouts/MainGridLayout.astro";
                 04-29
               </div>
 
-              <div class="dash-line relative flex h-full w-[15%] items-center md:w-[10%]">
+              <div
+                class="dash-line relative flex h-full w-[15%] items-center md:w-[10%]"
+              >
                 <div
                   class="z-50 mx-auto h-1 w-1 rounded bg-[oklch(0.5_0.05_var(--hue))] outline outline-4 outline-(--card-bg) transition-all group-hover:h-5 group-hover:bg-(--primary) group-hover:outline-(--btn-plain-bg-hover) group-active:outline-(--btn-plain-bg-active)"
                 >
@@ -57,8 +67,14 @@ import MainGridLayout from "../layouts/MainGridLayout.astro";
                 Post
               </div>
 
-              <div class="hidden overflow-hidden overflow-ellipsis whitespace-nowrap text-left text-sm text-30 transition md:block md:w-[15%]">
-                <span th:each="tag : ${post.tags}" th:text="${'#' + tag.spec.displayName + ' '}">#Tag </span>
+              <div
+                class="hidden overflow-hidden overflow-ellipsis whitespace-nowrap text-left text-sm text-30 transition md:block md:w-[15%]"
+              >
+                <span
+                  th:each="tag : ${post.tags}"
+                  th:text="${'#' + tag.spec.displayName + ' '}"
+                  >#Tag
+                </span>
               </div>
             </div>
           </a>

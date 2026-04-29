@@ -9,9 +9,14 @@ interface Props {
 const { pagination = "posts" } = Astro.props;
 ---
 
-<div class="mb-4 flex flex-col rounded-(--radius-large) bg-(--card-bg) py-1 transition md:gap-4 md:bg-transparent md:py-0">
+<div
+  class="mb-4 flex flex-col rounded-(--radius-large) bg-(--card-bg) py-1 transition md:gap-4 md:bg-transparent md:py-0"
+>
   <div class="contents" th:each="post, postStat : ${posts.items}">
-    <div class="onload-animation" th:style="|animation-delay: calc(var(--content-delay) + ${postStat.index * 50}ms)|">
+    <div
+      class="onload-animation"
+      th:style="|animation-delay: calc(var(--content-delay) + ${postStat.index * 50}ms)|"
+    >
       <PostCard />
     </div>
   </div>

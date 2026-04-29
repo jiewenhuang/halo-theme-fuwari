@@ -14,7 +14,8 @@ const className = Astro.props.class;
     id="active-indicator"
     style="opacity: 0"
     class="-z-10 absolute left-0 right-0 rounded-xl border-2 border-dashed border-(--toc-btn-hover) bg-(--toc-btn-hover) transition-all group-hover:border-(--toc-btn-active) group-hover:bg-transparent"
-  ></div>
+  >
+  </div>
 </table-of-contents>
 
 <script>
@@ -69,7 +70,9 @@ const className = Astro.props.class;
       this.mutationObserver?.disconnect();
       this.removeWindowListeners();
       this.tocEl?.removeEventListener("click", this.handleAnchorClick);
-      this.querySelectorAll("[data-toc-entry]").forEach((entry) => entry.remove());
+      this.querySelectorAll("[data-toc-entry]").forEach((entry) =>
+        entry.remove(),
+      );
       this.headings = [];
       this.tocEntries = [];
       this.active = [];
@@ -91,9 +94,14 @@ const className = Astro.props.class;
 
     init() {
       this.reset();
-      const content = document.querySelector<HTMLElement>("#content, .custom-md");
+      const content = document.querySelector<HTMLElement>(
+        "#content, .custom-md",
+      );
       const scrollParent = this.closest("[data-toc-scroll]");
-      this.tocEl = scrollParent instanceof HTMLElement ? scrollParent : document.getElementById("toc-inner-wrapper");
+      this.tocEl =
+        scrollParent instanceof HTMLElement
+          ? scrollParent
+          : document.getElementById("toc-inner-wrapper");
       if (!content || !this.tocEl) {
         return false;
       }
@@ -106,12 +114,16 @@ const className = Astro.props.class;
         subtree: true,
       });
 
-      const allHeadings = Array.from(content.querySelectorAll<HTMLElement>("h1, h2, h3, h4, h5, h6")).filter(
-        (heading) => heading.textContent?.trim(),
-      );
+      const allHeadings = Array.from(
+        content.querySelectorAll<HTMLElement>("h1, h2, h3, h4, h5, h6"),
+      ).filter((heading) => heading.textContent?.trim());
       const maxDepth = Math.max(1, Number(this.dataset.maxDepth || "4"));
       const minDepth = allHeadings.length
-        ? Math.min(...allHeadings.map((heading) => Number(heading.tagName.substring(1))))
+        ? Math.min(
+            ...allHeadings.map((heading) =>
+              Number(heading.tagName.substring(1)),
+            ),
+          )
         : 1;
       this.headings = allHeadings.filter(
         (heading) => Number(heading.tagName.substring(1)) < minDepth + maxDepth,
@@ -195,21 +207,30 @@ const className = Astro.props.class;
       }
 
       const parentOffset = this.getBoundingClientRect().top;
-      const top = this.tocEntries[min].getBoundingClientRect().top - parentOffset;
-      const bottom = this.tocEntries[max].getBoundingClientRect().bottom - parentOffset;
-      this.activeIndicator.setAttribute("style", `top: ${top}px; height: ${bottom - top}px`);
+      const top =
+        this.tocEntries[min].getBoundingClientRect().top - parentOffset;
+      const bottom =
+        this.tocEntries[max].getBoundingClientRect().bottom - parentOffset;
+      this.activeIndicator.setAttribute(
+        "style",
+        `top: ${top}px; height: ${bottom - top}px`,
+      );
     }
 
     scrollToActiveHeading() {
       if (this.anchorNavTarget || !this.tocEl) return;
-      const activeHeading = this.querySelectorAll<HTMLElement>(`.${this.visibleClass}`);
+      const activeHeading = this.querySelectorAll<HTMLElement>(
+        `.${this.visibleClass}`,
+      );
       if (!activeHeading.length) return;
 
       const topmost = activeHeading[0];
       const bottommost = activeHeading[activeHeading.length - 1];
       const tocHeight = this.tocEl.clientHeight;
       const top =
-        bottommost.getBoundingClientRect().bottom - topmost.getBoundingClientRect().top < 0.9 * tocHeight
+        bottommost.getBoundingClientRect().bottom -
+          topmost.getBoundingClientRect().top <
+        0.9 * tocHeight
           ? topmost.offsetTop - 32
           : bottommost.offsetTop - tocHeight * 0.8;
 
@@ -221,17 +242,22 @@ const className = Astro.props.class;
     }
 
     handleAnchorClick = (event: Event) => {
-      const anchor = event.composedPath().find((element) => element instanceof HTMLAnchorElement);
+      const anchor = event
+        .composedPath()
+        .find((element) => element instanceof HTMLAnchorElement);
       if (!(anchor instanceof HTMLAnchorElement)) return;
 
       const id = decodeURIComponent(anchor.hash?.substring(1));
-      this.anchorNavTarget = this.headings.find((heading) => heading.id === id) || null;
-      const activeIndex = this.headings.findIndex((heading) => heading.id === id);
+      this.anchorNavTarget =
+        this.headings.find((heading) => heading.id === id) || null;
+      const activeIndex = this.headings.findIndex(
+        (heading) => heading.id === id,
+      );
       if (activeIndex >= 0) {
         this.active = this.tocEntries.map((_, index) => index === activeIndex);
         this.update();
       }
-    }
+    };
 
     currentHeadingIndex() {
       if (!this.headings.length) return -1;
@@ -254,7 +280,10 @@ const className = Astro.props.class;
       if (activeIndex < 0) return;
 
       this.active = this.tocEntries.map((_, index) => index === activeIndex);
-      if (this.anchorNavTarget && this.anchorNavTarget.getBoundingClientRect().top <= 100) {
+      if (
+        this.anchorNavTarget &&
+        this.anchorNavTarget.getBoundingClientRect().top <= 100
+      ) {
         this.anchorNavTarget = null;
       }
       this.update();

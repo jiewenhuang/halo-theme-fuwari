@@ -9,7 +9,9 @@ import MainGridLayout from "../layouts/MainGridLayout.astro";
   </Fragment>
 
   <section class="card-base onload-animation mb-4 px-6 py-6 md:px-9">
-    <div class="mb-6 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+    <div
+      class="mb-6 flex flex-col gap-3 md:flex-row md:items-end md:justify-between"
+    >
       <div>
         <h1 class="text-3xl font-bold text-90" th:text="${title}">图库</h1>
         <div class="mt-1 text-sm text-50">
@@ -18,13 +20,16 @@ import MainGridLayout from "../layouts/MainGridLayout.astro";
       </div>
     </div>
 
-    <div th:if="${not #lists.isEmpty(groups)}" class="mb-6 flex flex-wrap gap-2">
+    <div
+      th:if="${not #lists.isEmpty(groups)}"
+      class="mb-6 flex flex-wrap gap-2"
+    >
       <a
         th:href="@{/photos}"
         th:classappend="${#lists.isEmpty(param.group) ? ' bg-(--primary) text-white dark:text-black/70' : ''}"
         class="btn-card h-9 rounded-lg px-3 text-sm font-bold text-75"
-        th:text="#{common.all}"
-      >全部</a>
+        th:text="#{common.all}">全部</a
+      >
       <a
         th:each="group : ${groups}"
         th:href="@{/photos(group=${group.metadata.name})}"
@@ -36,7 +41,11 @@ import MainGridLayout from "../layouts/MainGridLayout.astro";
       </a>
     </div>
 
-    <div id="photos-gallery" th:if="${not #lists.isEmpty(photos.items)}" class="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+    <div
+      id="photos-gallery"
+      th:if="${not #lists.isEmpty(photos.items)}"
+      class="grid gap-4 sm:grid-cols-2 xl:grid-cols-3"
+    >
       <figure
         th:each="photo, photoStat : ${photos.items}"
         class="group relative overflow-hidden rounded-2xl bg-(--btn-regular-bg)"
@@ -53,13 +62,27 @@ import MainGridLayout from "../layouts/MainGridLayout.astro";
           th:if="${not #strings.isEmpty(photo.spec.displayName) or not #strings.isEmpty(photo.spec.description)}"
           class="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent px-4 pb-3 pt-10 text-white transition"
         >
-          <div class="font-bold" th:if="${not #strings.isEmpty(photo.spec.displayName)}" th:text="${photo.spec.displayName}">Photo</div>
-          <div class="line-clamp-2 text-sm text-white/75" th:if="${not #strings.isEmpty(photo.spec.description)}" th:text="${photo.spec.description}"></div>
+          <div
+            class="font-bold"
+            th:if="${not #strings.isEmpty(photo.spec.displayName)}"
+            th:text="${photo.spec.displayName}"
+          >
+            Photo
+          </div>
+          <div
+            class="line-clamp-2 text-sm text-white/75"
+            th:if="${not #strings.isEmpty(photo.spec.description)}"
+            th:text="${photo.spec.description}"
+          >
+          </div>
         </figcaption>
       </figure>
     </div>
 
-    <div th:if="${#lists.isEmpty(photos.items)}" class="py-12 text-center text-50">
+    <div
+      th:if="${#lists.isEmpty(photos.items)}"
+      class="py-12 text-center text-50"
+    >
       <span th:text="#{page.photos.empty}">暂无图片</span>
     </div>
   </section>

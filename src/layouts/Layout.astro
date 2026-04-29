@@ -59,12 +59,19 @@ const i18nInlineScript = `<script th:inline="javascript">
     <meta name="description" content={description} />
     <meta property="og:site_name" th:content="${site.title}" />
     <meta property="og:title" th:content={title} />
-    <meta property="og:type" content={setOGTypeArticle ? "article" : "website"} />
+    <meta
+      property="og:type"
+      content={setOGTypeArticle ? "article" : "website"}
+    />
     <meta property="og:url" th:content="${#httpServletRequest.requestURL}" />
     <title th:text={title}></title>
     <link rel="icon" th:href="${site.favicon}" />
 
-    <script type="application/json" id="theme-config" th:utext="${theme.config}" is:inline></script>
+    <script
+      type="application/json"
+      id="theme-config"
+      th:utext="${theme.config}"
+      is:inline></script>
     <Fragment set:html={i18nInlineScript} />
     <script
       is:inline
@@ -81,21 +88,36 @@ const i18nInlineScript = `<script th:inline="javascript">
         const configHue = document.documentElement.dataset.hue || "250";
         const fixedHue = document.documentElement.dataset.hueFixed === "true";
         const storedTheme = localStorage.getItem("theme") || DEFAULT_THEME;
-        const preferredDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+        const preferredDark = window.matchMedia(
+          "(prefers-color-scheme: dark)",
+        ).matches;
 
-        if (storedTheme === DARK_MODE || (storedTheme === AUTO_MODE && preferredDark)) {
+        if (
+          storedTheme === DARK_MODE ||
+          (storedTheme === AUTO_MODE && preferredDark)
+        ) {
           document.documentElement.classList.add("dark");
         } else {
           document.documentElement.classList.remove("dark");
         }
 
-        const hue = fixedHue ? configHue : localStorage.getItem("hue") || configHue;
+        const hue = fixedHue
+          ? configHue
+          : localStorage.getItem("hue") || configHue;
         document.documentElement.style.setProperty("--hue", hue);
-        document.documentElement.style.setProperty("--page-width", `${PAGE_WIDTH}rem`);
+        document.documentElement.style.setProperty(
+          "--page-width",
+          `${PAGE_WIDTH}rem`,
+        );
 
-        let offset = Math.floor(window.innerHeight * (BANNER_HEIGHT_EXTEND / 100));
+        let offset = Math.floor(
+          window.innerHeight * (BANNER_HEIGHT_EXTEND / 100),
+        );
         offset = offset - (offset % 4);
-        document.documentElement.style.setProperty("--banner-height-extend", `${offset}px`);
+        document.documentElement.style.setProperty(
+          "--banner-height-extend",
+          `${offset}px`,
+        );
       })();
     </script>
     <slot name="head" />
@@ -123,7 +145,12 @@ const i18nInlineScript = `<script th:inline="javascript">
     BANNER_HEIGHT_HOME,
     MAIN_PANEL_OVERLAPS_BANNER_HEIGHT,
   } from "../constants/constants";
-  import { getHue, getStoredTheme, setHue, setTheme } from "../utils/setting-utils";
+  import {
+    getHue,
+    getStoredTheme,
+    setHue,
+    setTheme,
+  } from "../utils/setting-utils";
 
   const bannerEnabled = Boolean(document.getElementById("banner-wrapper"));
 
@@ -160,7 +187,9 @@ const i18nInlineScript = `<script th:inline="javascript">
   }
 
   function showBanner() {
-    document.getElementById("banner")?.classList.remove("opacity-0", "scale-105");
+    document
+      .getElementById("banner")
+      ?.classList.remove("opacity-0", "scale-105");
   }
 
   const basePath = import.meta.env.BASE_URL.replace(/\/+$/, "");
@@ -176,7 +205,8 @@ const i18nInlineScript = `<script th:inline="javascript">
   function syncHomeClass(pathname = window.location.pathname) {
     let normalizedPath = pathname.replace(/\/+$/, "") || "/";
     if (basePath && normalizedPath.startsWith(basePath)) {
-      normalizedPath = normalizedPath.slice(basePath.length).replace(/\/+$/, "") || "/";
+      normalizedPath =
+        normalizedPath.slice(basePath.length).replace(/\/+$/, "") || "/";
     }
     if (normalizedPath.endsWith("/index.html")) {
       normalizedPath = normalizedPath.slice(0, -"/index.html".length) || "/";
@@ -188,7 +218,8 @@ const i18nInlineScript = `<script th:inline="javascript">
   function initPhotoSwipe() {
     const pswp = import("photoswipe");
     const lightbox = new PhotoSwipeLightbox({
-      gallery: ".custom-md img, #post-cover img, .moment-media img, #photos-gallery img",
+      gallery:
+        ".custom-md img, #post-cover img, .moment-media img, #photos-gallery img",
       pswpModule: () => pswp,
       padding: { top: 20, bottom: 20, left: 20, right: 20 },
       wheelToZoom: true,
@@ -222,9 +253,19 @@ const i18nInlineScript = `<script th:inline="javascript">
     showBanner();
   }
 
-  setClickOutsideToClose("display-setting", ["display-setting", "display-settings-switch"]);
-  setClickOutsideToClose("nav-menu-panel", ["nav-menu-panel", "nav-menu-switch"]);
-  setClickOutsideToClose("search-panel", ["search-panel", "search-bar", "search-switch"]);
+  setClickOutsideToClose("display-setting", [
+    "display-setting",
+    "display-settings-switch",
+  ]);
+  setClickOutsideToClose("nav-menu-panel", [
+    "nav-menu-panel",
+    "nav-menu-switch",
+  ]);
+  setClickOutsideToClose("search-panel", [
+    "search-panel",
+    "search-bar",
+    "search-switch",
+  ]);
   init();
 
   let lightbox = initPhotoSwipe();
@@ -257,7 +298,9 @@ const i18nInlineScript = `<script th:inline="javascript">
     window.swup.hooks.on("visit:end", () => {
       setTimeout(() => {
         document.getElementById("page-height-extend")?.classList.add("hidden");
-        document.getElementById("toc-wrapper")?.classList.remove("toc-not-ready");
+        document
+          .getElementById("toc-wrapper")
+          ?.classList.remove("toc-not-ready");
       }, 200);
     });
   };
@@ -273,7 +316,8 @@ const i18nInlineScript = `<script th:inline="javascript">
     const toc = document.getElementById("toc-wrapper");
     const navbar = document.getElementById("navbar-wrapper");
     const currentBannerHeight =
-      document.body.classList.contains("lg:is-home") && window.innerWidth >= 1024
+      document.body.classList.contains("lg:is-home") &&
+      window.innerWidth >= 1024
         ? BANNER_HEIGHT_HOME
         : BANNER_HEIGHT;
     const bannerHeightPx = window.innerHeight * (currentBannerHeight / 100);
@@ -300,7 +344,8 @@ const i18nInlineScript = `<script th:inline="javascript">
       bannerHeightPx - 72 - MAIN_PANEL_OVERLAPS_BANNER_HEIGHT * 16 - 16;
     navbar.classList.toggle(
       "navbar-hidden",
-      document.body.scrollTop >= threshold || document.documentElement.scrollTop >= threshold,
+      document.body.scrollTop >= threshold ||
+        document.documentElement.scrollTop >= threshold,
     );
   }
 
@@ -308,7 +353,10 @@ const i18nInlineScript = `<script th:inline="javascript">
   window.addEventListener("resize", () => {
     let offset = Math.floor(window.innerHeight * (BANNER_HEIGHT_EXTEND / 100));
     offset = offset - (offset % 4);
-    document.documentElement.style.setProperty("--banner-height-extend", `${offset}px`);
+    document.documentElement.style.setProperty(
+      "--banner-height-extend",
+      `${offset}px`,
+    );
   });
   scrollFunction();
 </script>

@@ -42,7 +42,10 @@ const mainPanelTop = `calc(${BANNER_HEIGHT}vh - ${MAIN_PANEL_OVERLAPS_BANNER_HEI
     id="top-row"
     class="pointer-events-none relative z-50 mx-auto max-w-(--page-width) px-0 transition-all duration-700 md:px-4"
   >
-    <div id="navbar-wrapper" class="pointer-events-auto sticky top-0 transition-all">
+    <div
+      id="navbar-wrapper"
+      class="pointer-events-auto sticky top-0 transition-all"
+    >
       <Navbar />
     </div>
   </div>
@@ -82,8 +85,12 @@ const mainPanelTop = `calc(${BANNER_HEIGHT}vh - ${MAIN_PANEL_OVERLAPS_BANNER_HEI
           aria-label="Visit image source"
           class="group onload-animation absolute -top-13 right-4 flex h-9 items-center justify-center rounded-full bg-black/60 px-3 transition-all hover:bg-black/70 hover:pr-9 active:bg-black/80"
         >
-          <span class="icon-[material-symbols--copyright-outline-rounded] mr-1 text-[1.25rem] text-white/75"></span>
-          <span class="text-xs text-white/75" th:text="${theme.config.base.banner.credit.text}"></span>
+          <span
+            class="icon-[material-symbols--copyright-outline-rounded] mr-1 text-[1.25rem] text-white/75"
+          ></span>
+          <span
+            class="text-xs text-white/75"
+            th:text="${theme.config.base.banner.credit.text}"></span>
           <span
             class="icon-[fa6-solid--arrow-up-right-from-square] absolute right-4 text-[0.75rem] text-[oklch(0.75_0.14_var(--hue))] opacity-0 transition group-hover:opacity-100"
           ></span>
@@ -93,7 +100,10 @@ const mainPanelTop = `calc(${BANNER_HEIGHT}vh - ${MAIN_PANEL_OVERLAPS_BANNER_HEI
           class="onload-animation col-span-2 row-start-2 row-end-3 mb-4 lg:col-span-1 lg:row-start-1 lg:row-end-2 lg:max-w-70"
         />
 
-        <main id="swup-container" class="transition-swup-fade col-span-2 overflow-hidden lg:col-span-1">
+        <main
+          id="swup-container"
+          class="transition-swup-fade col-span-2 overflow-hidden lg:col-span-1"
+        >
           <div id="content-wrapper" class="onload-animation">
             <slot />
             <div class="footer onload-animation col-span-2 hidden lg:block">
@@ -131,17 +141,17 @@ const mainPanelTop = `calc(${BANNER_HEIGHT}vh - ${MAIN_PANEL_OVERLAPS_BANNER_HEI
                 class="hide-scrollbar fixed top-14 h-[calc(100vh-20rem)] w-(--toc-width) overflow-x-hidden overflow-y-scroll"
               >
                 <div id="toc" class="transition-swup-fade h-full w-full">
-                  <div class="h-8 w-full"></div>
+                  <div class="h-8 w-full" />
                   <TOC />
-                  <div class="h-8 w-full"></div>
+                  <div class="h-8 w-full" />
                 </div>
               </div>
             </div>
-            <div id="toc" th:unless="${tocEnabled}"></div>
+            <div id="toc" th:unless="${tocEnabled}" />
           </div>
         </div>
       ) : (
-        <div id="toc"></div>
+        <div id="toc" />
       )
     }
   </div>

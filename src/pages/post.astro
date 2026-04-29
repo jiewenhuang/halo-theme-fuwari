@@ -3,26 +3,48 @@ import PostMeta from "../components/PostMeta.astro";
 import MainGridLayout from "../layouts/MainGridLayout.astro";
 ---
 
-<MainGridLayout title="${post.spec.title + ' - ' + site.title}" setOGTypeArticle={true} showToc={true}>
+<MainGridLayout
+  title="${post.spec.title + ' - ' + site.title}"
+  setOGTypeArticle={true}
+  showToc={true}
+>
   <Fragment slot="head">
     <title th:text="${post.spec.title + ' - ' + site.title}"></title>
     <meta property="og:title" th:content="${post.spec.title}" />
     <meta property="og:description" th:content="${post.status.excerpt}" />
-    <meta property="og:image" th:if="${not #strings.isEmpty(post.spec.cover)}" th:content="${post.spec.cover}" />
+    <meta
+      property="og:image"
+      th:if="${not #strings.isEmpty(post.spec.cover)}"
+      th:content="${post.spec.cover}"
+    />
   </Fragment>
 
-  <article class="relative mb-4 flex w-full overflow-hidden rounded-(--radius-large)">
-    <div id="post-container" class="card-base relative z-10 w-full px-6 pb-4 pt-6 md:px-9">
-      <div class="onload-animation mb-3 flex flex-row gap-5 text-black/30 transition dark:text-white/30" th:if="${post.stats != null}">
+  <article
+    class="relative mb-4 flex w-full overflow-hidden rounded-(--radius-large)"
+  >
+    <div
+      id="post-container"
+      class="card-base relative z-10 w-full px-6 pb-4 pt-6 md:px-9"
+    >
+      <div
+        class="onload-animation mb-3 flex flex-row gap-5 text-black/30 transition dark:text-white/30"
+        th:if="${post.stats != null}"
+      >
         <div class="flex flex-row items-center">
-          <div class="mr-2 flex h-6 w-6 items-center justify-center rounded-md bg-black/5 text-black/50 transition dark:bg-white/10 dark:text-white/50">
-            <span class="icon-[material-symbols--visibility-outline-rounded]"></span>
+          <div
+            class="mr-2 flex h-6 w-6 items-center justify-center rounded-md bg-black/5 text-black/50 transition dark:bg-white/10 dark:text-white/50"
+          >
+            <span class="icon-[material-symbols--visibility-outline-rounded]"
+            ></span>
           </div>
           <span class="text-sm" th:text="${post.stats.visit}">0</span>
         </div>
         <div class="flex flex-row items-center">
-          <div class="mr-2 flex h-6 w-6 items-center justify-center rounded-md bg-black/5 text-black/50 transition dark:bg-white/10 dark:text-white/50">
-            <span class="icon-[material-symbols--chat-bubble-outline-rounded]"></span>
+          <div
+            class="mr-2 flex h-6 w-6 items-center justify-center rounded-md bg-black/5 text-black/50 transition dark:bg-white/10 dark:text-white/50"
+          >
+            <span class="icon-[material-symbols--chat-bubble-outline-rounded]"
+            ></span>
           </div>
           <span class="text-sm" th:text="${post.stats.comment}">0</span>
         </div>
@@ -32,13 +54,23 @@ import MainGridLayout from "../layouts/MainGridLayout.astro";
         <h1
           class="mb-3 block w-full text-3xl font-bold text-black/90 transition before:absolute before:left-[-1.125rem] before:top-[0.75rem] before:h-5 before:rounded-md before:bg-(--primary) dark:text-white/90 md:text-[2.25rem]/[2.75rem] md:before:w-1"
           th:text="${post.spec.title}"
-        >Post title</h1>
+        >
+          Post title
+        </h1>
       </div>
 
       <div class="onload-animation">
         <PostMeta class="mb-5" />
-        <div th:if="${not #strings.isEmpty(post.spec.cover)}" id="post-cover" class="mb-5 overflow-hidden rounded-xl">
-          <img th:src="${post.spec.cover}" th:alt="${post.spec.title}" class="max-h-[28rem] w-full object-cover" />
+        <div
+          th:if="${not #strings.isEmpty(post.spec.cover)}"
+          id="post-cover"
+          class="mb-5 overflow-hidden rounded-xl"
+        >
+          <img
+            th:src="${post.spec.cover}"
+            th:alt="${post.spec.title}"
+            class="max-h-[28rem] w-full object-cover"
+          />
         </div>
       </div>
 
@@ -47,35 +79,71 @@ import MainGridLayout from "../layouts/MainGridLayout.astro";
         class="custom-md markdown-content onload-animation prose prose-base mb-6 !max-w-none dark:!prose-invert"
         th:classappend="| ${theme.config.post.content_size} ${theme.config.post.content_theme}|"
         th:utext="${post.content.content}"
-      ></div>
+      >
+      </div>
 
       <div
         th:if="${theme.config.post.license.enable}"
         class="license-container onload-animation relative mb-6 overflow-hidden rounded-xl bg-(--license-block-bg) px-6 py-5 transition"
       >
-        <div class="font-bold text-black/75 transition dark:text-white/75" th:text="${post.spec.title}">Post title</div>
+        <div
+          class="font-bold text-black/75 transition dark:text-white/75"
+          th:text="${post.spec.title}"
+        >
+          Post title
+        </div>
         <a
           data-current-post-url
           th:href="@{${post.status.permalink}}"
           th:text="${post.status.permalink}"
           href="#"
-          class="link break-all text-(--primary)"
-        >https://example.com/post</a>
+          class="link break-all text-(--primary)">https://example.com/post</a
+        >
         <div class="mt-2 flex flex-wrap gap-6">
           <div>
-            <div class="text-sm text-black/30 transition dark:text-white/30" th:text="#{common.author}">作者</div>
-            <div class="line-clamp-2 text-black/75 transition dark:text-white/75" th:text="${post.owner.displayName}"></div>
+            <div
+              class="text-sm text-black/30 transition dark:text-white/30"
+              th:text="#{common.author}"
+            >
+              作者
+            </div>
+            <div
+              class="line-clamp-2 text-black/75 transition dark:text-white/75"
+              th:text="${post.owner.displayName}"
+            >
+            </div>
           </div>
           <div>
-            <div class="text-sm text-black/30 transition dark:text-white/30" th:text="#{common.publishedAt}">发布于</div>
-            <div class="line-clamp-2 text-black/75 transition dark:text-white/75" th:text="${#dates.format(post.spec.publishTime,'yyyy-MM-dd')}"></div>
+            <div
+              class="text-sm text-black/30 transition dark:text-white/30"
+              th:text="#{common.publishedAt}"
+            >
+              发布于
+            </div>
+            <div
+              class="line-clamp-2 text-black/75 transition dark:text-white/75"
+              th:text="${#dates.format(post.spec.publishTime,'yyyy-MM-dd')}"
+            >
+            </div>
           </div>
           <div>
-            <div class="text-sm text-black/30 transition dark:text-white/30" th:text="#{common.license}">License</div>
-            <a th:href="${theme.config.post.license.url}" target="_blank" class="link line-clamp-2 text-(--primary)" th:text="${theme.config.post.license.name}">CC BY-NC-SA 4.0</a>
+            <div
+              class="text-sm text-black/30 transition dark:text-white/30"
+              th:text="#{common.license}"
+            >
+              License
+            </div>
+            <a
+              th:href="${theme.config.post.license.url}"
+              target="_blank"
+              class="link line-clamp-2 text-(--primary)"
+              th:text="${theme.config.post.license.name}">CC BY-NC-SA 4.0</a
+            >
           </div>
         </div>
-        <span class="icon-[fa6-brands--creative-commons] pointer-events-none absolute right-6 top-1/2 -translate-y-1/2 text-[15rem] text-black/5 transition dark:text-white/5"></span>
+        <span
+          class="icon-[fa6-brands--creative-commons] pointer-events-none absolute right-6 top-1/2 -translate-y-1/2 text-[15rem] text-black/5 transition dark:text-white/5"
+        ></span>
       </div>
     </div>
   </article>
@@ -91,12 +159,21 @@ import MainGridLayout from "../layouts/MainGridLayout.astro";
       th:href="@{${postCursor.previous.status.permalink}}"
       th:title="${postCursor.previous.spec.title}"
     >
-      <div class="btn-card flex h-[3.75rem] w-full max-w-full !justify-start gap-4 rounded-2xl px-4">
-        <span class="icon-[material-symbols--chevron-left-rounded] !text-2xl font-black text-(--primary)"></span>
-        <span class="max-w-[calc(100%_-_3rem)] overflow-hidden overflow-ellipsis whitespace-nowrap text-black/75 transition dark:text-white/75" th:text="${postCursor.previous.spec.title}"></span>
+      <div
+        class="btn-card flex h-[3.75rem] w-full max-w-full !justify-start gap-4 rounded-2xl px-4"
+      >
+        <span
+          class="icon-[material-symbols--chevron-left-rounded] !text-2xl font-black text-(--primary)"
+        ></span>
+        <span
+          class="max-w-[calc(100%_-_3rem)] overflow-hidden overflow-ellipsis whitespace-nowrap text-black/75 transition dark:text-white/75"
+          th:text="${postCursor.previous.spec.title}"></span>
       </div>
     </a>
-    <div th:unless="${postCursor.hasPrevious()}" class="btn-card h-[3.75rem] w-full rounded-2xl px-4 text-30">
+    <div
+      th:unless="${postCursor.hasPrevious()}"
+      class="btn-card h-[3.75rem] w-full rounded-2xl px-4 text-30"
+    >
       <span th:text="#{common.noOlderPost}">没有更早的文章</span>
     </div>
     <a
@@ -105,19 +182,39 @@ import MainGridLayout from "../layouts/MainGridLayout.astro";
       th:href="@{${postCursor.next.status.permalink}}"
       th:title="${postCursor.next.spec.title}"
     >
-      <div class="btn-card flex h-[3.75rem] w-full max-w-full !justify-end gap-4 rounded-2xl px-4">
-        <span class="max-w-[calc(100%_-_3rem)] overflow-hidden overflow-ellipsis whitespace-nowrap text-black/75 transition dark:text-white/75" th:text="${postCursor.next.spec.title}"></span>
-        <span class="icon-[material-symbols--chevron-right-rounded] !text-2xl font-black text-(--primary)"></span>
+      <div
+        class="btn-card flex h-[3.75rem] w-full max-w-full !justify-end gap-4 rounded-2xl px-4"
+      >
+        <span
+          class="max-w-[calc(100%_-_3rem)] overflow-hidden overflow-ellipsis whitespace-nowrap text-black/75 transition dark:text-white/75"
+          th:text="${postCursor.next.spec.title}"></span>
+        <span
+          class="icon-[material-symbols--chevron-right-rounded] !text-2xl font-black text-(--primary)"
+        ></span>
       </div>
     </a>
-    <div th:unless="${postCursor.hasNext()}" class="btn-card h-[3.75rem] w-full rounded-2xl px-4 text-30">
+    <div
+      th:unless="${postCursor.hasNext()}"
+      class="btn-card h-[3.75rem] w-full rounded-2xl px-4 text-30"
+    >
       <span th:text="#{common.noNewerPost}">没有更新的文章</span>
     </div>
   </nav>
 
-  <div class="card-base relative z-10 w-full px-6 pb-4 pt-6 md:px-9" id="comment" th:if="${haloCommentEnabled}">
-    <h2 class="mb-2 text-base font-medium text-gray-900 dark:text-slate-50" th:text="#{common.comment}">评论</h2>
-    <Fragment set:html={'<halo:comment group="content.halo.run" kind="Post" th:attr="name=${post.metadata.name}" />'} />
+  <div
+    class="card-base relative z-10 w-full px-6 pb-4 pt-6 md:px-9"
+    id="comment"
+    th:if="${haloCommentEnabled}"
+  >
+    <h2
+      class="mb-2 text-base font-medium text-gray-900 dark:text-slate-50"
+      th:text="#{common.comment}"
+    >
+      评论
+    </h2>
+    <Fragment
+      set:html={'<halo:comment group="content.halo.run" kind="Post" th:attr="name=${post.metadata.name}" />'}
+    />
   </div>
 
   <script is:inline>
@@ -135,8 +232,12 @@ import MainGridLayout from "../layouts/MainGridLayout.astro";
     window.__fuwariSyncCurrentPostUrl();
     if (!window.__fuwariSyncCurrentPostUrlBound) {
       window.__fuwariSyncCurrentPostUrlBound = true;
-      document.addEventListener("astro:page-load", () => window.__fuwariSyncCurrentPostUrl?.());
-      document.addEventListener("swup:contentReplaced", () => window.__fuwariSyncCurrentPostUrl?.());
+      document.addEventListener("astro:page-load", () =>
+        window.__fuwariSyncCurrentPostUrl?.(),
+      );
+      document.addEventListener("swup:contentReplaced", () =>
+        window.__fuwariSyncCurrentPostUrl?.(),
+      );
     }
   </script>
 </MainGridLayout>

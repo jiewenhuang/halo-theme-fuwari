@@ -8,7 +8,8 @@ const className = Astro.props.class;
 ---
 
 <div id="navbar" class="z-50 onload-animation">
-  <div class="absolute left-0 right-0 -top-8 h-8 bg-(--card-bg) transition"></div>
+  <div class="absolute left-0 right-0 -top-8 h-8 bg-(--card-bg) transition">
+  </div>
   <div
     class:list={[
       className,
@@ -59,7 +60,8 @@ const className = Astro.props.class;
         id="display-settings-switch"
         type="button"
       >
-        <span class="icon-[material-symbols--palette-outline] text-[1.25rem]"></span>
+        <span class="icon-[material-symbols--palette-outline] text-[1.25rem]"
+        ></span>
       </button>
       <LightDarkSwitch client:only="svelte" />
       <button
@@ -71,7 +73,8 @@ const className = Astro.props.class;
         id="nav-menu-switch"
         type="button"
       >
-        <span class="icon-[material-symbols--menu-rounded] text-[1.25rem]"></span>
+        <span class="icon-[material-symbols--menu-rounded] text-[1.25rem]"
+        ></span>
       </button>
     </div>
 
@@ -84,12 +87,16 @@ const className = Astro.props.class;
   function loadNavbarButtons() {
     const settingBtn = document.getElementById("display-settings-switch");
     settingBtn?.addEventListener("click", () => {
-      document.getElementById("display-setting")?.classList.toggle("float-panel-closed");
+      document
+        .getElementById("display-setting")
+        ?.classList.toggle("float-panel-closed");
     });
 
     const menuBtn = document.getElementById("nav-menu-switch");
     menuBtn?.addEventListener("click", () => {
-      document.getElementById("nav-menu-panel")?.classList.toggle("float-panel-closed");
+      document
+        .getElementById("nav-menu-panel")
+        ?.classList.toggle("float-panel-closed");
     });
   }
 

@@ -34,7 +34,10 @@ const className = Astro.props.class;
   </div>
   <div
     id={id}
-    class:list={["collapse-wrapper overflow-hidden px-4", { collapsed: isCollapsed }]}
+    class:list={[
+      "collapse-wrapper overflow-hidden px-4",
+      { collapsed: isCollapsed },
+    ]}
   >
     <slot />
   </div>
@@ -43,7 +46,7 @@ const className = Astro.props.class;
       <div class="expand-btn -mb-2 px-4">
         <button class="btn-plain h-9 w-full rounded-lg" type="button">
           <div class="-translate-x-2 flex items-center justify-center gap-2 text-(--primary)">
-            <span class="icon-[material-symbols--more-horiz] text-[1.75rem]"></span>
+            <span class="icon-[material-symbols--more-horiz] text-[1.75rem]" />
             <span th:text="#{common.more}">More</span>
           </div>
         </button>

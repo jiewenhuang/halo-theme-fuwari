@@ -1,0 +1,20 @@
+name: CD
+
+on:
+  release:
+    types:
+      - published
+
+jobs:
+  cd:
+    # https://github.com/halo-sigs/reusable-workflows?tab=readme-ov-file#theme
+    uses: halo-sigs/reusable-workflows/.github/workflows/theme-cd.yaml@v3
+    secrets:
+      halo-pat: ${{ secrets.HALO_PAT }}
+    permissions:
+      contents: write
+    with:
+      # if you have permission to release to appstore, please set this to false and set the app-id
+      app-id: app-3mzebza2
+      pnpm-version: 10
+      node-version: 22

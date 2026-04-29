@@ -9,7 +9,11 @@ import { Icon } from "astro-icon/components";
     class="back-to-top-btn hide flex items-center rounded-2xl overflow-hidden transition"
     onclick="backToTop()"
   >
-    <button th:aria-label="#{fragment.layout.toTop}" aria-label="Back to Top" class="btn-card h-[3.75rem] w-[3.75rem]">
+    <button
+      th:aria-label="#{fragment.layout.toTop}"
+      aria-label="Back to Top"
+      class="btn-card h-[3.75rem] w-[3.75rem]"
+    >
       <Icon name="material-symbols:keyboard-arrow-up-rounded" class="mx-auto" />
     </button>
   </div>

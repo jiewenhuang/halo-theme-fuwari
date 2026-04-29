@@ -289,7 +289,13 @@
   }
 
   #toc-inner-wrapper {
-    mask-image: linear-gradient(to bottom, transparent 0%, black 2rem, black calc(100% - 2rem), transparent 100%);
+    mask-image: linear-gradient(
+      to bottom,
+      transparent 0%,
+      black 2rem,
+      black calc(100% - 2rem),
+      transparent 100%
+    );
   }
 
   .hide-scrollbar {
@@ -481,11 +487,15 @@ html.is-animating .transition-swup-fade {
   @apply h-4 px-2 py-1;
 }
 
-.scrollbar-base.os-scrollbar.os-scrollbar-horizontal .os-scrollbar-track .os-scrollbar-handle {
+.scrollbar-base.os-scrollbar.os-scrollbar-horizontal
+  .os-scrollbar-track
+  .os-scrollbar-handle {
   @apply h-1 rounded-full;
 }
 
-.scrollbar-base.os-scrollbar.os-scrollbar-horizontal:hover .os-scrollbar-track .os-scrollbar-handle {
+.scrollbar-base.os-scrollbar.os-scrollbar-horizontal:hover
+  .os-scrollbar-track
+  .os-scrollbar-handle {
   @apply h-2;
 }
 
@@ -493,11 +503,15 @@ html.is-animating .transition-swup-fade {
   @apply w-4 px-1 py-1;
 }
 
-.scrollbar-base.os-scrollbar.os-scrollbar-vertical .os-scrollbar-track .os-scrollbar-handle {
+.scrollbar-base.os-scrollbar.os-scrollbar-vertical
+  .os-scrollbar-track
+  .os-scrollbar-handle {
   @apply w-1 rounded-full;
 }
 
-.scrollbar-base.os-scrollbar.os-scrollbar-vertical:hover .os-scrollbar-track .os-scrollbar-handle {
+.scrollbar-base.os-scrollbar.os-scrollbar-vertical:hover
+  .os-scrollbar-track
+  .os-scrollbar-handle {
   @apply w-2;
 }
 

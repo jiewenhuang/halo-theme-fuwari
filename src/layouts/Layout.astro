@@ -127,6 +127,11 @@ const i18nInlineScript = `<script th:inline="javascript">
           "--banner-height-extend",
           `${offset}px`,
         );
+
+        window.__fuwariOriginalHistory ??= {
+          pushState: window.history.pushState,
+          replaceState: window.history.replaceState,
+        };
       })();
     </script>
     <slot name="head" />
@@ -279,7 +284,22 @@ const i18nInlineScript = `<script th:inline="javascript">
 
   let lightbox = initPhotoSwipe();
 
+  function restoreOriginalHistoryStateHandlers() {
+    const originalHistory = window.__fuwariOriginalHistory;
+    if (!originalHistory) return;
+
+    if (originalHistory.pushState) {
+      window.history.pushState = originalHistory.pushState;
+    }
+    if (originalHistory.replaceState) {
+      window.history.replaceState = originalHistory.replaceState;
+    }
+  }
+
   const setupSwup = () => {
+    if (window.__fuwariSwupHandlersBound) return;
+    window.__fuwariSwupHandlersBound = true;
+
     window.swup.hooks.on("link:click", () => {
       document.documentElement.style.setProperty("--content-delay", "0ms");
     });
@@ -298,6 +318,7 @@ const i18nInlineScript = `<script th:inline="javascript">
       scrollFunction();
     });
     window.swup.hooks.on("visit:start", (visit: { to?: { url?: string } }) => {
+      restoreOriginalHistoryStateHandlers();
       if (visit.to?.url) {
         syncHomeClass(getPathname(visit.to.url));
       }

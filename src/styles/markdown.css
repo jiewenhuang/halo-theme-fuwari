@@ -1,0 +1,50 @@
+@reference "./global.css";
+
+.custom-md img,
+#post-cover img {
+  @apply cursor-zoom-in;
+}
+
+.custom-md :is(h1, h2, h3, h4, h5, h6) {
+  scroll-margin-top: 6rem;
+}
+
+.custom-md {
+  --tw-prose-links: var(--primary);
+  --tw-prose-invert-links: var(--primary);
+}
+
+.custom-md a:not(.no-styling) {
+  @apply relative z-0 -m-1 rounded-md bg-transparent p-1 font-medium text-(--primary) underline decoration-1 decoration-dashed underline-offset-4 transition;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+  text-decoration-color: var(--link-underline);
+}
+
+.custom-md a:not(.no-styling)::before {
+  @apply absolute inset-0 -z-10 scale-[0.85] rounded-[inherit] transition ease-out content-[''];
+}
+
+.custom-md a:not(.no-styling):hover::before {
+  @apply scale-100 bg-(--btn-plain-bg-hover);
+}
+
+.custom-md a:not(.no-styling):active::before {
+  @apply scale-100 bg-(--btn-plain-bg-active);
+}
+
+.custom-md a:not(.no-styling):hover,
+.custom-md a:not(.no-styling):active {
+  @apply decoration-transparent;
+  background: var(--btn-plain-bg-hover);
+  border-bottom: 1px dashed var(--link-hover);
+  text-decoration: none;
+}
+
+.custom-md code:not(pre code) {
+  @apply rounded-md bg-(--inline-code-bg) px-1.5 py-0.5 text-(--inline-code-color);
+}
+
+.custom-md pre {
+  @apply rounded-xl bg-(--codeblock-bg) text-white;
+}

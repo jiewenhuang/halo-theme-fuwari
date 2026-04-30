@@ -1,0 +1,56 @@
+@reference "./global.css";
+
+.scrollbar-base.os-scrollbar {
+  @apply transition-all;
+  pointer-events: unset;
+}
+
+.scrollbar-base.os-scrollbar.os-scrollbar-horizontal {
+  @apply h-4 px-2 py-1;
+}
+
+.scrollbar-base.os-scrollbar.os-scrollbar-horizontal
+  .os-scrollbar-track
+  .os-scrollbar-handle {
+  @apply h-1 rounded-full;
+}
+
+.scrollbar-base.os-scrollbar.os-scrollbar-horizontal:hover
+  .os-scrollbar-track
+  .os-scrollbar-handle {
+  @apply h-2;
+}
+
+.scrollbar-base.os-scrollbar.os-scrollbar-vertical {
+  @apply w-4 px-1 py-1;
+}
+
+.scrollbar-base.os-scrollbar.os-scrollbar-vertical
+  .os-scrollbar-track
+  .os-scrollbar-handle {
+  @apply w-1 rounded-full;
+}
+
+.scrollbar-base.os-scrollbar.os-scrollbar-vertical:hover
+  .os-scrollbar-track
+  .os-scrollbar-handle {
+  @apply w-2;
+}
+
+.os-scrollbar.scrollbar-auto {
+  --os-handle-bg: var(--scrollbar-bg);
+  --os-handle-bg-hover: var(--scrollbar-bg-hover);
+  --os-handle-bg-active: var(--scrollbar-bg-active);
+}
+
+.os-scrollbar.scrollbar-dark {
+  --os-handle-bg: var(--scrollbar-bg-dark);
+  --os-handle-bg-hover: var(--scrollbar-bg-hover-dark);
+  --os-handle-bg-active: var(--scrollbar-bg-active-dark);
+}
+
+.os-scrollbar.scrollbar-light {
+  --os-handle-bg: var(--scrollbar-bg-light);
+  --os-handle-bg-hover: var(--scrollbar-bg-hover-light);
+  --os-handle-bg-active: var(--scrollbar-bg-active-light);
+}

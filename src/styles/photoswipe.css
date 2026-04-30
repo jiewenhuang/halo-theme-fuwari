@@ -1,0 +1,18 @@
+@reference "./global.css";
+
+.pswp__button {
+  @apply mr-0 flex h-12 w-12 items-center justify-center bg-black/40 transition hover:bg-black/50 active:bg-black/60;
+}
+
+.pswp__button--zoom,
+.pswp__button--close {
+  @apply mt-4 rounded-xl active:scale-90;
+}
+
+.pswp__button--zoom {
+  @apply mr-2.5;
+}
+
+.pswp__button--close {
+  @apply mr-4;
+}

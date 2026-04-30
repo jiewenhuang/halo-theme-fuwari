@@ -15,7 +15,7 @@ import MainGridLayout from "../layouts/MainGridLayout.astro";
       th:with="postCount=${#aggregates.sum(archive.months.![posts.size()])}"
     >
       <div>
-        <div class="flex h-[3.75rem] w-full flex-row items-center">
+        <div class="flex h-15 w-full flex-row items-center">
           <div
             class="w-[15%] text-right text-2xl font-bold text-75 transition md:w-[10%]"
             th:text="${archive.year}"
@@ -24,7 +24,7 @@ import MainGridLayout from "../layouts/MainGridLayout.astro";
           </div>
           <div class="w-[15%] md:w-[10%]">
             <div
-              class="z-50 mx-auto h-3 w-3 rounded-full bg-none outline-3 -outline-offset-[2px] outline outline-(--primary)"
+              class="z-50 mx-auto h-3 w-3 rounded-full bg-none outline-3 -outline-offset-2 outline-(--primary)"
             >
             </div>
           </div>
@@ -41,7 +41,7 @@ import MainGridLayout from "../layouts/MainGridLayout.astro";
             th:each="post : ${month.posts}"
             th:href="@{${post.status.permalink}}"
             th:attr="aria-label=${post.spec.title}"
-            class="group btn-plain !block h-10 w-full rounded-lg hover:text-[initial]"
+            class="group btn-plain block! h-10 w-full rounded-lg hover:text-[initial]"
           >
             <div class="flex h-full flex-row items-center justify-start">
               <div
@@ -55,7 +55,7 @@ import MainGridLayout from "../layouts/MainGridLayout.astro";
                 class="dash-line relative flex h-full w-[15%] items-center md:w-[10%]"
               >
                 <div
-                  class="z-50 mx-auto h-1 w-1 rounded bg-[oklch(0.5_0.05_var(--hue))] outline outline-4 outline-(--card-bg) transition-all group-hover:h-5 group-hover:bg-(--primary) group-hover:outline-(--btn-plain-bg-hover) group-active:outline-(--btn-plain-bg-active)"
+                  class="z-50 mx-auto h-1 w-1 rounded bg-[oklch(0.5_0.05_var(--hue))] outline-4 outline-(--card-bg) transition-all group-hover:h-5 group-hover:bg-(--primary) group-hover:outline-(--btn-plain-bg-hover) group-active:outline-(--btn-plain-bg-active)"
                 >
                 </div>
               </div>

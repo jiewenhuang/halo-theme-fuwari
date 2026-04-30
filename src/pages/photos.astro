@@ -52,15 +52,16 @@ import MainGridLayout from "../layouts/MainGridLayout.astro";
         th:style="|animation-delay: calc(var(--content-delay) + ${photoStat.index * 50}ms)|"
       >
         <img
+          alt=""
           th:src="${not #strings.isEmpty(photo.spec.cover) ? photo.spec.cover : photo.spec.url}"
           th:attr="data-pswp-src=${photo.spec.url}"
           th:alt="${photo.spec.displayName}"
           loading="lazy"
-          class="aspect-[4/3] w-full cursor-zoom-in object-cover transition duration-300 group-hover:scale-105"
+          class="aspect-4/3 w-full cursor-zoom-in object-cover transition duration-300 group-hover:scale-105"
         />
         <figcaption
           th:if="${not #strings.isEmpty(photo.spec.displayName) or not #strings.isEmpty(photo.spec.description)}"
-          class="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent px-4 pb-3 pt-10 text-white transition"
+          class="pointer-events-none absolute inset-x-0 bottom-0 bg-linear-to-t from-black/70 to-transparent px-4 pb-3 pt-10 text-white transition"
         >
           <div
             class="font-bold"

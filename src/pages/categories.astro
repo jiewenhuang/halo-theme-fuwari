@@ -18,7 +18,7 @@ import MainGridLayout from "../layouts/MainGridLayout.astro";
       <a
         th:each="category : ${categories}"
         th:href="@{${category.status.permalink}}"
-        class="btn-card group min-h-24 !justify-between rounded-2xl px-5 py-4 text-left"
+        class="btn-card group min-h-24 justify-between! rounded-2xl px-5 py-4 text-left"
       >
         <div>
           <div

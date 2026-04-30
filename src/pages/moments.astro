@@ -56,6 +56,7 @@ import MainGridLayout from "../layouts/MainGridLayout.astro";
       >
         <div class="mb-4 flex items-start gap-3">
           <img
+            alt=""
             th:if="${moment.owner != null and not #strings.isEmpty(moment.owner.avatar)}"
             th:src="${moment.owner.avatar}"
             th:alt="${moment.owner.displayName}"
@@ -93,7 +94,7 @@ import MainGridLayout from "../layouts/MainGridLayout.astro";
 
         <div
           th:if="${content != null and not #strings.isEmpty(content.html)}"
-          class="custom-md markdown-content prose prose-base mb-4 !max-w-none dark:!prose-invert"
+          class="custom-md markdown-content prose prose-base mb-4 max-w-none! dark:prose-invert!"
           th:utext="${content.html}"
         >
         </div>

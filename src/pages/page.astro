@@ -13,14 +13,14 @@ import MainGridLayout from "../layouts/MainGridLayout.astro";
 
   <article class="card-base relative z-10 mb-4 w-full px-6 pb-8 pt-7 md:px-9">
     <h1
-      class="onload-animation relative mb-5 text-3xl font-bold text-black/90 transition before:absolute before:left-[-1.125rem] before:top-[0.75rem] before:h-5 before:w-1 before:rounded-md before:bg-(--primary) dark:text-white/90 md:text-[2.25rem]/[2.75rem]"
+      class="onload-animation relative mb-5 text-3xl font-bold text-black/90 transition before:absolute before:-left-4.5 before:top-3 before:h-5 before:w-1 before:rounded-md before:bg-(--primary) dark:text-white/90 md:text-[2.25rem]/[2.75rem]"
       th:text="${singlePage.spec.title}"
     >
       Page title
     </h1>
     <div
       id="content"
-      class="custom-md markdown-content onload-animation prose prose-base !max-w-none dark:!prose-invert"
+      class="custom-md markdown-content onload-animation prose prose-base max-w-none! dark:prose-invert!"
       th:classappend="| ${theme.config.post.content_size} ${theme.config.post.content_theme}|"
       th:utext="${singlePage.content.content}"
     >

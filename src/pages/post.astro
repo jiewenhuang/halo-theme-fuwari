@@ -52,7 +52,7 @@ import MainGridLayout from "../layouts/MainGridLayout.astro";
 
       <div class="onload-animation relative">
         <h1
-          class="mb-3 block w-full text-3xl font-bold text-black/90 transition before:absolute before:left-[-1.125rem] before:top-[0.75rem] before:h-5 before:rounded-md before:bg-(--primary) dark:text-white/90 md:text-[2.25rem]/[2.75rem] md:before:w-1"
+          class="mb-3 block w-full text-3xl font-bold text-black/90 transition before:absolute before:-left-4.5 before:top-3 before:h-5 before:rounded-md before:bg-(--primary) dark:text-white/90 md:text-[2.25rem]/[2.75rem] md:before:w-1"
           th:text="${post.spec.title}"
         >
           Post title
@@ -67,16 +67,17 @@ import MainGridLayout from "../layouts/MainGridLayout.astro";
           class="mb-5 overflow-hidden rounded-xl"
         >
           <img
+            alt=""
             th:src="${post.spec.cover}"
             th:alt="${post.spec.title}"
-            class="max-h-[28rem] w-full object-cover"
+            class="max-h-112 w-full object-cover"
           />
         </div>
       </div>
 
       <div
         id="content"
-        class="custom-md markdown-content onload-animation prose prose-base mb-6 !max-w-none dark:!prose-invert"
+        class="custom-md markdown-content onload-animation prose prose-base mb-6 max-w-none! dark:prose-invert!"
         th:classappend="| ${theme.config.post.content_size} ${theme.config.post.content_theme}|"
         th:utext="${post.content.content}"
       >
@@ -160,19 +161,19 @@ import MainGridLayout from "../layouts/MainGridLayout.astro";
       th:title="${postCursor.previous.spec.title}"
     >
       <div
-        class="btn-card flex h-[3.75rem] w-full max-w-full !justify-start gap-4 rounded-2xl px-4"
+        class="btn-card flex h-15 w-full max-w-full justify-start! gap-4 rounded-2xl px-4"
       >
         <span
-          class="icon-[material-symbols--chevron-left-rounded] !text-2xl font-black text-(--primary)"
+          class="icon-[material-symbols--chevron-left-rounded] text-2xl! font-black text-(--primary)"
         ></span>
         <span
-          class="max-w-[calc(100%_-_3rem)] overflow-hidden overflow-ellipsis whitespace-nowrap text-black/75 transition dark:text-white/75"
+          class="max-w-[calc(100%-3rem)] overflow-hidden overflow-ellipsis whitespace-nowrap text-black/75 transition dark:text-white/75"
           th:text="${postCursor.previous.spec.title}"></span>
       </div>
     </a>
     <div
       th:unless="${postCursor.hasPrevious()}"
-      class="btn-card h-[3.75rem] w-full rounded-2xl px-4 text-30"
+      class="btn-card h-15 w-full rounded-2xl px-4 text-30"
     >
       <span th:text="#{common.noOlderPost}">没有更早的文章</span>
     </div>
@@ -183,19 +184,19 @@ import MainGridLayout from "../layouts/MainGridLayout.astro";
       th:title="${postCursor.next.spec.title}"
     >
       <div
-        class="btn-card flex h-[3.75rem] w-full max-w-full !justify-end gap-4 rounded-2xl px-4"
+        class="btn-card flex h-15 w-full max-w-full justify-end! gap-4 rounded-2xl px-4"
       >
         <span
-          class="max-w-[calc(100%_-_3rem)] overflow-hidden overflow-ellipsis whitespace-nowrap text-black/75 transition dark:text-white/75"
+          class="max-w-[calc(100%-3rem)] overflow-hidden overflow-ellipsis whitespace-nowrap text-black/75 transition dark:text-white/75"
           th:text="${postCursor.next.spec.title}"></span>
         <span
-          class="icon-[material-symbols--chevron-right-rounded] !text-2xl font-black text-(--primary)"
+          class="icon-[material-symbols--chevron-right-rounded] text-2xl! font-black text-(--primary)"
         ></span>
       </div>
     </a>
     <div
       th:unless="${postCursor.hasNext()}"
-      class="btn-card h-[3.75rem] w-full rounded-2xl px-4 text-30"
+      class="btn-card h-15 w-full rounded-2xl px-4 text-30"
     >
       <span th:text="#{common.noNewerPost}">没有更新的文章</span>
     </div>

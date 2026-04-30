@@ -6,6 +6,8 @@
   "scripts": {
     "dev": "nodemon --config nodemon.json --exec 'astro build'",
     "build": "astro build",
+    "build:pkg": "astro build && pnpm package",
+    "package": "theme-package",
     "astro": "astro",
     "format": "prettier --write ."
   },
@@ -46,6 +48,7 @@
     "vue": "^3.5.32"
   },
   "devDependencies": {
+    "@halo-dev/theme-package-cli": "^1.0.4",
     "@iconify-json/ant-design": "^1.2.5",
     "@iconify-json/entypo-social": "^1.2.3",
     "@iconify-json/fa6-brands": "^1.2.6",

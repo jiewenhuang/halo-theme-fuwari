@@ -8,9 +8,11 @@ import MainGridLayout from "../layouts/MainGridLayout.astro";
     <title th:text="${title + ' - ' + site.title}"></title>
   </Fragment>
 
-  <section class="card-base onload-animation mb-4 px-6 py-6 md:px-9">
+  <section
+    class="card-base onload-animation mb-4 overflow-hidden px-5 py-5 md:px-7 md:py-6"
+  >
     <div
-      class="mb-6 flex flex-col gap-3 md:flex-row md:items-center md:justify-between"
+      class="mb-5 flex flex-col items-start gap-3 md:flex-row md:items-end md:justify-between"
     >
       <div>
         <h1 class="text-3xl font-bold text-90" th:text="${title}">瞬间</h1>
@@ -21,7 +23,7 @@ import MainGridLayout from "../layouts/MainGridLayout.astro";
       </div>
       <a
         th:href="@{/moments/rss.xml}"
-        class="btn-regular h-9 rounded-lg px-3 text-sm font-bold active:scale-95"
+        class="btn-regular h-11 w-fit rounded-lg px-4 text-sm font-bold active:scale-95"
       >
         <span class="icon-[streamline-plump--rss-square-solid] mr-1.5 text-base"
         ></span>
@@ -29,7 +31,10 @@ import MainGridLayout from "../layouts/MainGridLayout.astro";
       </a>
     </div>
 
-    <div th:if="${not #lists.isEmpty(tags)}" class="mb-6 flex flex-wrap gap-2">
+    <div
+      th:if="${not #lists.isEmpty(tags)}"
+      class="mb-5 flex flex-wrap gap-2"
+    >
       <a
         th:href="@{/moments}"
         th:classappend="${#lists.isEmpty(param.tag) ? ' bg-(--primary) text-white dark:text-black/70' : ''}"
@@ -47,124 +52,180 @@ import MainGridLayout from "../layouts/MainGridLayout.astro";
       </a>
     </div>
 
-    <div th:if="${not #lists.isEmpty(moments.items)}" class="space-y-4">
+    <div
+      th:if="${not #lists.isEmpty(moments.items)}"
+      class="moment-list"
+    >
       <article
         th:each="moment, momentStat : ${moments.items}"
         th:with="content=${moment.spec.content}"
-        class="rounded-2xl bg-(--btn-card-bg-hover) p-4 transition dark:bg-white/5 md:p-5"
+        class="relative py-5 transition"
         th:style="|animation-delay: calc(var(--content-delay) + ${momentStat.index * 50}ms)|"
       >
-        <div class="mb-4 flex items-start gap-3">
-          <img
-            alt=""
-            th:if="${moment.owner != null and not #strings.isEmpty(moment.owner.avatar)}"
-            th:src="${moment.owner.avatar}"
-            th:alt="${moment.owner.displayName}"
-            class="h-11 w-11 rounded-full object-cover"
-          />
+        <div class="flex items-start gap-4">
+          <div class="relative shrink-0">
+            <img
+              alt=""
+              th:if="${moment.owner != null and not #strings.isEmpty(moment.owner.avatar)}"
+              th:src="${moment.owner.avatar}"
+              th:alt="${moment.owner.displayName}"
+              class="h-13 w-13 rounded-full object-cover ring-2 ring-(--btn-card-bg-hover)"
+            />
+            <span
+              th:if="${moment.owner != null and not #strings.isEmpty(moment.owner.avatar)}"
+              class="absolute -bottom-0.5 -right-0.5 flex h-5 w-5 items-center justify-center rounded-full bg-(--primary) text-white ring-2 ring-(--card-bg)"
+            >
+              <span class="icon-[material-symbols--check-small-rounded] text-base"
+              ></span>
+            </span>
+          </div>
           <div
             th:unless="${moment.owner != null and not #strings.isEmpty(moment.owner.avatar)}"
-            class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-(--btn-regular-bg) text-(--primary)"
+            class="flex h-13 w-13 shrink-0 items-center justify-center rounded-full bg-(--btn-regular-bg) text-(--primary) ring-2 ring-(--btn-card-bg-hover)"
           >
-            <span class="icon-[material-symbols--account-circle] text-2xl"
+            <span class="icon-[material-symbols--account-circle] text-3xl"
             ></span>
           </div>
           <div class="min-w-0 flex-1">
-            <div
-              class="font-bold text-90"
-              th:text="${moment.owner != null ? moment.owner.displayName : #messages.msg('page.moments.title')}"
-            >
-              Fuwari
-            </div>
-            <a
-              th:href="@{/moments/{name}(name=${moment.metadata.name})}"
-              class="link -ml-1 inline-flex items-center text-sm text-50"
-            >
-              <time
-                th:datetime="${moment.spec.releaseTime}"
-                th:text="${moment.spec.releaseTime != null ? #dates.format(moment.spec.releaseTime, 'yyyy-MM-dd HH:mm') : ''}"
-                >2026-04-29 22:00</time
+            <div class="flex min-w-0 items-start justify-between gap-3">
+              <div class="min-w-0">
+                <div
+                  class="truncate text-base font-bold text-(--primary)"
+                  th:text="${moment.owner != null ? moment.owner.displayName : #messages.msg('page.moments.title')}"
+                >
+                  Fuwari
+                </div>
+                <time
+                  class="mt-0.5 block text-sm text-50"
+                  th:datetime="${moment.spec.releaseTime}"
+                  th:text="${moment.spec.releaseTime != null ? #dates.format(moment.spec.releaseTime, 'MM-dd') : ''}"
+                  >04-25</time
+                >
+              </div>
+              <a
+                th:href="@{/moments/{name}(name=${moment.metadata.name})}"
+                class="btn-plain h-11 w-11 shrink-0 rounded-lg text-50 active:scale-95"
+                aria-label="View moment"
               >
-              <span
-                class="icon-[material-symbols--chevron-right-rounded] text-lg"
-              ></span>
-            </a>
-          </div>
-        </div>
+                <span class="icon-[material-symbols--more-horiz] text-2xl"></span>
+              </a>
+            </div>
 
-        <div
-          th:if="${content != null and not #strings.isEmpty(content.html)}"
-          class="custom-md markdown-content prose prose-base mb-4 max-w-none! dark:prose-invert!"
-          th:utext="${content.html}"
-        >
-        </div>
+            <div
+              th:if="${content != null and not #strings.isEmpty(content.html)}"
+              class="moment-feed-content custom-md markdown-content prose prose-base mt-4 max-w-none! text-75 dark:prose-invert!"
+              th:utext="${content.html}"
+            >
+            </div>
 
-        <div
-          th:if="${content != null and not #lists.isEmpty(content.medium)}"
-          class="moment-media mb-4 grid gap-2 sm:grid-cols-2"
-        >
-          <div class="contents" th:each="momentItem : ${content.medium}">
-            <figure
-              th:if="${momentItem.type.name == 'PHOTO'}"
-              class="overflow-hidden rounded-xl bg-(--btn-regular-bg)"
+            <div
+              th:if="${not #lists.isEmpty(moment.spec.tags)}"
+              class="mt-2 flex flex-wrap gap-x-2 gap-y-1 text-base"
             >
-              <img
-                th:src="${momentItem.url}"
-                alt=""
-                loading="lazy"
-                class="h-full max-h-80 w-full cursor-zoom-in object-cover"
-              />
-            </figure>
-            <video
-              th:if="${momentItem.type.name == 'VIDEO'}"
-              th:src="${momentItem.url}"
-              controls
-              class="w-full rounded-xl bg-black"></video>
-            <audio
-              th:if="${momentItem.type.name == 'AUDIO'}"
-              th:src="${momentItem.url}"
-              controls
-              class="w-full"></audio>
-            <a
-              th:if="${momentItem.type.name == 'POST'}"
-              th:href="${momentItem.url}"
-              class="btn-regular min-h-20 rounded-xl px-4 font-bold"
-            >
-              <span
-                class="icon-[material-symbols--article-outline-rounded] mr-2 text-xl"
-              ></span>
-              <span class="truncate" th:text="${momentItem.url}">Post</span>
-            </a>
-          </div>
-        </div>
+              <a
+                th:each="tagName : ${moment.spec.tags}"
+                th:href="@{/moments(tag=${tagName})}"
+                class="link font-medium text-(--primary)"
+                th:text="${'#' + tagName}">#Tag</a
+              >
+            </div>
 
-        <div
-          class="flex flex-wrap items-center justify-between gap-3 text-sm text-50"
-        >
-          <div
-            th:if="${not #lists.isEmpty(moment.spec.tags)}"
-            class="flex flex-wrap gap-2"
-          >
-            <a
-              th:each="tagName : ${moment.spec.tags}"
-              th:href="@{/moments(tag=${tagName})}"
-              class="link rounded-md font-medium text-(--primary)"
-              th:text="${'#' + tagName}">#Tag</a
+            <div
+              th:if="${content != null and not #lists.isEmpty(content.medium)}"
+              th:with="mediaCount=${#lists.size(content.medium)}"
+              th:classappend="${' moment-media-count-' + mediaCount}"
+              class="moment-media mt-4 grid max-w-full gap-2.5"
             >
-          </div>
-          <div th:if="${moment.stats != null}" class="ml-auto flex gap-4">
-            <span>
+              <div
+                class="contents"
+                th:each="momentItem, mediumStat : ${content.medium}"
+              >
+                <figure
+                  th:if="${momentItem.type.name == 'PHOTO'}"
+                  th:classappend="${mediaCount == 5 and mediumStat.index < 2 ? ' moment-media-item-wide' : ''}"
+                  class="moment-media-item group relative overflow-hidden rounded-xl bg-(--btn-regular-bg)"
+                >
+                  <img
+                    th:src="${momentItem.url}"
+                    alt=""
+                    loading="lazy"
+                    class="h-full w-full cursor-zoom-in object-cover transition duration-300 group-hover:scale-105"
+                  />
+                  <span
+                    th:if="${#lists.size(content.medium) == 1}"
+                    class="pointer-events-none absolute bottom-2 right-2 rounded-md bg-black/55 px-1.5 py-0.5 text-xs font-bold text-white"
+                    >长图</span
+                  >
+                </figure>
+                <video
+                  th:if="${momentItem.type.name == 'VIDEO'}"
+                  th:src="${momentItem.url}"
+                  th:classappend="${mediaCount == 5 and mediumStat.index < 2 ? ' moment-media-item-wide' : ''}"
+                  controls
+                  class="moment-media-item max-w-full rounded-xl bg-black"></video>
+                <audio
+                  th:if="${momentItem.type.name == 'AUDIO'}"
+                  th:src="${momentItem.url}"
+                  controls
+                  class="moment-media-audio w-full max-w-lg"></audio>
+                <a
+                  th:if="${momentItem.type.name == 'POST'}"
+                  th:href="${momentItem.url}"
+                  th:classappend="${mediaCount == 5 and mediumStat.index < 2 ? ' moment-media-item-wide' : ''}"
+                  class="moment-media-item btn-regular min-h-20 max-w-full rounded-xl px-4 font-bold"
+                >
+                  <span
+                    class="icon-[material-symbols--article-outline-rounded] mr-2 text-xl"
+                  ></span>
+                  <span class="truncate" th:text="${momentItem.url}">Post</span>
+                </a>
+              </div>
+            </div>
+
+            <div
+              class="mt-4 flex flex-wrap items-center gap-5 text-sm text-50"
+            >
               <span
-                class="icon-[material-symbols--favorite-outline-rounded] mr-1"
-              ></span>
-              <span th:text="${moment.stats.upvote}">0</span>
-            </span>
-            <span>
+                th:if="${moment.stats != null}"
+                class="flex h-10 items-center gap-1.5"
+              >
+                <span class="icon-[material-symbols--thumb-up-outline-rounded] text-xl"
+                ></span>
+                <span th:text="${moment.stats.upvote}">0</span>
+              </span>
               <span
-                class="icon-[material-symbols--chat-bubble-outline-rounded] mr-1"
-              ></span>
-              <span th:text="${moment.stats.approvedComment}">0</span>
-            </span>
+                th:unless="${moment.stats != null}"
+                class="flex h-10 items-center gap-1.5"
+              >
+                <span class="icon-[material-symbols--thumb-up-outline-rounded] text-xl"
+                ></span>
+                <span>0</span>
+              </span>
+              <a
+                th:href="@{/moments/{name}(name=${moment.metadata.name})}"
+                class="link flex h-10 items-center gap-1.5 text-50"
+              >
+                <span class="icon-[material-symbols--open-in-new-rounded] text-xl"
+                ></span>
+                <span th:text="#{common.more}">More</span>
+              </a>
+              <span
+                th:if="${moment.stats != null}"
+                class="flex h-10 items-center gap-1.5"
+              >
+                <span class="icon-[material-symbols--chat-bubble-outline-rounded] text-xl"
+                ></span>
+                <span th:text="${moment.stats.approvedComment}">0</span>
+              </span>
+              <span
+                th:unless="${moment.stats != null}"
+                class="flex h-10 items-center gap-1.5"
+              >
+                <span class="icon-[material-symbols--chat-bubble-outline-rounded] text-xl"
+                ></span>
+                <span>0</span>
+              </span>
+            </div>
           </div>
         </div>
       </article>
@@ -177,6 +238,55 @@ import MainGridLayout from "../layouts/MainGridLayout.astro";
       <span th:text="#{page.moments.empty}">暂无瞬间</span>
     </div>
   </section>
+
+  <style>
+    .moment-list > article + article {
+      border-top: 1px dashed var(--line-color);
+    }
+
+    .moment-feed-content :where(p) {
+      margin-top: 0.35rem;
+      margin-bottom: 0.35rem;
+    }
+
+    .moment-feed-content :where(a) {
+      font-weight: 600;
+    }
+
+    .moment-media {
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      max-width: min(100%, 36rem);
+    }
+
+    .moment-media-item {
+      aspect-ratio: 1 / 1;
+      grid-column: span 2;
+    }
+
+    .moment-media-count-1 {
+      max-width: min(100%, 26rem);
+    }
+
+    .moment-media-count-1 .moment-media-item {
+      aspect-ratio: 4 / 5;
+      grid-column: 1 / -1;
+    }
+
+    .moment-media-count-2 .moment-media-item,
+    .moment-media-count-4 .moment-media-item {
+      aspect-ratio: 4 / 3;
+      grid-column: span 3;
+    }
+
+    .moment-media-count-5 .moment-media-item-wide {
+      aspect-ratio: 4 / 3;
+      grid-column: span 3;
+    }
+
+    .moment-media-audio {
+      grid-column: 1 / -1;
+    }
+  </style>
 
   <Pagination context="moments" class="mb-4 onload-animation" />
 </MainGridLayout>

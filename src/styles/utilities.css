@@ -1,19 +1,1 @@
 @reference "./global.css";
-
-@utility is-home {
-  &.enable-banner #banner-wrapper {
-    @apply h-(--banner-height-home) translate-y-(--banner-height-extend);
-  }
-
-  &.enable-banner #banner {
-    @apply h-(--banner-height-home) translate-y-0;
-  }
-
-  &.enable-banner #main-grid {
-    @apply translate-y-(--banner-height-extend);
-  }
-
-  &.enable-banner #sidebar-sticky {
-    @apply top-[calc(1rem-var(--banner-height-extend))];
-  }
-}

@@ -8,24 +8,33 @@ interface Props {
 
 const className = Astro.props.class;
 const style = Astro.props.style;
+const COLLAPSED_HEIGHT = "7.5rem";
+const COLLAPSE_THRESHOLD = 20;
 ---
 
-<WidgetLayout
-  name="标签"
-  nameKey="widget.tags.title"
-  id="tags"
-  class={className}
-  style={style}
+<div
+  class="contents"
+  th:with={`tags = \${tagFinder.listAll()}, isCollapsed = \${#lists.size(tags) >= ${COLLAPSE_THRESHOLD}}`}
 >
-  <div class="flex flex-wrap gap-2" th:with="tags = ${tagFinder.listAll()}">
-    <a
-      th:each="tag : ${tags}"
-      th:href="@{${tag.status.permalink}}"
-      th:title="${tag.spec.displayName}"
-      class="btn-regular h-8 rounded-lg px-3 text-sm"
-      th:text="${tag.spec.displayName}"
-    >
-      Tag
-    </a>
-  </div>
-</WidgetLayout>
+  <WidgetLayout
+    name="标签"
+    nameKey="widget.tags.title"
+    id="tags"
+    collapseExpression="isCollapsed"
+    collapsedHeight={COLLAPSED_HEIGHT}
+    class={className}
+    style={style}
+  >
+    <div class="flex flex-wrap gap-2">
+      <a
+        th:each="tag : ${tags}"
+        th:href="@{${tag.status.permalink}}"
+        th:title="${tag.spec.displayName}"
+        class="btn-regular h-8 rounded-lg px-3 text-sm"
+        th:text="${tag.spec.displayName}"
+      >
+        Tag
+      </a>
+    </div>
+  </WidgetLayout>
+</div>

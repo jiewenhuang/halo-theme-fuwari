@@ -4,6 +4,7 @@ interface Props {
   name?: string;
   nameKey?: string;
   isCollapsed?: boolean;
+  collapseExpression?: string;
   collapsedHeight?: string;
   class?: string;
   style?: string;
@@ -14,15 +15,27 @@ const {
   name,
   nameKey,
   isCollapsed = false,
+  collapseExpression,
   collapsedHeight = "7.5rem",
   style,
 } = Astro.props;
 const className = Astro.props.class;
+const hasRuntimeCollapse = Boolean(collapseExpression);
+const collapseCondition = collapseExpression
+  ? `\${${collapseExpression}}`
+  : undefined;
+const collapseClassAppend = collapseExpression
+  ? `\${${collapseExpression}} ? 'collapsed' : ''`
+  : undefined;
+const collapseDataAttr = collapseExpression
+  ? `data-is-collapsed=\${${collapseExpression}}`
+  : undefined;
 ---
 
 <widget-layout
   data-id={id}
-  data-is-collapsed={String(isCollapsed)}
+  data-is-collapsed={String(isCollapsed && !hasRuntimeCollapse)}
+  th:attr={collapseDataAttr}
   class:list={["card-base pb-4", className]}
   style={style}
 >
@@ -34,16 +47,17 @@ const className = Astro.props.class;
   </div>
   <div
     id={id}
+    th:classappend={collapseClassAppend}
     class:list={[
       "collapse-wrapper overflow-hidden px-4",
-      { collapsed: isCollapsed },
+      { collapsed: isCollapsed && !hasRuntimeCollapse },
     ]}
   >
     <slot />
   </div>
   {
-    isCollapsed && (
-      <div class="expand-btn -mb-2 px-4">
+    (isCollapsed || hasRuntimeCollapse) && (
+      <div class="expand-btn -mb-2 px-4" th:if={collapseCondition}>
         <button class="btn-plain h-9 w-full rounded-lg" type="button">
           <div class="-translate-x-2 flex items-center justify-center gap-2 text-(--primary)">
             <span class="icon-[material-symbols--more-horiz] text-[1.75rem]" />

@@ -260,7 +260,9 @@ const i18nInlineScript = `<script th:inline="javascript">
   }
 
   function initAdmonitions() {
-    const blockquotes = document.querySelectorAll(".custom-md blockquote:not(.admonition)");
+    const blockquotes = document.querySelectorAll(
+      ".custom-md blockquote:not(.admonition)",
+    );
 
     blockquotes.forEach(function (blockquote) {
       const paragraphs = blockquote.querySelectorAll("p");

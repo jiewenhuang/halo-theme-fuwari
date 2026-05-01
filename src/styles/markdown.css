@@ -72,7 +72,7 @@
 }
 
 .custom-md blockquote.admonition .bdm-title::before {
-  content: ' ';
+  content: " ";
   display: inline-block;
   font-size: inherit;
   overflow: visible;

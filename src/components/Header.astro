@@ -1,0 +1,172 @@
+---
+import ThemeSwitcher from "./ThemeSwitcher.vue";
+import UserButton from "./UserButton.vue";
+---
+
+<header>
+  <div class="header-inner">
+    <a class="brand" href="/" th:text="${site.title}"></a>
+    <nav
+      th:with="menu = ${menuFinder.getPrimary()}"
+      aria-label="Main navigation"
+    >
+      <a
+        th:each="menuItem : ${menu.menuItems}"
+        th:href="@{${menuItem.status.href}}"
+        th:target="${menuItem.spec.target?.value}"
+        th:text="${menuItem.status.displayName}"
+      >
+      </a>
+    </nav>
+    <div class="header-actions">
+      <ThemeSwitcher client:load />
+      <UserButton client:load>
+        <div slot="fallback" class="user-button-fallback" aria-hidden="true">
+          <span class="user-button-fallback__avatar"></span>
+          <span class="user-button-fallback__text"></span>
+        </div>
+      </UserButton>
+    </div>
+  </div>
+</header>
+
+<style>
+  header {
+    background: var(--bg);
+    border-bottom: 1px solid var(--rule);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+    width: 820px;
+    max-width: calc(100% - 2.5rem);
+    margin: 0 auto;
+    height: 58px;
+  }
+
+  .brand {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--ink);
+    text-decoration: none;
+    letter-spacing: -0.02em;
+    flex-shrink: 0;
+  }
+
+  .brand:hover {
+    color: var(--accent);
+  }
+
+  nav {
+    display: flex;
+    align-items: center;
+    gap: 0.2rem;
+    flex: 1;
+  }
+
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    margin-left: auto;
+  }
+
+  .user-button-fallback {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    box-sizing: border-box;
+    flex-shrink: 0;
+    width: 112px;
+    height: 34px;
+    padding: 0 0.7rem;
+    border-radius: 8px;
+    pointer-events: none;
+  }
+
+  .user-button-fallback__avatar,
+  .user-button-fallback__text {
+    display: block;
+    background: linear-gradient(
+      90deg,
+      var(--bg-raised) 0%,
+      color-mix(in srgb, var(--bg-raised) 78%, var(--ink) 22%) 50%,
+      var(--bg-raised) 100%
+    );
+    background-size: 200% 100%;
+    animation: user-button-fallback-shimmer 1.2s ease-in-out infinite;
+  }
+
+  .user-button-fallback__avatar {
+    width: 20px;
+    height: 20px;
+    border-radius: 999px;
+    flex-shrink: 0;
+  }
+
+  .user-button-fallback__text {
+    width: 100%;
+    height: 0.72rem;
+    border-radius: 999px;
+  }
+
+  nav :global(a) {
+    display: inline-block;
+    padding: 0.3rem 0.65rem;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    color: var(--ink-2);
+    text-decoration: none;
+    transition:
+      color 0.15s ease,
+      background 0.15s ease;
+  }
+
+  nav :global(a:hover) {
+    color: var(--ink);
+    background: var(--bg-raised);
+  }
+
+  nav :global(a.active) {
+    color: var(--ink);
+    background: var(--bg-raised);
+    font-weight: 600;
+  }
+
+  @media (max-width: 680px) {
+    .header-inner {
+      flex-direction: column;
+      align-items: flex-start;
+      height: auto;
+      padding: 1rem 0;
+      gap: 0.75rem;
+    }
+
+    nav {
+      flex-wrap: wrap;
+      gap: 0.1rem;
+      margin-left: -0.65rem;
+      flex: initial;
+    }
+
+    .header-actions {
+      margin-left: 0;
+    }
+  }
+
+  @keyframes user-button-fallback-shimmer {
+    0% {
+      background-position: 200% 0;
+    }
+
+    100% {
+      background-position: -200% 0;
+    }
+  }
+</style>

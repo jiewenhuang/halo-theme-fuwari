@@ -1,297 +1,50 @@
+@reference "./global.css";
+
+.custom-md img,
+#post-cover img {
+  @apply cursor-zoom-in;
+}
+
+.custom-md :is(h1, h2, h3, h4, h5, h6) {
+  scroll-margin-top: 6rem;
+}
+
 .custom-md {
-  h1 {
-    @apply text-3xl;
-  }
+  --tw-prose-links: var(--primary);
+  --tw-prose-invert-links: var(--primary);
+}
 
-  h1, h2, h3, h4, h5, h6 {
-    .anchor {
-      @apply transition -m-0.5 ml-[0.2ch] p-0.5 select-none opacity-0 no-underline !important;
+.custom-md a:not(.no-styling) {
+  @apply relative z-0 -m-1 rounded-md bg-transparent p-1 font-medium text-(--primary) underline decoration-1 decoration-dashed underline-offset-4 transition;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+  text-decoration-color: var(--link-underline);
+}
 
-      .anchor-icon {
-        @apply mx-[0.45ch] !important;
-      }
-    }
+.custom-md a:not(.no-styling)::before {
+  @apply absolute inset-0 -z-10 scale-[0.85] rounded-[inherit] transition ease-out content-[''];
+}
 
-    &:hover {
-      .anchor {
-        @apply opacity-100 !important;
-      }
-    }
-  }
+.custom-md a:not(.no-styling):hover::before {
+  @apply scale-100 bg-(--btn-plain-bg-hover);
+}
 
-  a:not(.no-styling) {
-    @apply relative bg-none link font-medium text-[var(--primary)]
-    underline decoration-[var(--link-underline)] decoration-1 decoration-dashed underline-offset-4;
-    box-decoration-break: clone;
-    -webkit-box-decoration-break: clone;
-    display: inline-block;
+.custom-md a:not(.no-styling):active::before {
+  @apply scale-100 bg-(--btn-plain-bg-active);
+}
 
-    &:hover, &:active {
-      @apply decoration-transparent;
-      background: var(--btn-plain-bg-hover);
-      border-bottom: 1px dashed var(--link-hover);
-      text-decoration: none;
-    }
-  }
+.custom-md a:not(.no-styling):hover,
+.custom-md a:not(.no-styling):active {
+  @apply decoration-transparent;
+  background: var(--btn-plain-bg-hover);
+  border-bottom: 1px dashed var(--link-hover);
+  text-decoration: none;
+}
 
-  code {
-    @apply bg-[var(--inline-code-bg)] text-[var(--inline-code-color)] px-1 py-0.5 rounded-md overflow-hidden;
-  
-    font-family: 'JetBrains Mono Variable', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, Liberation Mono, Courier New, monospace;
-    &:before {
-      content:none;
-    }
-    &:after {
-      content:none;
-    }
-  
-    counter-reset: line;
-    span.line {
-      &:before {
-        @apply text-white/25 mr-4 w-4 inline-block;
-        content: counter(line);
-        counter-increment: line;
-        direction: rtl;
-      }
-      &:last-child:empty, &:last-child:has(> span:empty:only-child) {
-        display: none;
-      }
-    }
-  }
+.custom-md code:not(pre code) {
+  @apply rounded-md bg-(--inline-code-bg) px-1.5 py-0.5 text-(--inline-code-color);
+}
 
-  pre code {
-    /* 覆盖 @apply 部分 */
-    background: transparent !important;  /* 无背景 */
-    color: inherit !important;  /* 继承父元素颜色 */
-    padding: 0 !important;  /* 无内边距 */
-    border-radius: 0 !important;
-    overflow: visible !important;  /* 允许溢出以保留格式 */
-
-    /* 字体保持 monospace，但可调整 */
-    font-family: inherit;  /* 或保持原字体 */
-
-    /* 重置伪元素 */
-    &:before,
-    &:after {
-        content: none !important;
-    }
-
-    /* 禁用行号计数器（针对 span.line） */
-    counter-reset: none !important;
-    & span.line:before {
-        content: none !important;
-        counter-increment: none !important;
-        display: none !important;  /* 隐藏行号 */
-    }
-    & span.line:last-child:empty,
-    & span.line:last-child:has(> span:empty:only-child) {
-        display: block !important;
-    }
-  }
-  
-
-  .copy-btn {
-    all: initial;
-    @apply btn-regular-dark opacity-0 shadow-lg shadow-black/50 absolute active:scale-90 h-8 w-8 top-3 right-3 text-sm rounded-lg transition-all ease-in-out z-20 cursor-pointer;
-  }
-  .frame:hover .copy-btn {
-    opacity: 1;
-  }
-
-  .copy-btn-icon {
-    @apply absolute top-1/2 left-1/2 transition -translate-x-1/2 -translate-y-1/2 w-4 h-4 fill-white pointer-events-none;
-  }
-  .copy-btn .copy-icon {
-    @apply opacity-100 fill-white dark:fill-white/75;
-  }
-  .copy-btn.success .copy-icon {
-    @apply opacity-0 fill-[var(--deep-text)]
-  }
-  .copy-btn .success-icon {
-    @apply opacity-0 fill-white;
-  }
-  .copy-btn.success .success-icon {
-    @apply opacity-100
-  }
-
-  .expressive-code {
-    @apply my-4;
-    ::selection {
-      @apply bg-[var(--codeblock-selection)];
-    }
-  }
-
-
-  ul, ol {
-    li::marker {
-      @apply text-[var(--primary)];
-    }
-  }
-
-  .katex-display-container {
-    max-width: 100%;
-    overflow-x: auto;
-    margin: 1em 0;
-  }
-
-  blockquote {
-    @apply not-italic border-transparent relative;
-    font-weight: inherit;
-
-    &:before {
-      @apply content-[''] absolute -left-1 block transition bg-[var(--btn-regular-bg)] h-full w-1 rounded-full;
-    }
-
-    /* Remove the double quotes from default styles */
-    p:before, p:after {
-      @apply content-none;
-    }
-
-  }
-  /* 基础 Admonition 块样式（共享部分） */
-  blockquote[class*="-block"] {
-    @apply not-italic border-transparent relative;
-    font-weight: inherit;
-    position: relative;
-    margin: 1em 0;
-    padding: 1em 1.5em 1em 1em;
-    border: 1px solid transparent;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
-
-  blockquote[class*="-block"]::before {
-    @apply absolute block transition;
-    content: '';
-    left: -1px;
-    top: 0;
-    bottom: 0;
-    width: 6px;
-    border-radius: 8px 0 0 8px;
-  }
-
-  blockquote[class*="-block"] p:first-child {
-    font-weight: bold;
-    font-size: 1.1em;
-    margin: 0 0 0.5em 1.5em;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-  }
-
-  /* Note Block (原有) */
-  blockquote.note-block {
-    border-color: #007acc;
-    background-color: #e3f2fd70;
-  }
-
-  blockquote.note-block::before {
-    background-color: #007acc;
-  }
-
-  blockquote.note-block p:first-child {
-    color: #007acc;
-  }
-
-  blockquote.note-block::after { /* 使用 ::after 避免冲突 */
-    content: "📝";
-    @apply absolute;
-    left: 0.5em;
-    top: 0.5em;
-    font-size: 1.2em;
-  }
-
-  /* Tip Block */
-  blockquote.tip-block {
-    border-color: #10b981;
-    background-color: #d1fae570;
-  }
-
-  blockquote.tip-block::before {
-    background-color: #10b981;
-  }
-
-  blockquote.tip-block p:first-child {
-    color: #10b981;
-  }
-
-  blockquote.tip-block::after {
-    content: "💡";
-    @apply absolute;
-    left: 0.5em;
-    top: 0.5em;
-    font-size: 1.2em;
-  }
-
-  /* Important Block */
-  blockquote.important-block {
-    border-color: #f59e0b;
-    background-color: #fef3c770;
-  }
-
-  blockquote.important-block::before {
-    background-color: #f59e0b;
-  }
-
-  blockquote.important-block p:first-child {
-    color: #f59e0b;
-  }
-
-  blockquote.important-block::after {
-    content: "⭐";
-    @apply absolute;
-    left: 0.5em;
-    top: 0.5em;
-    font-size: 1.2em;
-  }
-
-  /* Warning Block */
-  blockquote.warning-block {
-    border-color: #ef4444;
-    background-color: #fee2e270;
-  }
-
-  blockquote.warning-block::before {
-    background-color: #ef4444;
-  }
-
-  blockquote.warning-block p:first-child {
-    color: #ef4444;
-  }
-
-  blockquote.warning-block::after {
-    content: "⚠️";
-    @apply absolute;
-    left: 0.5em;
-    top: 0.5em;
-    font-size: 1.2em;
-  }
-
-  /* Caution Block */
-  blockquote.caution-block {
-    border-color: #f59e0b;
-    background-color: #fef3c770;
-  }
-
-  blockquote.caution-block::before {
-    background-color: #f59e0b;
-  }
-
-  blockquote.caution-block p:first-child {
-    color: #f59e0b;
-  }
-
-  blockquote.caution-block::after {
-    content: "!";
-    @apply absolute flex items-center justify-center;
-    left: 0.5em;
-    top: 0.5em;
-    font-size: 1.2em;
-    background-color: #f59e0b;
-    color: white;
-    width: 1.5em;
-    height: 1.5em;
-    border-radius: 50%;
-    font-weight: bold;
-  }
-
+.custom-md pre {
+  @apply rounded-xl bg-(--codeblock-bg) text-white;
 }

@@ -1,0 +1,68 @@
+---
+const currentYear = new Date().getFullYear();
+---
+
+<div
+  class="mx-8 my-10 border-t border-dashed border-black/10 transition dark:border-white/15 md:mx-32"
+>
+</div>
+<footer
+  class="mb-12 flex flex-col items-center justify-center rounded-2xl px-6 text-center text-sm text-50 transition"
+>
+  <div>
+    &copy; <span id="copyright-year">{currentYear}</span>
+    <span th:text="${site.title}">Fuwari</span>. <span
+      th:text="#{footer.rights}">All Rights Reserved.</span
+    >
+    <span th:if="${pluginFinder.available('PluginFeed')}">
+      /
+      <a
+        class="link font-medium text-(--primary)"
+        target="_blank"
+        th:href="@{/rss.xml}">RSS</a
+      >
+    </span>
+    <span th:if="${pluginFinder.available('PluginSitemap')}">
+      /
+      <a
+        class="link font-medium text-(--primary)"
+        target="_blank"
+        th:href="@{/sitemap.xml}">Sitemap</a
+      >
+    </span>
+  </div>
+  <div
+    class="mt-2"
+    th:if="${not #strings.isEmpty(theme.config.beian.icp_text)}"
+  >
+    <a
+      class="link font-medium text-(--primary)"
+      th:href="${theme.config.beian.icp_link}"
+      target="_blank"
+      th:text="${theme.config.beian.icp_text}"></a>
+  </div>
+  <div
+    class="mt-1"
+    th:if="${not #strings.isEmpty(theme.config.beian.gongan_text)}"
+  >
+    <a
+      class="link font-medium text-(--primary)"
+      th:href="${theme.config.beian.gongan_link}"
+      target="_blank"
+      th:text="${theme.config.beian.gongan_text}"></a>
+  </div>
+  <div class="mt-2">
+    <span th:text="#{footer.poweredBy}">Powered by</span>
+    <a
+      class="link font-medium text-(--primary)"
+      target="_blank"
+      href="https://www.halo.run">Halo</a
+    >
+    &
+    <a
+      class="link font-medium text-(--primary)"
+      target="_blank"
+      href="https://github.com/jiewenhuang/halo-theme-fuwari">Fuwari</a
+    >
+  </div>
+</footer>

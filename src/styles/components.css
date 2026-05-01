@@ -1,0 +1,156 @@
+@reference "./global.css";
+
+@layer components {
+  .card-base {
+    @apply overflow-hidden rounded-(--radius-large) bg-(--card-bg) transition;
+  }
+
+  .expand-animation {
+    @apply relative z-0 before:absolute before:inset-0 before:-z-10 before:scale-[0.85] before:rounded-[inherit] before:transition before:ease-out hover:before:scale-100 hover:before:bg-(--btn-plain-bg-hover) active:bg-transparent active:before:bg-(--btn-plain-bg-active);
+  }
+
+  .link {
+    @apply relative z-0 -m-1 rounded-md p-1 transition before:absolute before:inset-0 before:-z-10 before:scale-[0.85] before:rounded-[inherit] before:transition before:ease-out hover:before:scale-100 hover:before:bg-(--btn-plain-bg-hover) active:bg-transparent active:before:bg-(--btn-plain-bg-active);
+  }
+
+  .link-lg {
+    @apply relative z-0 -m-1.5 rounded-md p-1.5 transition before:absolute before:inset-0 before:-z-10 before:scale-[0.85] before:rounded-[inherit] before:transition before:ease-out hover:before:scale-100 hover:before:bg-(--btn-plain-bg-hover) active:bg-transparent active:before:bg-(--btn-plain-bg-active);
+  }
+
+  .float-panel {
+    @apply top-21 overflow-hidden rounded-(--radius-large) bg-(--float-panel-bg) shadow-xl transition dark:shadow-none;
+  }
+
+  .float-panel-closed {
+    @apply pointer-events-none -translate-y-1 opacity-0;
+  }
+
+  .search-panel mark {
+    @apply bg-transparent text-(--primary);
+  }
+
+  .btn-card {
+    @apply flex items-center justify-center bg-(--card-bg) transition hover:bg-(--btn-card-bg-hover) active:bg-(--btn-card-bg-active);
+  }
+
+  .btn-card.disabled {
+    @apply pointer-events-none text-black/10 dark:text-white/10;
+  }
+
+  .btn-plain {
+    @apply relative flex items-center justify-center bg-transparent text-black/75 transition hover:text-(--primary) dark:text-white/75 dark:hover:text-(--primary);
+  }
+
+  .btn-plain:not(.scale-animation) {
+    @apply hover:bg-(--btn-plain-bg-hover) active:bg-(--btn-plain-bg-active);
+  }
+
+  .scale-animation {
+    @apply relative z-0 before:absolute before:inset-0 before:-z-10 before:scale-[0.85] before:rounded-[inherit] before:transition before:ease-out hover:before:scale-100 hover:before:bg-(--btn-plain-bg-hover) active:bg-transparent active:before:bg-(--btn-plain-bg-active);
+  }
+
+  .btn-plain.scale-animation.current-theme-btn {
+    @apply text-(--primary) before:scale-100 before:bg-(--btn-plain-bg-hover) before:opacity-100;
+  }
+
+  .btn-regular {
+    @apply flex items-center justify-center bg-(--btn-regular-bg) text-(--btn-content) transition hover:bg-(--btn-regular-bg-hover) active:bg-(--btn-regular-bg-active) dark:text-white/75;
+  }
+
+  .text-90 {
+    @apply text-black/90 dark:text-white/90;
+  }
+
+  .text-75 {
+    @apply text-black/75 dark:text-white/75;
+  }
+
+  .text-50 {
+    @apply text-black/50 dark:text-white/50;
+  }
+
+  .text-30 {
+    @apply text-black/30 dark:text-white/30;
+  }
+
+  .meta-icon {
+    @apply mr-2 flex h-8 w-8 items-center justify-center rounded-md bg-(--btn-regular-bg) text-(--btn-content) transition;
+  }
+
+  .with-divider {
+    @apply before:mx-1.5 before:text-sm before:font-medium before:text-(--meta-divider) before:content-['/'];
+  }
+
+  .toc-hide,
+  .toc-not-ready {
+    @apply pointer-events-none opacity-0;
+  }
+
+  #toc-inner-wrapper {
+    mask-image: linear-gradient(
+      to bottom,
+      transparent 0%,
+      black 2rem,
+      black calc(100% - 2rem),
+      transparent 100%
+    );
+  }
+
+  .hide-scrollbar {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .hide-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .enable-banner #main-panel-wrapper {
+    @apply top-[calc(var(--banner-height)-3.5rem)];
+  }
+
+  .enable-banner.is-home #banner-wrapper {
+    @apply h-(--banner-height-home) translate-y-(--banner-height-extend);
+  }
+
+  .enable-banner #banner-wrapper {
+    @apply h-(--banner-height-home);
+  }
+
+  .enable-banner.is-home #banner {
+    @apply h-(--banner-height-home) translate-y-0;
+  }
+
+  .enable-banner #banner {
+    @apply h-(--banner-height-home) translate-y-(--bannerOffset);
+  }
+
+  .enable-banner.is-home #main-grid {
+    @apply translate-y-(--banner-height-extend);
+  }
+
+  .enable-banner #top-row {
+    @apply h-[calc(var(--banner-height-home)-4.5rem)] transition-all duration-300;
+  }
+
+  .enable-banner.is-home #sidebar-sticky {
+    @apply top-[calc(1rem-var(--banner-height-extend))];
+  }
+
+  .navbar-hidden {
+    @apply -translate-y-16 opacity-0;
+  }
+
+  .link-underline {
+    @apply underline decoration-2 decoration-dashed underline-offset-4 transition;
+    text-decoration-color: var(--link-underline);
+  }
+
+  .link-underline:hover {
+    text-decoration-color: var(--link-hover);
+  }
+
+  .link-underline:active {
+    text-decoration-color: var(--link-active);
+  }
+}

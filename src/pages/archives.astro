@@ -1,0 +1,86 @@
+---
+import Pagination from "../components/control/Pagination.astro";
+import MainGridLayout from "../layouts/MainGridLayout.astro";
+---
+
+<MainGridLayout title="|#{page.archives.title} - ${site.title}|">
+  <Fragment slot="head">
+    <title th:text="|#{page.archives.title} - ${site.title}|"></title>
+  </Fragment>
+
+  <div class="card-base onload-animation mb-4 px-8 py-6">
+    <div
+      class="contents"
+      th:each="archive : ${archives.items}"
+      th:with="postCount=${#aggregates.sum(archive.months.![posts.size()])}"
+    >
+      <div>
+        <div class="flex h-15 w-full flex-row items-center">
+          <div
+            class="w-[15%] text-right text-2xl font-bold text-75 transition md:w-[10%]"
+            th:text="${archive.year}"
+          >
+            2026
+          </div>
+          <div class="w-[15%] md:w-[10%]">
+            <div
+              class="z-50 mx-auto h-3 w-3 rounded-full bg-none outline-3 -outline-offset-2 outline-(--primary)"
+            >
+            </div>
+          </div>
+          <div
+            class="w-[70%] text-left text-50 transition md:w-[80%]"
+            th:text="#{page.archives.count(${postCount})}"
+          >
+            1 篇文章
+          </div>
+        </div>
+
+        <div class="contents" th:each="month : ${archive.months}">
+          <a
+            th:each="post : ${month.posts}"
+            th:href="@{${post.status.permalink}}"
+            th:attr="aria-label=${post.spec.title}"
+            class="group btn-plain block! h-10 w-full rounded-lg hover:text-[initial]"
+          >
+            <div class="flex h-full flex-row items-center justify-start">
+              <div
+                class="w-[15%] text-right text-sm text-50 transition md:w-[10%]"
+                th:text="${#dates.format(post.spec.publishTime, 'MM-dd')}"
+              >
+                04-29
+              </div>
+
+              <div
+                class="dash-line relative flex h-full w-[15%] items-center md:w-[10%]"
+              >
+                <div
+                  class="z-50 mx-auto h-1 w-1 rounded bg-[oklch(0.5_0.05_var(--hue))] outline-4 outline-(--card-bg) transition-all group-hover:h-5 group-hover:bg-(--primary) group-hover:outline-(--btn-plain-bg-hover) group-active:outline-(--btn-plain-bg-active)"
+                >
+                </div>
+              </div>
+
+              <div
+                class="w-[70%] overflow-hidden overflow-ellipsis whitespace-nowrap pr-8 text-left font-bold text-75 transition-all group-hover:translate-x-1 group-hover:text-(--primary) md:w-[65%] md:max-w-[65%]"
+                th:text="${post.spec.title}"
+              >
+                Post
+              </div>
+
+              <div
+                class="hidden overflow-hidden overflow-ellipsis whitespace-nowrap text-left text-sm text-30 transition md:block md:w-[15%]"
+              >
+                <span
+                  th:each="tag : ${post.tags}"
+                  th:text="${'#' + tag.spec.displayName + ' '}"
+                  >#Tag
+                </span>
+              </div>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <Pagination context="archives" class="mb-4 onload-animation" />
+</MainGridLayout>

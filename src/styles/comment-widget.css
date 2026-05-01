@@ -1,0 +1,35 @@
+:root {
+  --halo-cw-primary-1-color: var(--primary);
+  --halo-cw-primary-2-color: oklch(0.62 0.13 var(--hue));
+  --halo-cw-primary-3-color: oklch(0.55 0.12 var(--hue));
+  --halo-cw-text-1-color: rgb(0 0 0 / 0.9);
+  --halo-cw-text-2-color: rgb(0 0 0 / 0.75);
+  --halo-cw-text-3-color: rgb(0 0 0 / 0.5);
+  --halo-cw-muted-1-color: oklch(0.96 0.012 var(--hue));
+  --halo-cw-muted-2-color: oklch(0.92 0.018 var(--hue));
+  --halo-cw-muted-3-color: oklch(0.86 0.024 var(--hue));
+  --halo-cw-emoji-picker-rgb-color: 31, 41, 55;
+  --halo-cw-emoji-picker-rgb-accent: 99, 102, 241;
+  --halo-cw-emoji-picker-rgb-background: 255, 255, 255;
+  --halo-cw-emoji-picker-rgb-input: 249, 250, 251;
+  --halo-cw-emoji-picker-color-border: rgb(0 0 0 / 0.1);
+  --halo-cw-emoji-picker-color-border-over: rgb(0 0 0 / 0.2);
+}
+
+:root.dark {
+  --halo-cw-primary-1-color: var(--primary);
+  --halo-cw-primary-2-color: oklch(0.68 0.13 var(--hue));
+  --halo-cw-primary-3-color: oklch(0.61 0.12 var(--hue));
+  --halo-cw-text-1-color: rgb(255 255 255 / 0.9);
+  --halo-cw-text-2-color: rgb(255 255 255 / 0.75);
+  --halo-cw-text-3-color: rgb(255 255 255 / 0.5);
+  --halo-cw-muted-1-color: oklch(0.42 0.03 var(--hue));
+  --halo-cw-muted-2-color: oklch(0.36 0.028 var(--hue));
+  --halo-cw-muted-3-color: oklch(0.3 0.026 var(--hue));
+  --halo-cw-emoji-picker-rgb-color: 229, 231, 235;
+  --halo-cw-emoji-picker-rgb-accent: 129, 140, 248;
+  --halo-cw-emoji-picker-rgb-background: 24, 24, 27;
+  --halo-cw-emoji-picker-rgb-input: 0, 0, 0;
+  --halo-cw-emoji-picker-color-border: rgb(255 255 255 / 0.1);
+  --halo-cw-emoji-picker-color-border-over: rgb(255 255 255 / 0.2);
+}

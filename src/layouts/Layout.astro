@@ -1,0 +1,392 @@
+---
+import "@fontsource/roboto/400.css";
+import "@fontsource/roboto/500.css";
+import "@fontsource/roboto/700.css";
+import "../styles/global.css";
+import "../styles/utilities.css";
+import "../styles/variables.css";
+import "../styles/comment-widget.css";
+import "../styles/base.css";
+import "../styles/components.css";
+import "../styles/markdown.css";
+import "../styles/transition.css";
+import "../styles/scrollbar.css";
+import "../styles/photoswipe.css";
+import ConfigCarrier from "../components/ConfigCarrier.astro";
+import {
+  AUTO_MODE,
+  BANNER_HEIGHT_EXTEND,
+  DARK_MODE,
+  DEFAULT_THEME,
+  LIGHT_MODE,
+  PAGE_WIDTH,
+} from "../constants/constants";
+
+interface Props {
+  title?: string;
+  description?: string;
+  setOGTypeArticle?: boolean;
+  isHomePage?: boolean;
+}
+
+const {
+  title = "${site.title}",
+  description = "",
+  setOGTypeArticle = false,
+  isHomePage = false,
+} = Astro.props;
+
+const i18nInlineScript = `<script th:inline="javascript">
+  window.i18nResources = {
+    "search.loading": \`[(#{search.loading})]\`,
+    "search.noResults": \`[(#{search.noResults})]\`,
+    "search.panel": \`[(#{search.panel})]\`,
+    "search.placeholder": \`[(#{search.placeholder})]\`,
+    "theme.color": \`[(#{theme.color})]\`,
+    "theme.dark": \`[(#{theme.dark})]\`,
+    "theme.light": \`[(#{theme.light})]\`,
+    "theme.resetDefault": \`[(#{theme.resetDefault})]\`,
+    "theme.system": \`[(#{theme.system})]\`,
+    "nav.lightDark": \`[(#{nav.lightDark})]\`,
+  };
+</script>`;
+---
+
+<!doctype html>
+<html
+  th:lang="${#locale.toLanguageTag}"
+  th:data-hue="${theme.config.base.themeColor.hue}"
+  th:data-hue-fixed="${theme.config.base.themeColor.fixed}"
+  class="bg-(--page-bg) text-[14px] transition md:text-[16px]"
+  data-overlayscrollbars-initialize
+>
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="author" th:content="${theme.config.profile.name}" />
+    <meta name="description" content={description} />
+    <meta property="og:site_name" th:content="${site.title}" />
+    <meta property="og:title" th:content={title} />
+    <meta
+      property="og:type"
+      content={setOGTypeArticle ? "article" : "website"}
+    />
+    <meta property="og:url" th:content="${#httpServletRequest.requestURL}" />
+    <title th:text={title}></title>
+    <link rel="icon" th:href="${site.favicon}" />
+
+    <script
+      type="application/json"
+      id="theme-config"
+      th:utext="${theme.config}"
+      is:inline></script>
+    <Fragment set:html={i18nInlineScript} />
+    <script
+      is:inline
+      define:vars={{
+        DEFAULT_THEME,
+        LIGHT_MODE,
+        DARK_MODE,
+        AUTO_MODE,
+        BANNER_HEIGHT_EXTEND,
+        PAGE_WIDTH,
+      }}
+    >
+      (() => {
+        const configHue = document.documentElement.dataset.hue || "250";
+        const fixedHue = document.documentElement.dataset.hueFixed === "true";
+        const storedTheme = localStorage.getItem("theme") || DEFAULT_THEME;
+        const preferredDark = window.matchMedia(
+          "(prefers-color-scheme: dark)",
+        ).matches;
+
+        if (
+          storedTheme === DARK_MODE ||
+          (storedTheme === AUTO_MODE && preferredDark)
+        ) {
+          document.documentElement.classList.add("dark");
+        } else {
+          document.documentElement.classList.remove("dark");
+        }
+
+        const hue = fixedHue
+          ? configHue
+          : localStorage.getItem("hue") || configHue;
+        document.documentElement.style.setProperty("--hue", hue);
+        document.documentElement.style.setProperty(
+          "--page-width",
+          `${PAGE_WIDTH}rem`,
+        );
+
+        let offset = Math.floor(
+          window.innerHeight * (BANNER_HEIGHT_EXTEND / 100),
+        );
+        offset = offset - (offset % 4);
+        document.documentElement.style.setProperty(
+          "--banner-height-extend",
+          `${offset}px`,
+        );
+
+        window.__fuwariOriginalHistory ??= {
+          pushState: window.history.pushState,
+          replaceState: window.history.replaceState,
+        };
+      })();
+    </script>
+    <slot name="head" />
+  </head>
+  <body
+    class:list={["min-h-screen transition", { "lg:is-home": isHomePage }]}
+    th:classappend="${theme.config.base.banner.enable ? ' enable-banner' : ''}"
+    th:style="|--bannerOffset: ${theme.config.base.banner.position == 'top' ? '30vh' : (theme.config.base.banner.position == 'bottom' ? '0' : '15vh')};|"
+    data-overlayscrollbars-initialize
+  >
+    <ConfigCarrier />
+    <slot />
+    <div id="page-height-extend" class="hidden h-[300vh]"></div>
+  </body>
+</html>
+
+<script>
+  import "overlayscrollbars/overlayscrollbars.css";
+  import { OverlayScrollbars } from "overlayscrollbars";
+  import PhotoSwipeLightbox from "photoswipe/lightbox";
+  import "photoswipe/style.css";
+  import {
+    BANNER_HEIGHT,
+    BANNER_HEIGHT_EXTEND,
+    BANNER_HEIGHT_HOME,
+    MAIN_PANEL_OVERLAPS_BANNER_HEIGHT,
+  } from "../constants/constants";
+  import {
+    getHue,
+    getStoredTheme,
+    setHue,
+    setTheme,
+  } from "../utils/setting-utils";
+
+  const bannerEnabled = Boolean(document.getElementById("banner-wrapper"));
+
+  function setClickOutsideToClose(panel: string, ignores: string[]) {
+    document.addEventListener("click", (event) => {
+      const panelDom = document.getElementById(panel);
+      const target = event.target;
+      if (!panelDom || !(target instanceof Node)) return;
+      for (const ignored of ignores) {
+        const ignoredEl = document.getElementById(ignored);
+        if (ignoredEl === target || ignoredEl?.contains(target)) return;
+      }
+      panelDom.classList.add("float-panel-closed");
+    });
+  }
+
+  function initCustomScrollbar() {
+    const bodyElement = document.querySelector("body");
+    if (!bodyElement) return;
+    OverlayScrollbars(
+      {
+        target: bodyElement,
+        cancel: { nativeScrollbarsOverlaid: true },
+      },
+      {
+        scrollbars: {
+          theme: "scrollbar-base scrollbar-auto py-1",
+          autoHide: "move",
+          autoHideDelay: 500,
+          autoHideSuspend: false,
+        },
+      },
+    );
+  }
+
+  function showBanner() {
+    document
+      .getElementById("banner")
+      ?.classList.remove("opacity-0", "scale-105");
+  }
+
+  const basePath = import.meta.env.BASE_URL.replace(/\/+$/, "");
+
+  function getPathname(url: string) {
+    try {
+      return new URL(url, window.location.origin).pathname;
+    } catch {
+      return url.split("?")[0]?.split("#")[0] || "/";
+    }
+  }
+
+  function syncHomeClass(pathname = window.location.pathname) {
+    let normalizedPath = pathname.replace(/\/+$/, "") || "/";
+    if (basePath && normalizedPath.startsWith(basePath)) {
+      normalizedPath =
+        normalizedPath.slice(basePath.length).replace(/\/+$/, "") || "/";
+    }
+    if (normalizedPath.endsWith("/index.html")) {
+      normalizedPath = normalizedPath.slice(0, -"/index.html".length) || "/";
+    }
+    const isHome = normalizedPath === "/" || normalizedPath === "/index";
+    document.body.classList.toggle("lg:is-home", isHome);
+  }
+
+  function initPhotoSwipe() {
+    const pswp = import("photoswipe");
+    const lightbox = new PhotoSwipeLightbox({
+      gallery:
+        ".custom-md img, #post-cover img, .moment-media img, #photos-gallery img",
+      pswpModule: () => pswp,
+      padding: { top: 20, bottom: 20, left: 20, right: 20 },
+      wheelToZoom: true,
+      arrowPrev: false,
+      arrowNext: false,
+      imageClickAction: "close",
+      tapAction: "close",
+      doubleTapAction: "zoom",
+    });
+
+    lightbox.addFilter("domItemData", (itemData, element) => {
+      if (element instanceof HTMLImageElement) {
+        const src = element.dataset.pswpSrc || element.src;
+        itemData.src = src;
+        itemData.w = Number(element.naturalWidth || window.innerWidth);
+        itemData.h = Number(element.naturalHeight || window.innerHeight);
+        itemData.msrc = element.src;
+      }
+      return itemData;
+    });
+
+    lightbox.init();
+    return lightbox;
+  }
+
+  function init() {
+    syncHomeClass();
+    setTheme(getStoredTheme());
+    setHue(getHue());
+    initCustomScrollbar();
+    showBanner();
+  }
+
+  setClickOutsideToClose("display-setting", [
+    "display-setting",
+    "display-settings-switch",
+  ]);
+  setClickOutsideToClose("nav-menu-panel", [
+    "nav-menu-panel",
+    "nav-menu-switch",
+  ]);
+  setClickOutsideToClose("search-panel", [
+    "search-panel",
+    "search-bar",
+    "search-switch",
+  ]);
+  init();
+
+  let lightbox = initPhotoSwipe();
+
+  function restoreOriginalHistoryStateHandlers() {
+    const originalHistory = window.__fuwariOriginalHistory;
+    if (!originalHistory) return;
+
+    if (originalHistory.pushState) {
+      window.history.pushState = originalHistory.pushState;
+    }
+    if (originalHistory.replaceState) {
+      window.history.replaceState = originalHistory.replaceState;
+    }
+  }
+
+  const setupSwup = () => {
+    if (window.__fuwariSwupHandlersBound) return;
+    window.__fuwariSwupHandlersBound = true;
+
+    window.swup.hooks.on("link:click", () => {
+      document.documentElement.style.setProperty("--content-delay", "0ms");
+    });
+    window.swup.hooks.on("content:replace", initCustomScrollbar);
+    window.swup.hooks.on(
+      "content:replace",
+      () => {
+        lightbox?.destroy?.();
+      },
+      { before: true },
+    );
+    window.swup.hooks.on("page:view", () => {
+      syncHomeClass();
+      lightbox = initPhotoSwipe();
+      showBanner();
+      scrollFunction();
+    });
+    window.swup.hooks.on("visit:start", (visit: { to?: { url?: string } }) => {
+      restoreOriginalHistoryStateHandlers();
+      if (visit.to?.url) {
+        syncHomeClass(getPathname(visit.to.url));
+      }
+      document.getElementById("page-height-extend")?.classList.remove("hidden");
+      document.getElementById("toc-wrapper")?.classList.add("toc-not-ready");
+    });
+    window.swup.hooks.on("visit:end", () => {
+      setTimeout(() => {
+        document.getElementById("page-height-extend")?.classList.add("hidden");
+        document
+          .getElementById("toc-wrapper")
+          ?.classList.remove("toc-not-ready");
+      }, 200);
+    });
+  };
+
+  if (window?.swup?.hooks) {
+    setupSwup();
+  } else {
+    document.addEventListener("swup:enable", setupSwup);
+  }
+
+  function scrollFunction() {
+    const backToTopBtn = document.getElementById("back-to-top-btn");
+    const toc = document.getElementById("toc-wrapper");
+    const navbar = document.getElementById("navbar-wrapper");
+    const currentBannerHeight =
+      document.body.classList.contains("lg:is-home") &&
+      window.innerWidth >= 1024
+        ? BANNER_HEIGHT_HOME
+        : BANNER_HEIGHT;
+    const bannerHeightPx = window.innerHeight * (currentBannerHeight / 100);
+    const tocRevealHeightPx = window.innerHeight * (BANNER_HEIGHT / 100);
+
+    if (backToTopBtn) {
+      backToTopBtn.classList.toggle(
+        "hide",
+        document.body.scrollTop <= bannerHeightPx &&
+          document.documentElement.scrollTop <= bannerHeightPx,
+      );
+    }
+
+    if (bannerEnabled && toc) {
+      toc.classList.toggle(
+        "toc-hide",
+        document.body.scrollTop <= tocRevealHeightPx &&
+          document.documentElement.scrollTop <= tocRevealHeightPx,
+      );
+    }
+
+    if (!bannerEnabled || !navbar) return;
+    const threshold =
+      bannerHeightPx - 72 - MAIN_PANEL_OVERLAPS_BANNER_HEIGHT * 16 - 16;
+    navbar.classList.toggle(
+      "navbar-hidden",
+      document.body.scrollTop >= threshold ||
+        document.documentElement.scrollTop >= threshold,
+    );
+  }
+
+  window.addEventListener("scroll", scrollFunction);
+  window.addEventListener("resize", () => {
+    let offset = Math.floor(window.innerHeight * (BANNER_HEIGHT_EXTEND / 100));
+    offset = offset - (offset % 4);
+    document.documentElement.style.setProperty(
+      "--banner-height-extend",
+      `${offset}px`,
+    );
+  });
+  scrollFunction();
+</script>

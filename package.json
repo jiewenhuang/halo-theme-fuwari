@@ -5,8 +5,9 @@
   },
   "scripts": {
     "dev": "nodemon --config nodemon.json --exec 'astro build'",
-    "build": "astro build",
-    "build:pkg": "astro build && pnpm package",
+    "build": "astro build && pnpm package",
+    "build:pkg": "pnpm build",
+    "build:only": "astro build",
     "package": "theme-package",
     "astro": "astro",
     "format": "prettier --write .",

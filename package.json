@@ -9,7 +9,8 @@
     "build:pkg": "astro build && pnpm package",
     "package": "theme-package",
     "astro": "astro",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "prepare": "husky"
   },
   "prettier": {
     "plugins": [
@@ -65,6 +66,7 @@
     "@iconify-json/tabler": "^1.2.33",
     "@iconify/tailwind4": "^1.2.3",
     "@tailwindcss/typography": "^0.5.19",
+    "husky": "^9.1.7",
     "nodemon": "^3.1.14",
     "prettier": "3.8.1",
     "prettier-plugin-astro": "0.14.1",

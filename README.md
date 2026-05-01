@@ -54,15 +54,14 @@ Fuwari 主题支持以下 Halo 插件：
 - [x] 显示字数统计
 - [x] [评论系统](https://github.com/halo-sigs/plugin-comment-widget)（插件）
 - [x] [友情链接](https://github.com/halo-sigs/plugin-links)
+- [x] 图库（/photos）：https://halo.run/store/apps/app-BmQJW
+- [x] 瞬间（/moments）：https://halo.run/store/apps/app-SnwWD
+- [x] 文章目录
 - [x] i18n国际化
 - [x] 其他功能
 
 ### TODO
-
-- [ ] 图库（/photos）：https://halo.run/store/apps/app-BmQJW
-- [ ] 瞬间（/moments）：https://halo.run/store/apps/app-SnwWD
-- [ ] 文章目录
-- [ ] 优化暗亮色切换闪烁问题
+- [ ] 添加侧边栏组件
 
 ### 开发
 

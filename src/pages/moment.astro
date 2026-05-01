@@ -131,7 +131,8 @@ import MainGridLayout from "../layouts/MainGridLayout.astro";
             th:if="${moment.stats != null}"
             class="flex h-10 items-center gap-1.5"
           >
-            <span class="icon-[material-symbols--thumb-up-outline-rounded] text-xl"
+            <span
+              class="icon-[material-symbols--thumb-up-outline-rounded] text-xl"
             ></span>
             <span th:text="${moment.stats.upvote}">0</span>
           </span>
@@ -139,7 +140,8 @@ import MainGridLayout from "../layouts/MainGridLayout.astro";
             th:unless="${moment.stats != null}"
             class="flex h-10 items-center gap-1.5"
           >
-            <span class="icon-[material-symbols--thumb-up-outline-rounded] text-xl"
+            <span
+              class="icon-[material-symbols--thumb-up-outline-rounded] text-xl"
             ></span>
             <span>0</span>
           </span>
@@ -147,7 +149,8 @@ import MainGridLayout from "../layouts/MainGridLayout.astro";
             th:if="${moment.stats != null}"
             class="flex h-10 items-center justify-end gap-1.5"
           >
-            <span class="icon-[material-symbols--chat-bubble-outline-rounded] text-xl"
+            <span
+              class="icon-[material-symbols--chat-bubble-outline-rounded] text-xl"
             ></span>
             <span th:text="${moment.stats.approvedComment}">0</span>
           </span>
@@ -155,7 +158,8 @@ import MainGridLayout from "../layouts/MainGridLayout.astro";
             th:unless="${moment.stats != null}"
             class="flex h-10 items-center justify-end gap-1.5"
           >
-            <span class="icon-[material-symbols--chat-bubble-outline-rounded] text-xl"
+            <span
+              class="icon-[material-symbols--chat-bubble-outline-rounded] text-xl"
             ></span>
             <span>0</span>
           </span>

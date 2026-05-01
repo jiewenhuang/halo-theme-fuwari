@@ -163,11 +163,7 @@ spec:
         - $formkit: array
           name: social_media
           label: 社交媒体
-          value:
-            - icon: icon-[mdi--github]
-              url: https://github.com/jiewenhuang
-              text: GitHub
-              url_type: normal
+
 
           children:
             - $formkit: iconify
@@ -181,7 +177,6 @@ spec:
               name: url
               label: 链接
               validation: "required"
-
 
     - group: post
       label: 文章

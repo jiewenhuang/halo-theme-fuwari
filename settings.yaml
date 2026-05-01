@@ -140,26 +140,17 @@ spec:
           name: enable_profile
           value: "true"
           label: 启用个人设置
-        - $formkit: switch
-          name: auto_avatar
-          label: 使用用户头像
-          value: false
+
         - $formkit: attachment
           name: avatar
           value: /themes/theme-fuwari/assets/images/demo-avatar.png
           label: 头像
-        - $formkit: switch
-          name: auto_name
-          label: 使用用户昵称
-          value: false
+
         - $formkit: text
           name: name
           label: 昵称
           value: Fuwari
-        - $formkit: switch
-          name: auto_bio
-          label: 使用用户简介
-          value: false
+
         - $formkit: text
           name: bio
           label: 简介
@@ -179,76 +170,18 @@ spec:
               url_type: normal
 
           children:
-            - $formkit: select
-              name: icon
-              label: 图标
-              options:
-                - label: 电子邮箱
-                  value: icon-[tabler--mail-filled]
-                - label: 微信
-                  value: icon-[streamline-logos--wechat-logo-block]
-                - label: 腾讯 QQ
-                  value: icon-[fa6-brands--qq]
-                - label: 新浪微博
-                  value: icon-[simple-icons--sinaweibo]
-                - label: 知乎
-                  value: icon-[ant-design--zhihu-circle-filled]
-                - label: 豆瓣
-                  value: icon-[streamline-logos--douban-logo-block]
-                - label: 哔哩哔哩
-                  value: icon-[streamline-logos--bilibili-logo-block]
-                - label: 抖音 / TikTok
-                  value: icon-[streamline-logos--tiktok-logo-block]
-                - label: Telegram
-                  value: icon-[ic--baseline-telegram]
-                - label: Facebook
-                  value: icon-[ic--baseline-facebook]
-                - label: Instagram
-                  value: icon-[ant-design--instagram-filled]
-                - label: LinkedIn
-                  value: icon-[entypo-social--linkedin-with-circle]
-                - label: Twitter
-                  value: icon-[streamline-logos--x-twitter-logo-block]
-                - label: Slack
-                  value: icon-[ant-design--slack-circle-filled]
-                - label: Discord
-                  value: icon-[ic--baseline-discord]
-                - label: YouTube
-                  value: icon-[entypo-social--youtube-with-circle]
-                - label: Steam
-                  value: icon-[ri--steam-fill]
-                - label: GitHub
-                  value: icon-[mdi--github]
-                - label: GitLab
-                  value: icon-[fa6-brands--square-gitlab]
-                - label: RSS
-                  value: icon-[streamline-plump--rss-square-solid]
-                - label: 自定义
-                  value: custom
+            - $formkit: iconify
+              name: social_icon
+              label: 社交图标
+              format: svg # svg / dataurl / url / name
             - $formkit: text
               name: name
               label: 名称
             - $formkit: text
-              if: $value.icon === custom
-              name: custom_icon
-              label: 自定义图标
-              validation: "required"
-              value: ""
-              help: "你可以引入自己的iconfont库，然后这里填写图标的类名，例如：iconfont icon-xxx"
-            - $formkit: text
               name: url
               label: 链接
               validation: "required"
-            - $formkit: select
-              name: url_type
-              label: 链接类型
-              value: normal
-              help: "如果选择了图片类型，那么在访客点击之后会使用弹框的形式加载"
-              options:
-                - label: 跳转链接
-                  value: normal
-                - label: 图片
-                  value: image
+
 
     - group: post
       label: 文章

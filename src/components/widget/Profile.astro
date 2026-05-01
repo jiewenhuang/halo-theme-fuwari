@@ -40,14 +40,13 @@ import ImageWrapper from "../misc/ImageWrapper.astro";
     <div class="mb-1 flex flex-wrap justify-center gap-2">
       <a
         th:each="social : ${theme.config.profile.social_media}"
-        th:href="${social.url_type == 'normal' ? social.url : 'javascript:void(0)'}"
+        th:href="${social.url}"
         th:title="${social.name ?: social.text}"
-        th:target="${social.url_type == 'normal' ? '_blank' : ''}"
-        class="btn-regular h-9 w-9 rounded-lg active:scale-90"
+        target="_blank"
+        class="btn-regular size-10 rounded-lg active:scale-90"
+        th:utext="${social.social_icon.value}"
       >
-        <span
-          th:class="${social.icon == 'custom' ? social.custom_icon : social.icon}"
-        ></span>
+
       </a>
     </div>
   </div>

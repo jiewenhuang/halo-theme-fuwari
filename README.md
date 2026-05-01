@@ -35,11 +35,11 @@ Fuwari 主题支持以下 Halo 插件：
 
 - [x] 搜索插件：https://www.halo.run/store/apps/app-DlacW
 - [x] 评论插件：https://www.halo.run/store/apps/app-YXyaD
+- [x] 瞬间插件：https://www.halo.run/store/apps/app-SnwWD
+- [x] 图库插件：https://www.halo.run/store/apps/app-BmQJW
+- [x] 链接管理插件：https://www.halo.run/store/apps/app-hfbQg
 
-为了获得更好的体验，你还可以安装以下插件（如果需要）：
 
-- highlight.js 代码高亮：https://halo.run/store/apps/app-sqpgf
-- lightgallery.js 灯箱：https://halo.run/store/apps/app-OoggD
 
 ### 使用说明
 
@@ -51,7 +51,6 @@ Fuwari 主题支持以下 Halo 插件：
 - [x] 文章目录
 - [x] [代码高亮/语言/复制](https://github.com/halo-sigs/plugin-shiki)（插件）
 - [x] [文章搜索](https://github.com/halo-sigs/plugin-search-widget)（插件）
-- [x] 显示字数统计
 - [x] [评论系统](https://github.com/halo-sigs/plugin-comment-widget)（插件）
 - [x] [友情链接](https://github.com/halo-sigs/plugin-links)
 - [x] 图库（/photos）：https://halo.run/store/apps/app-BmQJW
@@ -60,9 +59,7 @@ Fuwari 主题支持以下 Halo 插件：
 - [x] i18n国际化
 - [x] 其他功能
 
-### TODO
 
-- [ ] 添加侧边栏组件
 
 ### 开发
 

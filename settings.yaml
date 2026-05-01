@@ -138,7 +138,7 @@ spec:
       formSchema:
         - $formkit: switch
           name: enable_profile
-          value: "true"
+          value: true
           label: 启用个人设置
 
         - $formkit: attachment
@@ -163,7 +163,6 @@ spec:
         - $formkit: array
           name: social_media
           label: 社交媒体
-
 
           children:
             - $formkit: iconify

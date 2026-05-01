@@ -31,17 +31,19 @@ import PostMeta from "./PostMeta.astro";
       Excerpt
     </div>
 
-    <div class="flex gap-4 text-sm text-black/30 transition dark:text-white/30">
-      <div th:if="${post.stats != null}">
-        <span class="icon-[material-symbols--visibility-outline-rounded] mr-1"
+    <div
+      class="flex items-center gap-4 text-sm text-black/30 transition dark:text-white/30"
+    >
+      <div th:if="${post.stats != null}" class="inline-flex items-center">
+        <span class="icon-[material-symbols--visibility-outline-rounded] mr-1 text-base leading-none"
         ></span>
-        <span th:text="${post.stats.visit}">0</span>
+        <span class="leading-none" th:text="${post.stats.visit}">0</span>
       </div>
-      <div th:if="${post.stats != null}">|</div>
-      <div th:if="${post.stats != null}">
-        <span class="icon-[material-symbols--chat-bubble-outline-rounded] mr-1"
+      <div th:if="${post.stats != null}" class="leading-none">|</div>
+      <div th:if="${post.stats != null}" class="inline-flex items-center">
+        <span class="icon-[material-symbols--chat-bubble-outline-rounded] mr-1 text-base leading-none"
         ></span>
-        <span th:text="${post.stats.comment}">0</span>
+        <span class="leading-none" th:text="${post.stats.comment}">0</span>
       </div>
     </div>
   </div>

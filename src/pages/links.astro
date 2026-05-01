@@ -46,6 +46,7 @@ import MainGridLayout from "../layouts/MainGridLayout.astro";
             class="btn-card group min-h-28 items-start! justify-start! gap-4 rounded-xl p-4 text-left active:scale-95"
           >
             <img
+              alt=""
               th:if="${not #strings.isEmpty(link.spec.logo)}"
               th:src="${link.spec.logo}"
               th:alt="${link.spec.displayName}"
@@ -56,7 +57,8 @@ import MainGridLayout from "../layouts/MainGridLayout.astro";
               th:unless="${not #strings.isEmpty(link.spec.logo)}"
               class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-(--btn-regular-bg) text-(--primary)"
             >
-              <span class="icon-[material-symbols--link-rounded] text-2xl"></span>
+              <span class="icon-[material-symbols--link-rounded] text-2xl"
+              ></span>
             </div>
             <div class="min-w-0 flex-1">
               <div class="flex items-start gap-2">

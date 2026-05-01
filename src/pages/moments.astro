@@ -31,10 +31,7 @@ import MainGridLayout from "../layouts/MainGridLayout.astro";
       </a>
     </div>
 
-    <div
-      th:if="${not #lists.isEmpty(tags)}"
-      class="mb-5 flex flex-wrap gap-2"
-    >
+    <div th:if="${not #lists.isEmpty(tags)}" class="mb-5 flex flex-wrap gap-2">
       <a
         th:href="@{/moments}"
         th:classappend="${#lists.isEmpty(param.tag) ? ' bg-(--primary) text-white dark:text-black/70' : ''}"
@@ -52,10 +49,7 @@ import MainGridLayout from "../layouts/MainGridLayout.astro";
       </a>
     </div>
 
-    <div
-      th:if="${not #lists.isEmpty(moments.items)}"
-      class="moment-list"
-    >
+    <div th:if="${not #lists.isEmpty(moments.items)}" class="moment-list">
       <article
         th:each="moment, momentStat : ${moments.items}"
         th:with="content=${moment.spec.content}"
@@ -75,7 +69,8 @@ import MainGridLayout from "../layouts/MainGridLayout.astro";
               th:if="${moment.owner != null and not #strings.isEmpty(moment.owner.avatar)}"
               class="absolute -bottom-0.5 -right-0.5 flex h-5 w-5 items-center justify-center rounded-full bg-(--primary) text-white ring-2 ring-(--card-bg)"
             >
-              <span class="icon-[material-symbols--check-small-rounded] text-base"
+              <span
+                class="icon-[material-symbols--check-small-rounded] text-base"
               ></span>
             </span>
           </div>
@@ -107,7 +102,8 @@ import MainGridLayout from "../layouts/MainGridLayout.astro";
                 class="btn-plain h-11 w-11 shrink-0 rounded-lg text-50 active:scale-95"
                 aria-label="View moment"
               >
-                <span class="icon-[material-symbols--more-horiz] text-2xl"></span>
+                <span class="icon-[material-symbols--more-horiz] text-2xl"
+                ></span>
               </a>
             </div>
 
@@ -162,7 +158,8 @@ import MainGridLayout from "../layouts/MainGridLayout.astro";
                   th:src="${momentItem.url}"
                   th:classappend="${mediaCount == 5 and mediumStat.index < 2 ? ' moment-media-item-wide' : ''}"
                   controls
-                  class="moment-media-item max-w-full rounded-xl bg-black"></video>
+                  class="moment-media-item max-w-full rounded-xl bg-black"
+                ></video>
                 <audio
                   th:if="${momentItem.type.name == 'AUDIO'}"
                   th:src="${momentItem.url}"
@@ -182,14 +179,13 @@ import MainGridLayout from "../layouts/MainGridLayout.astro";
               </div>
             </div>
 
-            <div
-              class="mt-4 flex flex-wrap items-center gap-5 text-sm text-50"
-            >
+            <div class="mt-4 flex flex-wrap items-center gap-5 text-sm text-50">
               <span
                 th:if="${moment.stats != null}"
                 class="flex h-10 items-center gap-1.5"
               >
-                <span class="icon-[material-symbols--thumb-up-outline-rounded] text-xl"
+                <span
+                  class="icon-[material-symbols--thumb-up-outline-rounded] text-xl"
                 ></span>
                 <span th:text="${moment.stats.upvote}">0</span>
               </span>
@@ -197,7 +193,8 @@ import MainGridLayout from "../layouts/MainGridLayout.astro";
                 th:unless="${moment.stats != null}"
                 class="flex h-10 items-center gap-1.5"
               >
-                <span class="icon-[material-symbols--thumb-up-outline-rounded] text-xl"
+                <span
+                  class="icon-[material-symbols--thumb-up-outline-rounded] text-xl"
                 ></span>
                 <span>0</span>
               </span>
@@ -205,7 +202,8 @@ import MainGridLayout from "../layouts/MainGridLayout.astro";
                 th:href="@{/moments/{name}(name=${moment.metadata.name})}"
                 class="link flex h-10 items-center gap-1.5 text-50"
               >
-                <span class="icon-[material-symbols--open-in-new-rounded] text-xl"
+                <span
+                  class="icon-[material-symbols--open-in-new-rounded] text-xl"
                 ></span>
                 <span th:text="#{common.more}">More</span>
               </a>
@@ -213,7 +211,8 @@ import MainGridLayout from "../layouts/MainGridLayout.astro";
                 th:if="${moment.stats != null}"
                 class="flex h-10 items-center gap-1.5"
               >
-                <span class="icon-[material-symbols--chat-bubble-outline-rounded] text-xl"
+                <span
+                  class="icon-[material-symbols--chat-bubble-outline-rounded] text-xl"
                 ></span>
                 <span th:text="${moment.stats.approvedComment}">0</span>
               </span>
@@ -221,7 +220,8 @@ import MainGridLayout from "../layouts/MainGridLayout.astro";
                 th:unless="${moment.stats != null}"
                 class="flex h-10 items-center gap-1.5"
               >
-                <span class="icon-[material-symbols--chat-bubble-outline-rounded] text-xl"
+                <span
+                  class="icon-[material-symbols--chat-bubble-outline-rounded] text-xl"
                 ></span>
                 <span>0</span>
               </span>

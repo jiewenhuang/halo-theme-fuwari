@@ -50,6 +50,10 @@ const i18nInlineScript = `<script th:inline="javascript">
     "nav.lightDark": \`[(#{nav.lightDark})]\`,
   };
 </script>`;
+
+const themeSettingScript = `<script type="application/json" id="theme-config" th:inline="javascript">
+       /*[[\${theme.config}]]*/
+    </script>`
 ---
 
 <!doctype html>
@@ -76,11 +80,7 @@ const i18nInlineScript = `<script th:inline="javascript">
     <title th:text={title}></title>
     <link rel="icon" th:href="${site.favicon}" />
 
-    <script
-      type="application/json"
-      id="theme-config"
-      th:utext="${theme.config}"
-      is:inline></script>
+    <Fragment set:html={themeSettingScript} />
     <Fragment set:html={i18nInlineScript} />
     <script
       is:inline

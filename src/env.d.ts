@@ -19,5 +19,6 @@ declare namespace astroHTML.JSX {
     "th:attr"?: string;
     "th:datetime"?: string;
     "th:title"?: string;
+    "th:class"?: string;
   }
 }

@@ -66,6 +66,12 @@
   --toc-btn-hover: oklch(0.926 0.015 var(--hue));
   --toc-btn-active: oklch(0.9 0.015 var(--hue));
   --toc-width: calc((100vw - var(--page-width)) / 2 - 1rem);
+
+  --admonitions-color-tip: oklch(0.7 0.14 180);
+  --admonitions-color-note: oklch(0.7 0.14 250);
+  --admonitions-color-important: oklch(0.7 0.14 310);
+  --admonitions-color-warning: oklch(0.7 0.14 60);
+  --admonitions-color-caution: oklch(0.6 0.2 25);
 }
 
 :root.dark {
@@ -112,4 +118,9 @@
   --toc-badge-bg: var(--btn-regular-bg);
   --toc-btn-hover: oklch(0.22 0.02 var(--hue));
   --toc-btn-active: oklch(0.25 0.02 var(--hue));
+  --admonitions-color-tip: oklch(0.75 0.14 180);
+  --admonitions-color-note: oklch(0.75 0.14 250);
+  --admonitions-color-important: oklch(0.75 0.14 310);
+  --admonitions-color-warning: oklch(0.75 0.14 60);
+  --admonitions-color-caution: oklch(0.65 0.2 25);
 }

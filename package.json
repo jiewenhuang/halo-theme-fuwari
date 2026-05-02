@@ -68,9 +68,13 @@
     "@iconify/tailwind4": "^1.2.3",
     "@tailwindcss/typography": "^0.5.19",
     "husky": "^9.1.7",
+    "lint-staged": "^16.4.0",
     "nodemon": "^3.1.14",
     "prettier": "3.8.1",
     "prettier-plugin-astro": "0.14.1",
     "unplugin-icons": "^23.0.1"
+  },
+  "lint-staged": {
+    "*.{astro,css,js,mjs,cjs,ts,vue,svelte,json,yaml,yml,md}": "prettier --write --ignore-unknown"
   }
 }

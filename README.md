@@ -39,8 +39,6 @@ Fuwari 主题支持以下 Halo 插件：
 - [x] 图库插件：https://www.halo.run/store/apps/app-BmQJW
 - [x] 链接管理插件：https://www.halo.run/store/apps/app-hfbQg
 
-
-
 ### 使用说明
 
 > 1、部分功能是使用插件进行支持
@@ -58,8 +56,6 @@ Fuwari 主题支持以下 Halo 插件：
 - [x] 文章目录
 - [x] i18n国际化
 - [x] 其他功能
-
-
 
 ### 开发
 

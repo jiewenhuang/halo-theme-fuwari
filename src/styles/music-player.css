@@ -1,0 +1,49 @@
+.firefly-music-player {
+  overflow: hidden;
+  border-radius: 0.875rem;
+}
+
+.firefly-music-player .music-cover {
+  animation: firefly-music-spin 10s linear infinite;
+}
+
+.firefly-music-player .custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in oklab, var(--primary) 45%, transparent)
+    transparent;
+}
+
+.firefly-music-player .custom-scrollbar::-webkit-scrollbar {
+  width: 0.25rem;
+}
+
+.firefly-music-player .custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.firefly-music-player .custom-scrollbar::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: color-mix(in oklab, var(--primary) 45%, transparent);
+}
+
+.firefly-music-player .progress-thumb {
+  left: 0%;
+}
+
+.firefly-music-player .music-loading:not(.opacity-0) {
+  pointer-events: auto;
+}
+
+.firefly-music-player button {
+  cursor: pointer;
+}
+
+@keyframes firefly-music-spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}

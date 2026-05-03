@@ -20,5 +20,7 @@ declare namespace astroHTML.JSX {
     "th:datetime"?: string;
     "th:title"?: string;
     "th:class"?: string;
+    "th:switch"?: string;
+    "th:case"?: string;
   }
 }

@@ -124,8 +124,78 @@ spec:
                   value: categories
                 - label: 文章标签
                   value: tag
+                - label: 音乐播放器
+                  value: music
                 - label: 自定义HTML
                   value: html
+            - $formkit: text
+              if: $value.value === music
+              name: title
+              label: 标题
+              value: 音乐
+            - $formkit: select
+              if: $value.value === music
+              name: server
+              label: 平台
+              value: netease
+              options:
+                - label: 网易云音乐
+                  value: netease
+                - label: QQ 音乐
+                  value: tencent
+                - label: 酷狗音乐
+                  value: kugou
+                - label: 虾米音乐
+                  value: xiami
+                - label: 百度音乐
+                  value: baidu
+            - $formkit: select
+              if: $value.value === music
+              name: type
+              label: 类型
+              value: playlist
+              options:
+                - label: 歌曲
+                  value: song
+                - label: 歌单
+                  value: playlist
+                - label: 专辑
+                  value: album
+                - label: 歌手
+                  value: artist
+                - label: 搜索
+                  value: search
+            - $formkit: text
+              if: $value.value === music
+              name: id
+              label: ID
+              validation: required
+              help: 歌曲 / 歌单 / 专辑 / 歌手 ID，搜索类型时填写关键词
+            - $formkit: select
+              if: $value.value === music
+              name: play_mode
+              label: 播放模式
+              value: list
+              options:
+                - label: 列表循环
+                  value: list
+                - label: 单曲循环
+                  value: one
+                - label: 随机
+                  value: random
+            - $formkit: number
+              if: $value.value === music
+              name: volume
+              label: 默认音量
+              min: 0
+              max: 1
+              step: 0.1
+              value: 0.7
+            - $formkit: url
+              if: $value.value === music
+              name: api
+              label: 自定义 Meting API
+              help: 留空时使用 MetingJS 默认 API，地址可包含 :server、:type、:id、:r 占位符
             - $formkit: code
               if: $value.value === html
               name: html

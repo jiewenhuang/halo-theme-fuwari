@@ -1,0 +1,877 @@
+---
+import { Icon } from "astro-icon/components";
+import WidgetLayout from "./WidgetLayout.astro";
+
+/*
+ * Player interaction and layout adapted from CuteLeaf/Firefly.
+ * MIT License, Copyright (c) 2024 saicaca, 2025 CuteLeaf.
+ * https://github.com/CuteLeaf/Firefly
+ */
+
+interface Props {
+  class?: string;
+  style?: string;
+}
+
+const className = Astro.props.class;
+const style = Astro.props.style;
+const widgetId = `music-widget-${Math.random().toString(36).slice(2, 9)}`;
+const layoutId = `${widgetId}-layout`;
+---
+
+<div
+  class="contents"
+  th:if="${not #strings.isEmpty(widget.id)}"
+  th:with="musicTitle=${#strings.isEmpty(widget.title) ? #messages.msg('widget.music.title') : widget.title}"
+>
+  <WidgetLayout
+    name="音乐"
+    nameExpression="musicTitle"
+    id={layoutId}
+    class={className}
+    style={style}
+  >
+    <div
+      id={widgetId}
+      class="firefly-music-player relative w-full transition-all duration-300"
+      role="region"
+      th:aria-label="${musicTitle}"
+      data-server="netease"
+      data-type="playlist"
+      data-id=""
+      data-api=""
+      data-volume="0.7"
+      data-play-mode="list"
+      data-show-lyrics="true"
+      th:attr="data-server=${#strings.isEmpty(widget.server) ? 'netease' : widget.server},
+        data-type=${#strings.isEmpty(widget.type) ? 'playlist' : widget.type},
+        data-id=${widget.id},
+        data-api=${#strings.isEmpty(widget.api) ? 'https://api.i-meto.com/meting/api?server=:server&type=:type&id=:id&r=:r' : widget.api},
+        data-volume=${widget.volume == null ? 0.7 : widget.volume},
+        data-play-mode=${#strings.isEmpty(widget.play_mode) ? 'list' : widget.play_mode},
+        data-show-lyrics=true"
+    >
+      <div class="mb-2 flex items-center gap-2 px-1">
+        <div class="group relative h-14 w-14 shrink-0">
+          <div
+            class="relative z-10 flex h-full w-full items-center justify-center overflow-hidden rounded-full border-2 border-white bg-(--primary)/10 shadow-lg dark:border-neutral-700"
+          >
+            <Icon
+              name="material-symbols:music-note-rounded"
+              class="absolute text-2xl text-(--primary) opacity-40"
+              aria-hidden="true"
+            />
+            <img
+              class="music-cover animate-spin-slow relative z-10 h-full w-full object-cover opacity-0 transition-opacity duration-300"
+              src=""
+              alt=""
+              style="animation-play-state: paused;"
+            />
+          </div>
+        </div>
+
+        <div class="flex min-w-0 flex-1 flex-col overflow-hidden">
+          <div class="flex items-center justify-between gap-2 overflow-hidden">
+            <div class="relative min-w-0 flex-1 overflow-hidden">
+              <h3
+                class="music-title truncate text-base font-bold leading-tight text-neutral-800 dark:text-neutral-100"
+                th:text="${musicTitle}"
+              >
+                音乐
+              </h3>
+            </div>
+            <button
+              class="btn-lrc-toggle shrink-0 p-0.5 pr-2 text-neutral-400 transition-all duration-300 hover:text-(--primary) active:scale-95"
+              type="button"
+              aria-label="Lyrics"
+            >
+              <Icon
+                name="material-symbols:subtitles-off-outline-rounded"
+                class="icon-lrc-off text-xl"
+                aria-hidden="true"
+              />
+              <Icon
+                name="material-symbols:subtitles-outline-rounded"
+                class="icon-lrc-on hidden text-xl"
+                aria-hidden="true"
+              />
+            </button>
+          </div>
+
+          <div class="min-w-0 overflow-hidden">
+            <p
+              class="music-artist truncate text-xs font-medium text-neutral-500 dark:text-neutral-400"
+            >
+              未播放
+            </p>
+          </div>
+
+          <div class="flex h-5 items-center gap-3 text-neutral-400">
+            <div
+              class="flex h-full shrink-0 items-center gap-1 font-mono text-[10px]"
+              aria-live="polite"
+            >
+              <span class="current-time">0:00</span>
+              <span class="opacity-50" aria-hidden="true">/</span>
+              <span class="total-time">0:00</span>
+            </div>
+
+            <div class="ml-auto flex h-full items-center gap-1 bg-transparent">
+              <button
+                class="btn-mute flex items-center rounded-md p-0.5 transition-colors hover:text-(--primary)"
+                type="button"
+                aria-label="Volume"
+              >
+                <Icon
+                  name="material-symbols:volume-up-rounded"
+                  class="icon-vol-high text-lg"
+                  aria-hidden="true"
+                />
+                <Icon
+                  name="material-symbols:volume-off-rounded"
+                  class="icon-vol-mute hidden text-lg"
+                  aria-hidden="true"
+                />
+              </button>
+              <div
+                class="flex w-16 items-center transition-all duration-300 ease-out"
+              >
+                <div
+                  class="vol-container relative ml-1 h-1 w-16 cursor-pointer rounded-full bg-neutral-200 dark:bg-neutral-600"
+                  role="slider"
+                  aria-label="Volume"
+                  aria-valuemin="0"
+                  aria-valuemax="100"
+                  aria-valuenow="70"
+                >
+                  <div
+                    class="vol-bar absolute left-0 top-0 h-full w-[70%] rounded-full bg-(--primary)"
+                  >
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="px-1">
+        <div
+          class="progress-container group relative mb-2 mt-2 h-1 w-full cursor-pointer touch-none rounded-full bg-neutral-100 dark:bg-neutral-700/50"
+          role="slider"
+          aria-label="Progress"
+          aria-valuemin="0"
+          aria-valuemax="100"
+          aria-valuenow="0"
+        >
+          <div
+            class="progress-bar absolute left-0 top-0 h-full w-0 rounded-full bg-(--primary) transition-[width] duration-100"
+          >
+          </div>
+          <div
+            class="progress-thumb absolute top-1/2 -ml-1.5 -mt-1.5 h-3 w-3 scale-0 rounded-full bg-(--primary) shadow-sm ring-2 ring-white transition-transform duration-200 group-hover:scale-100 dark:ring-neutral-800"
+          >
+          </div>
+        </div>
+      </div>
+
+      <div class="flex select-none items-center justify-between px-1">
+        <button
+          class="btn-repeat p-2 text-neutral-300 transition-colors hover:text-(--primary) active:scale-95 dark:text-neutral-600"
+          type="button"
+          aria-label="Play mode"
+        >
+          <Icon
+            name="material-symbols:repeat-rounded"
+            class="icon-repeat text-xl"
+            aria-hidden="true"
+          />
+          <Icon
+            name="material-symbols:repeat-one-rounded"
+            class="icon-repeat-one hidden text-xl"
+            aria-hidden="true"
+          />
+          <Icon
+            name="material-symbols:shuffle-rounded"
+            class="icon-shuffle hidden text-xl"
+            aria-hidden="true"
+          />
+        </button>
+
+        <button
+          class="btn-prev p-2 text-neutral-600 transition-colors hover:text-(--primary) active:scale-95 dark:text-neutral-300"
+          type="button"
+          aria-label="Previous"
+        >
+          <Icon
+            name="material-symbols:skip-previous-rounded"
+            class="text-3xl"
+            aria-hidden="true"
+          />
+        </button>
+
+        <button
+          class="btn-play flex h-12 w-12 items-center justify-center rounded-full bg-(--btn-regular-bg) text-(--primary) transition-all duration-300 hover:bg-(--btn-regular-bg-hover) active:bg-(--btn-regular-bg-active)"
+          type="button"
+          aria-label="Play"
+        >
+          <Icon
+            name="material-symbols:play-arrow-rounded"
+            class="icon-play ml-0.5 text-3xl"
+            aria-hidden="true"
+          />
+          <Icon
+            name="material-symbols:pause-rounded"
+            class="icon-pause hidden text-3xl"
+            aria-hidden="true"
+          />
+        </button>
+
+        <button
+          class="btn-next p-2 text-neutral-600 transition-colors hover:text-(--primary) active:scale-95 dark:text-neutral-300"
+          type="button"
+          aria-label="Next"
+        >
+          <Icon
+            name="material-symbols:skip-next-rounded"
+            class="text-3xl"
+            aria-hidden="true"
+          />
+        </button>
+
+        <button
+          class="btn-drawer-toggle p-2 text-neutral-400 transition-all duration-300 hover:text-(--primary) active:scale-95"
+          type="button"
+          aria-label="Playlist"
+        >
+          <Icon name="mdi:playlist-music" class="text-xl" aria-hidden="true" />
+        </button>
+      </div>
+
+      <div
+        class="lrc-drawer grid grid-rows-[0fr] opacity-0 transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]"
+      >
+        <div class="min-h-0 overflow-hidden">
+          <div
+            class="mx-1 mt-2 border-t border-neutral-100 pt-2 dark:border-white/5"
+          >
+            <div
+              class="lrc-container custom-scrollbar relative flex h-48 flex-col items-center gap-2 overflow-y-auto scroll-smooth p-4 py-24 text-center"
+              role="listbox"
+              aria-label="Lyrics"
+            >
+              <div class="py-10 text-sm text-neutral-400" role="option">
+                暂无歌词
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="playlist-drawer grid grid-rows-[0fr] opacity-0 transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]"
+      >
+        <div class="min-h-0 overflow-hidden">
+          <div
+            class="mx-1 mt-2 border-t border-neutral-100 pt-2 dark:border-white/5"
+          >
+            <div
+              class="playlist-container custom-scrollbar flex max-h-48 flex-col gap-1 overflow-y-auto pb-1 pr-1"
+              role="listbox"
+              aria-label="Playlist"
+            >
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="music-loading pointer-events-none absolute inset-0 z-20 flex flex-col items-center justify-center rounded-xl bg-white/60 opacity-0 backdrop-blur-[2px] transition-opacity duration-300 dark:bg-[#1e1e1e]/60"
+        aria-busy="true"
+        aria-hidden="true"
+      >
+        <div class="h-8 w-8 animate-spin text-(--primary)">
+          <Icon
+            name="material-symbols:sync-rounded"
+            class="text-3xl"
+            aria-hidden="true"
+          />
+        </div>
+      </div>
+    </div>
+
+    <template id={`playlist-item-template-${widgetId}`}>
+      <div
+        class="playlist-item group flex cursor-pointer items-center gap-3 rounded-lg p-2 transition-colors hover:bg-neutral-50 dark:hover:bg-white/5"
+      >
+        <div
+          class="relative h-8 w-8 shrink-0 overflow-hidden rounded-md bg-neutral-200 dark:bg-neutral-700"
+        >
+          <img
+            src=""
+            class="item-cover h-full w-full object-cover"
+            loading="lazy"
+            alt=""
+          />
+          <div
+            class="item-active-overlay absolute inset-0 hidden items-center justify-center bg-(--primary)/20"
+          >
+            <Icon
+              name="material-symbols:graphic-eq-rounded"
+              class="text-sm text-(--primary)"
+            />
+          </div>
+        </div>
+        <div class="min-w-0 flex-1">
+          <div
+            class="item-title truncate text-xs font-bold text-neutral-700 transition-colors group-hover:text-(--primary) dark:text-neutral-200"
+          >
+          </div>
+          <div class="item-artist truncate text-[10px] text-neutral-400"></div>
+        </div>
+      </div>
+    </template>
+  </WidgetLayout>
+</div>
+
+<script define:vars={{ widgetId }} is:inline>
+  (() => {
+    const widget = document.getElementById(widgetId);
+    if (!widget || widget.dataset.fireflyBound === "true") return;
+    widget.dataset.fireflyBound = "true";
+
+    const resources = window.i18nResources || {};
+    const t = (key, fallback) => {
+      const value = resources[key];
+      return value && !value.includes("#{") ? value : fallback;
+    };
+
+    const cfg = {
+      server: widget.dataset.server || "netease",
+      type: widget.dataset.type || "playlist",
+      id: widget.dataset.id || "",
+      api:
+        widget.dataset.api ||
+        "https://api.i-meto.com/meting/api?server=:server&type=:type&id=:id&r=:r",
+      volume: Number.parseFloat(widget.dataset.volume || "0.7"),
+      playMode: widget.dataset.playMode || "list",
+      showLyrics: widget.dataset.showLyrics !== "false",
+      i18n: {
+        noPlaying: t("widget.music.noPlaying", "未播放"),
+        lyrics: t("widget.music.lyrics", "歌词"),
+        volume: t("widget.music.volume", "音量"),
+        playMode: t("widget.music.playMode", "播放模式"),
+        prev: t("widget.music.prev", "上一首"),
+        next: t("widget.music.next", "下一首"),
+        playlist: t("widget.music.playlist", "播放列表"),
+        noLyrics: t("widget.music.noLyrics", "暂无歌词"),
+        loadingLyrics: t("widget.music.loadingLyrics", "正在加载歌词"),
+        failedLyrics: t("widget.music.failedLyrics", "歌词加载失败"),
+        noSongs: t("widget.music.noSongs", "暂无歌曲"),
+        error: t("widget.music.error", "音乐加载失败"),
+        play: t("widget.music.play", "播放"),
+        pause: t("widget.music.pause", "暂停"),
+        progress: t("widget.music.progress", "播放进度"),
+        noCover: t("widget.music.noCover", "无封面"),
+      },
+    };
+
+    const formatTime = (seconds) => {
+      if (!seconds || Number.isNaN(seconds)) return "0:00";
+      const min = Math.floor(seconds / 60);
+      const sec = Math.floor(seconds % 60);
+      return `${min}:${sec < 10 ? "0" : ""}${sec}`;
+    };
+
+    const parseLRC = (lrc) => {
+      if (!lrc) return [];
+      const result = [];
+      const timeReg = /\[(\d{2}):(\d{2})\.(\d{2,3})\]/g;
+      lrc.split("\n").forEach((line) => {
+        const matches = Array.from(line.matchAll(timeReg));
+        if (matches.length === 0) return;
+        const text = line.replace(timeReg, "").trim();
+        if (!text) return;
+        matches.forEach((match) => {
+          const m = Number.parseInt(match[1], 10);
+          const s = Number.parseInt(match[2], 10);
+          const ms = Number.parseInt(match[3], 10);
+          const time = m * 60 + s + ms / (match[3].length === 3 ? 1000 : 100);
+          result.push({ time, text });
+        });
+      });
+      return result.sort((a, b) => a.time - b.time);
+    };
+
+    const ui = {
+      loading: widget.querySelector(".music-loading"),
+      cover: widget.querySelector(".music-cover"),
+      title: widget.querySelector(".music-title"),
+      artist: widget.querySelector(".music-artist"),
+      progressBar: widget.querySelector(".progress-bar"),
+      progressThumb: widget.querySelector(".progress-thumb"),
+      progressContainer: widget.querySelector(".progress-container"),
+      currentTime: widget.querySelector(".current-time"),
+      totalTime: widget.querySelector(".total-time"),
+      btnPlay: widget.querySelector(".btn-play"),
+      iconPlay: widget.querySelector(".icon-play"),
+      iconPause: widget.querySelector(".icon-pause"),
+      btnPrev: widget.querySelector(".btn-prev"),
+      btnNext: widget.querySelector(".btn-next"),
+      btnRepeat: widget.querySelector(".btn-repeat"),
+      iconRepeat: widget.querySelector(".icon-repeat"),
+      iconRepeatOne: widget.querySelector(".icon-repeat-one"),
+      iconShuffle: widget.querySelector(".icon-shuffle"),
+      btnMute: widget.querySelector(".btn-mute"),
+      iconVolHigh: widget.querySelector(".icon-vol-high"),
+      iconVolMute: widget.querySelector(".icon-vol-mute"),
+      volContainer: widget.querySelector(".vol-container"),
+      volBar: widget.querySelector(".vol-bar"),
+      btnLrc: widget.querySelector(".btn-lrc-toggle"),
+      iconLrcOn: widget.querySelector(".icon-lrc-on"),
+      iconLrcOff: widget.querySelector(".icon-lrc-off"),
+      lrcDrawer: widget.querySelector(".lrc-drawer"),
+      lrcContainer: widget.querySelector(".lrc-container"),
+      btnDrawer: widget.querySelector(".btn-drawer-toggle"),
+      playlistDrawer: widget.querySelector(".playlist-drawer"),
+      playlistContainer: widget.querySelector(".playlist-container"),
+      itemTemplate: document.getElementById(
+        `playlist-item-template-${widgetId}`,
+      ),
+    };
+
+    ui.artist.textContent = cfg.i18n.noPlaying;
+    ui.btnPlay.title = cfg.i18n.play;
+    ui.btnPlay.setAttribute("aria-label", cfg.i18n.play);
+    ui.btnLrc.title = cfg.i18n.lyrics;
+    ui.btnLrc.setAttribute("aria-label", cfg.i18n.lyrics);
+    ui.btnMute.title = cfg.i18n.volume;
+    ui.btnMute.setAttribute("aria-label", cfg.i18n.volume);
+    ui.btnRepeat.title = cfg.i18n.playMode;
+    ui.btnRepeat.setAttribute("aria-label", cfg.i18n.playMode);
+    ui.btnPrev.title = cfg.i18n.prev;
+    ui.btnPrev.setAttribute("aria-label", cfg.i18n.prev);
+    ui.btnNext.title = cfg.i18n.next;
+    ui.btnNext.setAttribute("aria-label", cfg.i18n.next);
+    ui.btnDrawer.title = cfg.i18n.playlist;
+    ui.btnDrawer.setAttribute("aria-label", cfg.i18n.playlist);
+    ui.progressContainer.setAttribute("aria-label", cfg.i18n.progress);
+    ui.volContainer.setAttribute("aria-label", cfg.i18n.volume);
+    ui.lrcContainer.setAttribute("aria-label", cfg.i18n.lyrics);
+    ui.playlistContainer.setAttribute("aria-label", cfg.i18n.playlist);
+    ui.cover.alt = cfg.i18n.noCover;
+
+    if (!cfg.showLyrics) ui.btnLrc.classList.add("hidden");
+
+    const state = {
+      playlist: [],
+      currentIndex: 0,
+      isPlaying: false,
+      playMode: cfg.playMode === "random" ? 2 : cfg.playMode === "one" ? 1 : 0,
+      volume: Number.isFinite(cfg.volume) ? cfg.volume : 0.7,
+      isMuted: false,
+      lyrics: [],
+      currentLrcIndex: -1,
+      isUserScrolling: false,
+      scrollTimeout: 0,
+    };
+
+    const audio = document.createElement("audio");
+    audio.crossOrigin = "anonymous";
+    audio.preload = "metadata";
+    audio.volume = state.volume;
+    audio.style.display = "none";
+    widget.appendChild(audio);
+
+    const setLoading = (isLoading) => {
+      ui.loading.classList.toggle("opacity-0", !isLoading);
+      ui.loading.classList.toggle("pointer-events-none", !isLoading);
+    };
+
+    const updatePlayStateUI = (isPlaying) => {
+      ui.btnPlay.classList.toggle("bg-(--primary)", isPlaying);
+      ui.btnPlay.classList.toggle("text-white", isPlaying);
+      ui.btnPlay.classList.toggle("bg-(--btn-regular-bg)", !isPlaying);
+      ui.btnPlay.classList.toggle("text-(--primary)", !isPlaying);
+      ui.iconPlay.classList.toggle("hidden", isPlaying);
+      ui.iconPause.classList.toggle("hidden", !isPlaying);
+      ui.cover.style.animationPlayState = isPlaying ? "running" : "paused";
+      ui.btnPlay.title = isPlaying ? cfg.i18n.pause : cfg.i18n.play;
+      ui.btnPlay.setAttribute("aria-label", ui.btnPlay.title);
+    };
+
+    const updateModeUI = () => {
+      ui.iconRepeat.classList.toggle("hidden", state.playMode !== 0);
+      ui.iconRepeatOne.classList.toggle("hidden", state.playMode !== 1);
+      ui.iconShuffle.classList.toggle("hidden", state.playMode !== 2);
+      ui.btnRepeat.classList.toggle("text-(--primary)", state.playMode !== 0);
+      ui.btnRepeat.classList.toggle("text-neutral-300", state.playMode === 0);
+    };
+
+    const updateVolumeUI = () => {
+      const pct = state.isMuted ? 0 : state.volume * 100;
+      ui.volBar.style.width = `${pct}%`;
+      ui.volContainer.setAttribute("aria-valuenow", Math.round(pct));
+      ui.iconVolHigh.classList.toggle(
+        "hidden",
+        state.isMuted || state.volume === 0,
+      );
+      ui.iconVolMute.classList.toggle(
+        "hidden",
+        !(state.isMuted || state.volume === 0),
+      );
+    };
+
+    const updateTrackUI = (track) => {
+      if (!track) return;
+      ui.title.textContent = track.name;
+      ui.title.title = track.name;
+      ui.artist.textContent = track.artist;
+      ui.artist.title = track.artist;
+      ui.cover.classList.add("opacity-0");
+      ui.cover.src = track.pic || "";
+      ui.cover.alt = track.pic
+        ? `${track.name} - ${track.artist}`
+        : cfg.i18n.noCover;
+      ui.cover.classList.remove("animate-spin-slow");
+      void ui.cover.offsetWidth;
+      ui.cover.classList.add("animate-spin-slow");
+      ui.cover.style.animationPlayState = "paused";
+      ui.progressBar.style.width = "0%";
+      ui.progressThumb.style.left = "0%";
+      ui.progressContainer.setAttribute("aria-valuenow", "0");
+      ui.currentTime.textContent = "0:00";
+      ui.totalTime.textContent = "0:00";
+    };
+
+    const updatePlaylistActiveUI = () => {
+      ui.playlistContainer.querySelectorAll(".playlist-item").forEach((el) => {
+        const isActive =
+          Number.parseInt(el.dataset.index, 10) === state.currentIndex;
+        el.classList.toggle("bg-neutral-100", isActive);
+        el.classList.toggle("dark:bg-white/10", isActive);
+        el.toggleAttribute("aria-current", isActive);
+        el.querySelector(".item-active-overlay")?.classList.toggle(
+          "hidden",
+          !isActive,
+        );
+        el.querySelector(".item-active-overlay")?.classList.toggle(
+          "flex",
+          isActive,
+        );
+        el.querySelector(".item-title")?.classList.toggle(
+          "text-(--primary)",
+          isActive,
+        );
+      });
+    };
+
+    const renderPlaylist = () => {
+      ui.playlistContainer.innerHTML = "";
+      state.playlist.forEach((track, index) => {
+        const clone = ui.itemTemplate.content.cloneNode(true);
+        const item = clone.querySelector(".playlist-item");
+        const img = clone.querySelector(".item-cover");
+        const title = clone.querySelector(".item-title");
+        const artist = clone.querySelector(".item-artist");
+        img.src = track.pic || "";
+        img.alt = `${track.name} - ${track.artist}`;
+        title.textContent = track.name;
+        artist.textContent = track.artist;
+        item.dataset.index = index;
+        item.setAttribute("role", "option");
+        item.setAttribute("aria-label", `${track.name} - ${track.artist}`);
+        item.addEventListener("click", () => playTrackByIndex(index));
+        ui.playlistContainer.appendChild(clone);
+      });
+      updatePlaylistActiveUI();
+    };
+
+    const renderLyricsUI = (lyrics, status) => {
+      state.currentLrcIndex = -1;
+      ui.lrcContainer.innerHTML = "";
+      const message = {
+        loading: cfg.i18n.loadingLyrics,
+        failed: cfg.i18n.failedLyrics,
+        none: cfg.i18n.noLyrics,
+      }[status];
+      if (message || !lyrics.length) {
+        ui.lrcContainer.innerHTML = `<div class="py-10 text-sm text-neutral-400" role="option">${message || cfg.i18n.noLyrics}</div>`;
+        return;
+      }
+      lyrics.forEach((line, index) => {
+        const lineEl = document.createElement("div");
+        lineEl.className =
+          "lrc-line cursor-pointer py-1 text-sm text-neutral-400 transition-all duration-300 hover:text-(--primary)";
+        lineEl.textContent = line.text;
+        lineEl.dataset.index = String(index);
+        lineEl.setAttribute("role", "option");
+        lineEl.addEventListener("click", () => {
+          if (audio.duration) audio.currentTime = line.time;
+        });
+        ui.lrcContainer.appendChild(lineEl);
+      });
+    };
+
+    const updateLrcHighlight = (index) => {
+      if (index === state.currentLrcIndex) return;
+      state.currentLrcIndex = index;
+      ui.lrcContainer.querySelectorAll(".lrc-line").forEach((line, i) => {
+        const active = i === index;
+        line.classList.toggle("text-(--primary)", active);
+        line.classList.toggle("font-bold", active);
+        line.classList.toggle("text-base", active);
+        line.classList.toggle("text-sm", !active);
+        line.classList.toggle("text-neutral-400", !active);
+      });
+      if (index === -1 || state.isUserScrolling) return;
+      const line = ui.lrcContainer.querySelector(
+        `.lrc-line[data-index="${index}"]`,
+      );
+      if (!line) return;
+      const top =
+        line.offsetTop -
+        ui.lrcContainer.clientHeight / 2 +
+        line.offsetHeight / 2;
+      ui.lrcContainer.scrollTo({ top, behavior: "smooth" });
+    };
+
+    const loadLyrics = (track) => {
+      state.lyrics = [];
+      if (!track.lrc) {
+        renderLyricsUI([], "none");
+        return;
+      }
+      const isLrcUrl =
+        /^(https?:)?\/\//.test(track.lrc) ||
+        track.lrc.startsWith("/") ||
+        /\.(lrc|txt)(\?|#|$)/i.test(track.lrc);
+      if (!isLrcUrl) {
+        state.lyrics = parseLRC(track.lrc);
+        renderLyricsUI(state.lyrics, state.lyrics.length ? "loaded" : "none");
+        return;
+      }
+      renderLyricsUI([], "loading");
+      fetch(track.lrc)
+        .then((res) => res.text())
+        .then((text) => {
+          state.lyrics = parseLRC(text);
+          renderLyricsUI(state.lyrics, state.lyrics.length ? "loaded" : "none");
+        })
+        .catch(() => renderLyricsUI([], "failed"));
+    };
+
+    const loadTrack = (index, autoPlay) => {
+      if (index < 0 || index >= state.playlist.length) return;
+      state.currentIndex = index;
+      const track = state.playlist[index];
+      audio.src = track.url;
+      loadLyrics(track);
+      updateTrackUI(track);
+      updatePlaylistActiveUI();
+      if (autoPlay) {
+        audio
+          .play()
+          .then(() => {
+            state.isPlaying = true;
+            updatePlayStateUI(true);
+          })
+          .catch(() => updatePlayStateUI(false));
+      } else {
+        state.isPlaying = false;
+        updatePlayStateUI(false);
+      }
+    };
+
+    const playNext = (autoEnded = false) => {
+      if (!state.playlist.length) return;
+      if (state.playMode === 1 && autoEnded) {
+        audio.currentTime = 0;
+        void audio.play();
+        return;
+      }
+      const next =
+        state.playMode === 2
+          ? Math.floor(Math.random() * state.playlist.length)
+          : (state.currentIndex + 1) % state.playlist.length;
+      loadTrack(next, true);
+    };
+
+    const playPrev = () => {
+      if (!state.playlist.length) return;
+      const prev =
+        state.playMode === 2
+          ? Math.floor(Math.random() * state.playlist.length)
+          : (state.currentIndex - 1 + state.playlist.length) %
+            state.playlist.length;
+      loadTrack(prev, true);
+    };
+
+    const togglePlay = () => {
+      if (!state.playlist.length) return;
+      if (audio.paused) {
+        audio.play().then(() => {
+          state.isPlaying = true;
+          updatePlayStateUI(true);
+        });
+      } else {
+        audio.pause();
+        state.isPlaying = false;
+        updatePlayStateUI(false);
+      }
+    };
+
+    const playTrackByIndex = (index) => {
+      if (index === state.currentIndex && !audio.paused) {
+        togglePlay();
+      } else {
+        loadTrack(index, true);
+      }
+    };
+
+    const fetchMetingData = async () => {
+      const api = cfg.api
+        .replace(":server", encodeURIComponent(cfg.server))
+        .replace(":type", encodeURIComponent(cfg.type))
+        .replace(":id", encodeURIComponent(cfg.id))
+        .replace(":r", String(Math.random()));
+      const response = await fetch(api);
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      const data = await response.json();
+      if (!Array.isArray(data) || !data.length) return [];
+      return data.map((item) => ({
+        name: item.title || item.name || "Unknown",
+        artist: item.author || item.artist || "Unknown",
+        url: item.url,
+        pic: item.pic || item.cover || "",
+        lrc: item.lrc,
+      }));
+    };
+
+    ui.btnPlay.addEventListener("click", togglePlay);
+    ui.btnNext.addEventListener("click", () => playNext(false));
+    ui.btnPrev.addEventListener("click", playPrev);
+    ui.btnRepeat.addEventListener("click", () => {
+      state.playMode = (state.playMode + 1) % 3;
+      updateModeUI();
+    });
+    ui.btnMute.addEventListener("click", () => {
+      state.isMuted = !state.isMuted;
+      audio.muted = state.isMuted;
+      updateVolumeUI();
+    });
+    ui.volContainer.addEventListener("click", (event) => {
+      const rect = ui.volContainer.getBoundingClientRect();
+      state.volume = Math.max(
+        0,
+        Math.min(1, (event.clientX - rect.left) / rect.width),
+      );
+      state.isMuted = false;
+      audio.volume = state.volume;
+      audio.muted = false;
+      updateVolumeUI();
+    });
+    ui.progressContainer.addEventListener("click", (event) => {
+      if (!audio.duration) return;
+      const rect = ui.progressContainer.getBoundingClientRect();
+      const percent = Math.max(
+        0,
+        Math.min(1, (event.clientX - rect.left) / rect.width),
+      );
+      audio.currentTime = percent * audio.duration;
+    });
+    ui.btnLrc.addEventListener("click", () => {
+      const isOpen = ui.lrcDrawer.style.gridTemplateRows === "1fr";
+      ui.playlistDrawer.style.gridTemplateRows = "0fr";
+      ui.playlistDrawer.classList.remove("opacity-100");
+      ui.playlistDrawer.classList.add("opacity-0");
+      ui.btnDrawer.classList.remove("text-(--primary)");
+      ui.lrcDrawer.style.gridTemplateRows = isOpen ? "0fr" : "1fr";
+      ui.lrcDrawer.classList.toggle("opacity-100", !isOpen);
+      ui.lrcDrawer.classList.toggle("opacity-0", isOpen);
+      ui.btnLrc.classList.toggle("text-(--primary)", !isOpen);
+      ui.iconLrcOn.classList.toggle("hidden", isOpen);
+      ui.iconLrcOff.classList.toggle("hidden", !isOpen);
+    });
+    ui.btnDrawer.addEventListener("click", () => {
+      const isOpen = ui.playlistDrawer.style.gridTemplateRows === "1fr";
+      ui.lrcDrawer.style.gridTemplateRows = "0fr";
+      ui.lrcDrawer.classList.remove("opacity-100");
+      ui.lrcDrawer.classList.add("opacity-0");
+      ui.btnLrc.classList.remove("text-(--primary)");
+      ui.iconLrcOn.classList.add("hidden");
+      ui.iconLrcOff.classList.remove("hidden");
+      ui.playlistDrawer.style.gridTemplateRows = isOpen ? "0fr" : "1fr";
+      ui.playlistDrawer.classList.toggle("opacity-100", !isOpen);
+      ui.playlistDrawer.classList.toggle("opacity-0", isOpen);
+      ui.btnDrawer.classList.toggle("text-(--primary)", !isOpen);
+    });
+
+    ui.cover.addEventListener("load", () =>
+      ui.cover.classList.remove("opacity-0"),
+    );
+    ui.cover.addEventListener("error", () =>
+      ui.cover.classList.add("opacity-0"),
+    );
+    ui.lrcContainer.addEventListener("wheel", () => {
+      state.isUserScrolling = true;
+      window.clearTimeout(state.scrollTimeout);
+      state.scrollTimeout = window.setTimeout(() => {
+        state.isUserScrolling = false;
+      }, 3000);
+    });
+    ui.lrcContainer.addEventListener("touchstart", () => {
+      state.isUserScrolling = true;
+      window.clearTimeout(state.scrollTimeout);
+      state.scrollTimeout = window.setTimeout(() => {
+        state.isUserScrolling = false;
+      }, 3000);
+    });
+
+    audio.addEventListener("timeupdate", () => {
+      if (Number.isNaN(audio.duration)) return;
+      const progress = (audio.currentTime / audio.duration) * 100;
+      ui.progressBar.style.width = `${progress}%`;
+      ui.progressThumb.style.left = `${progress}%`;
+      ui.progressContainer.setAttribute("aria-valuenow", Math.round(progress));
+      ui.currentTime.textContent = formatTime(audio.currentTime);
+      ui.totalTime.textContent = formatTime(audio.duration);
+      if (state.lyrics.length) {
+        let index = -1;
+        for (let i = 0; i < state.lyrics.length; i += 1) {
+          if (audio.currentTime >= state.lyrics[i].time) index = i;
+          else break;
+        }
+        updateLrcHighlight(index);
+      }
+    });
+    audio.addEventListener("ended", () => playNext(true));
+    audio.addEventListener("error", () => {
+      ui.title.textContent = cfg.i18n.error;
+      setLoading(false);
+    });
+
+    updateModeUI();
+    updateVolumeUI();
+    setLoading(true);
+    fetchMetingData()
+      .then((playlist) => {
+        state.playlist = playlist.filter((track) => track.url);
+        if (!state.playlist.length) {
+          ui.title.textContent = cfg.i18n.noSongs;
+          return;
+        }
+        renderPlaylist();
+        loadTrack(
+          state.playMode === 2
+            ? Math.floor(Math.random() * state.playlist.length)
+            : 0,
+          false,
+        );
+      })
+      .catch(() => {
+        ui.title.textContent = cfg.i18n.error;
+      })
+      .finally(() => setLoading(false));
+  })();
+</script>

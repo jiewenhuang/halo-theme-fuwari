@@ -3,6 +3,7 @@ interface Props {
   id: string;
   name?: string;
   nameKey?: string;
+  nameExpression?: string;
   isCollapsed?: boolean;
   collapseExpression?: string;
   collapsedHeight?: string;
@@ -14,6 +15,7 @@ const {
   id,
   name,
   nameKey,
+  nameExpression,
   isCollapsed = false,
   collapseExpression,
   collapsedHeight = "7.5rem",
@@ -30,6 +32,11 @@ const collapseClassAppend = collapseExpression
 const collapseDataAttr = collapseExpression
   ? `data-is-collapsed=\${${collapseExpression}}`
   : undefined;
+const titleText = nameExpression
+  ? `\${${nameExpression}}`
+  : nameKey
+    ? `#{${nameKey}}`
+    : undefined;
 ---
 
 <widget-layout
@@ -41,7 +48,7 @@ const collapseDataAttr = collapseExpression
 >
   <div
     class="relative mb-2 ml-8 mt-4 text-lg font-bold text-neutral-900 transition before:absolute before:left-[-16px] before:top-[5.5px] before:h-4 before:w-1 before:rounded-md before:bg-(--primary) dark:text-neutral-100"
-    th:text={nameKey ? `#{${nameKey}}` : undefined}
+    th:text={titleText}
   >
     {name}
   </div>

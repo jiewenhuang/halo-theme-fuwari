@@ -46,6 +46,13 @@ export interface Sidebar {
 export interface Widget {
   value: string;
   html?: string;
+  title?: string;
+  server?: string;
+  type?: string;
+  id?: string;
+  play_mode?: string;
+  volume?: number;
+  api?: string;
 }
 
 export interface Profile {

@@ -1,5 +1,6 @@
 ---
 import Categories from "./Categories.astro";
+import MusicPlayer from "./MusicPlayer.astro";
 import Profile from "./Profile.astro";
 import Tags from "./Tags.astro";
 
@@ -28,6 +29,12 @@ const className = Astro.props.class;
         </div>
         <div class="contents" th:case="'tag'">
           <Tags class="onload-animation" />
+        </div>
+        <div class="contents" th:case="'music'">
+          <MusicPlayer
+            class="onload-animation"
+            th:style="|animation-delay: calc(var(--content-delay) + ${widgetStat.index * 50}ms)|"
+          />
         </div>
         <div
           th:case="'html'"

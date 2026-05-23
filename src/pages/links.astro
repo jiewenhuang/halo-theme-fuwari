@@ -12,9 +12,25 @@ import MainGridLayout from "../layouts/MainGridLayout.astro";
       <h1 class="text-3xl font-bold text-90" th:text="${linksTitle}">
         友情链接
       </h1>
-      <div class="text-sm text-50">
-        <span class="icon-[material-symbols--link-rounded] mr-1"></span>
-        <span>Friends links</span>
+      <div class="flex items-center gap-3 text-sm text-50">
+        <div class="flex items-center">
+          <span class="icon-[material-symbols--link-rounded] mr-1"></span>
+          <span th:text="#{page.links.subtitle}">Friends links</span>
+        </div>
+        <span
+          th:if="${pluginFinder.available('link-submit')}"
+          class="inline-flex"
+        >
+          <a
+            href="javascript:void(0)"
+            onclick="LinkSubmitWidget.open()"
+            class="btn-regular flex items-center gap-1 rounded-lg px-2.5 py-1 text-xs font-bold text-(--btn-content) transition hover:bg-(--btn-regular-bg-hover) active:bg-(--btn-regular-bg-active)"
+            th:title="#{page.links.submitLink}"
+          >
+            <span class="icon-[material-symbols--add-link-rounded]"></span>
+            <span th:text="#{page.links.submitLink}">Submit Link</span>
+          </a>
+        </span>
       </div>
     </div>
 
@@ -92,7 +108,7 @@ import MainGridLayout from "../layouts/MainGridLayout.astro";
     </div>
 
     <div th:if="${#lists.isEmpty(groups)}" class="py-12 text-center text-50">
-      暂无友情链接
+      <span th:text="#{page.links.empty}">No friend links</span>
     </div>
   </section>
 

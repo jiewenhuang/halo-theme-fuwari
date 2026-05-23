@@ -1,10 +1,20 @@
 ---
 import MainGridLayout from "../layouts/MainGridLayout.astro";
+import "../styles/link-submit-widget.css";
 ---
 
 <MainGridLayout title="${linksTitle + ' - ' + site.title}">
   <Fragment slot="head">
     <title th:text="${linksTitle + ' - ' + site.title}"></title>
+    <link
+      th:if="${pluginFinder.available('link-submit')}"
+      rel="stylesheet"
+      href="/plugins/link-submit/assets/static/var.css"
+    />
+    <script
+      th:if="${pluginFinder.available('link-submit')}"
+      src="/plugins/link-submit/assets/static/link-submit-widget.iife.js"
+      defer></script>
   </Fragment>
 
   <section class="card-base onload-animation mb-4 px-6 py-6 md:px-9">

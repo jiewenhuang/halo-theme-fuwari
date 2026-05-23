@@ -38,6 +38,7 @@ Fuwari 主题支持以下 Halo 插件：
 - [x] 瞬间插件：https://www.halo.run/store/apps/app-SnwWD
 - [x] 图库插件：https://www.halo.run/store/apps/app-BmQJW
 - [x] 链接管理插件：https://www.halo.run/store/apps/app-hfbQg
+- [x] 友链提交插件：https://www.halo.run/store/apps/app-glejqzwk
 
 ### 使用说明
 
@@ -92,6 +93,7 @@ pnpm dev
 - [plugin-links](https://github.com/halo-sigs/plugin-links)
 - [plugin-comment-widget](https://github.com/halo-sigs/plugin-comment-widget)
 - [plugin-search-widget](https://github.com/halo-sigs/plugin-search-widget)
+- [link-submit](https://www.halo.run/store/apps/app-glejqzwk)
 -
 - ......
 

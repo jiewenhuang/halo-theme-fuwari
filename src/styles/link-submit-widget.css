@@ -1,0 +1,26 @@
+:root {
+  --link-submit-widget-base-font-size: 14px;
+  --link-submit-widget-base-font-family:
+    "Roboto", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", Roboto, "Helvetica Neue", Helvetica, Arial, "Apple Color Emoji",
+    "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  --link-submit-widget-base-rounded: var(--radius-large);
+  --link-submit-widget-base-bg-color: var(--card-bg);
+  --link-submit-widget-modal-layer-color: rgba(0, 0, 0, 0.5);
+  --link-submit-widget-form-bg-color: var(--card-bg);
+  --link-submit-widget-form-border-color: var(--line-color);
+  --link-submit-widget-form-text-color: oklch(0.25 0.02 var(--hue));
+  --link-submit-widget-form-label-color: oklch(0.4 0.02 var(--hue));
+  --link-submit-widget-form-placeholder-color: oklch(0.6 0.01 var(--hue));
+  --link-submit-widget-form-button-bg-color: var(--primary);
+  --link-submit-widget-form-button-text-color: white;
+  --link-submit-widget-form-button-hover-bg-color: oklch(0.62 0.13 var(--hue));
+}
+
+:root.dark {
+  --link-submit-widget-modal-layer-color: rgba(0, 0, 0, 0.7);
+  --link-submit-widget-form-text-color: oklch(0.9 0.01 var(--hue));
+  --link-submit-widget-form-label-color: oklch(0.7 0.015 var(--hue));
+  --link-submit-widget-form-placeholder-color: oklch(0.5 0.02 var(--hue));
+  --link-submit-widget-form-button-hover-bg-color: oklch(0.68 0.13 var(--hue));
+}

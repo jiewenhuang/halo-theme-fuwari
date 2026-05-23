@@ -93,7 +93,7 @@ pnpm dev
 - [plugin-links](https://github.com/halo-sigs/plugin-links)
 - [plugin-comment-widget](https://github.com/halo-sigs/plugin-comment-widget)
 - [plugin-search-widget](https://github.com/halo-sigs/plugin-search-widget)
-- [link-submit](https://github.com/SDCOM-0415/link-submit)
+- [link-submit](https://www.halo.run/store/apps/app-glejqzwk)
 -
 - ......
 

@@ -1,10 +1,13 @@
 # build output
 dist/
+!ui-plugin/dist/
+!ui-plugin/dist/**
 # generated types
 .astro/
 
 # dependencies
 node_modules/
+.pnpm-store/
 
 # logs
 npm-debug.log*

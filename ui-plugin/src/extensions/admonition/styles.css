@@ -1,0 +1,87 @@
+.fuwari-admonition-view {
+  position: relative;
+  margin: 1rem 0;
+  border-left: 0;
+  border-radius: 0.75rem;
+  background: color-mix(
+    in srgb,
+    var(--halo-color-neutral-50, #f8fafc) 82%,
+    transparent
+  );
+  padding: 0.875rem 1rem 0.875rem 1.125rem;
+}
+
+.fuwari-admonition-view::before {
+  content: "";
+  position: absolute;
+  inset-block: 0.625rem;
+  left: 0;
+  width: 0.25rem;
+  border-radius: 999px;
+  background: currentColor;
+}
+
+.fuwari-admonition-view__title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 700;
+  line-height: 1.25rem;
+}
+
+.fuwari-admonition-view__marker {
+  font-family:
+    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
+    "Courier New", monospace;
+  font-size: 0.75rem;
+  letter-spacing: 0;
+  opacity: 0.72;
+}
+
+.fuwari-admonition-view__label-input {
+  min-width: 4rem;
+  border: 0;
+  border-radius: 0.375rem;
+  background: transparent;
+  padding: 0;
+  color: var(--halo-color-neutral-900, #0f172a);
+  font: inherit;
+  font-weight: inherit;
+  line-height: inherit;
+  outline: none;
+}
+
+.fuwari-admonition-view__label-input:focus {
+  background: color-mix(in srgb, currentColor 8%, transparent);
+  box-shadow: 0 0 0 2px color-mix(in srgb, currentColor 22%, transparent);
+}
+
+.fuwari-admonition-view__content > :first-child {
+  margin-top: 0;
+}
+
+.fuwari-admonition-view__content > :last-child {
+  margin-bottom: 0;
+}
+
+.fuwari-admonition-view.bdm-note {
+  color: #3b82f6;
+}
+
+.fuwari-admonition-view.bdm-tip {
+  color: #14b8a6;
+}
+
+.fuwari-admonition-view.bdm-important {
+  color: #a855f7;
+}
+
+.fuwari-admonition-view.bdm-warning {
+  color: #f59e0b;
+}
+
+.fuwari-admonition-view.bdm-caution {
+  color: #ef4444;
+}

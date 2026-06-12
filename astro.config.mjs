@@ -8,6 +8,17 @@ import Icons from "unplugin-icons/vite";
 import svelte from "@astrojs/svelte";
 import icon from "astro-icon";
 
+/** @typedef {NonNullable<NonNullable<Parameters<typeof defineConfig>[0]["vite"]>["plugins"]>[number]} AstroVitePlugin */
+
+/** @type {AstroVitePlugin} */
+const iconsPlugin = /** @type {AstroVitePlugin} */ (
+  /** @type {unknown} */ (
+    Icons({
+      compiler: "vue3",
+    })
+  )
+);
+
 export default defineConfig({
   base: "/themes/theme-fuwari",
   build: {
@@ -45,11 +56,6 @@ export default defineConfig({
     svelte(),
   ],
   vite: {
-    plugins: [
-      tailwindcss(),
-      Icons({
-        compiler: "vue3",
-      }),
-    ],
+    plugins: [tailwindcss(), iconsPlugin],
   },
 });

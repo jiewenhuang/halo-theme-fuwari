@@ -246,7 +246,9 @@ const themeSettingScript = `<script type="application/json" id="theme-config" th
     document.body.classList.toggle("lg:is-home", isHome);
   }
 
-  function initAdmonitions() {
+  function initLegacyAdmonitions() {
+    // Rich-text blocks use a dedicated custom element. This only keeps old
+    // hand-written Markdown alerts working as a compatibility path.
     const blockquotes = document.querySelectorAll(
       ".custom-md blockquote:not(.admonition)",
     );
@@ -303,7 +305,7 @@ const themeSettingScript = `<script type="application/json" id="theme-config" th
     setHue(getHue());
     initCustomScrollbar();
     showBanner();
-    initAdmonitions();
+    initLegacyAdmonitions();
   }
 
   setClickOutsideToClose("display-setting", [
@@ -402,7 +404,7 @@ const themeSettingScript = `<script type="application/json" id="theme-config" th
       void initPhotosGallery();
       showBanner();
       scrollFunction();
-      initAdmonitions();
+      initLegacyAdmonitions();
     });
     window.swup.hooks.on("visit:start", (visit: { to?: { url?: string } }) => {
       restoreOriginalHistoryStateHandlers();

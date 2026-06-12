@@ -10,6 +10,24 @@ export interface ThemeConfig {
   development: Development;
 }
 
+export type Favicon = {
+  src: string;
+  theme?: "light" | "dark";
+  sizes?: string;
+};
+
+export enum LinkPreset {
+  Home = 0,
+  Archive = 1,
+  About = 2,
+}
+
+export type NavBarLink = {
+  name: string;
+  url: string;
+  external?: boolean;
+};
+
 export interface Base {
   themeColor: ThemeColor;
   banner: Banner;

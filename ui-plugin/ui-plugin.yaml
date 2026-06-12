@@ -1,0 +1,10 @@
+apiVersion: plugin.halo.run/v1alpha1
+kind: Plugin
+metadata:
+  name: "theme:theme-fuwari"
+spec:
+  displayName: "Fuwari Theme UI"
+  version: "2.1.0"
+  requires: ">=2.25.0"
+  author:
+    name: Jiewenhuang

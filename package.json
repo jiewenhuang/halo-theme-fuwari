@@ -5,10 +5,12 @@
   },
   "scripts": {
     "dev": "nodemon --config nodemon.json --exec 'astro build'",
-    "build": "astro build && pnpm package",
+    "build": "pnpm build:ui-plugin && astro build && pnpm package",
     "build:pkg": "pnpm build",
+    "build:ui-plugin": "pnpm --dir ui-plugin build",
     "build:only": "astro build",
     "package": "theme-package",
+    "test:ui-plugin": "pnpm --dir ui-plugin test",
     "astro": "astro",
     "format": "prettier --write .",
     "prepare": "husky"

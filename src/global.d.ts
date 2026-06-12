@@ -9,6 +9,7 @@ declare global {
       replaceState?: History["replaceState"];
     };
     __fuwariSwupHandlersBound?: boolean;
+    i18nResources?: Record<string, string>;
     SearchWidget?: {
       open: () => void;
     };

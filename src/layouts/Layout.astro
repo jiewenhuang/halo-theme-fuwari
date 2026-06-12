@@ -169,7 +169,6 @@ const themeSettingScript = `<script type="application/json" id="theme-config" th
 <script>
   import "overlayscrollbars/overlayscrollbars.css";
   import { OverlayScrollbars } from "overlayscrollbars";
-  import PhotoSwipeLightbox from "photoswipe/lightbox";
   import "photoswipe/style.css";
   import {
     BANNER_HEIGHT,
@@ -247,36 +246,6 @@ const themeSettingScript = `<script type="application/json" id="theme-config" th
     document.body.classList.toggle("lg:is-home", isHome);
   }
 
-  function initPhotoSwipe() {
-    const pswp = import("photoswipe");
-    const lightbox = new PhotoSwipeLightbox({
-      gallery:
-        ".custom-md img, #post-cover img, .moment-media img, #photos-gallery img",
-      pswpModule: () => pswp,
-      padding: { top: 20, bottom: 20, left: 20, right: 20 },
-      wheelToZoom: true,
-      arrowPrev: false,
-      arrowNext: false,
-      imageClickAction: "close",
-      tapAction: "close",
-      doubleTapAction: "zoom",
-    });
-
-    lightbox.addFilter("domItemData", (itemData, element) => {
-      if (element instanceof HTMLImageElement) {
-        const src = element.dataset.pswpSrc || element.src;
-        itemData.src = src;
-        itemData.w = Number(element.naturalWidth || window.innerWidth);
-        itemData.h = Number(element.naturalHeight || window.innerHeight);
-        itemData.msrc = element.src;
-      }
-      return itemData;
-    });
-
-    lightbox.init();
-    return lightbox;
-  }
-
   function initAdmonitions() {
     const blockquotes = document.querySelectorAll(
       ".custom-md blockquote:not(.admonition)",
@@ -352,7 +321,50 @@ const themeSettingScript = `<script type="application/json" id="theme-config" th
   ]);
   init();
 
-  let lightbox = initPhotoSwipe();
+  type Destroyable = { destroy?: () => void };
+
+  let lightbox: Destroyable | undefined;
+  let isLoadingContentPhotoSwipe = false;
+  let photosGalleryLightbox: Destroyable | undefined;
+  let isLoadingPhotosGalleryLightbox = false;
+
+  async function initContentLightbox() {
+    if (lightbox || isLoadingContentPhotoSwipe) return;
+    isLoadingContentPhotoSwipe = true;
+    try {
+      const { initContentPhotoSwipe } =
+        await import("../utils/content-photoswipe");
+      lightbox = initContentPhotoSwipe();
+    } catch (error) {
+      console.error(
+        "[theme-fuwari] Failed to initialize content images",
+        error,
+      );
+    } finally {
+      isLoadingContentPhotoSwipe = false;
+    }
+  }
+
+  async function initPhotosGallery() {
+    if (photosGalleryLightbox || isLoadingPhotosGalleryLightbox) return;
+    if (!document.getElementById("photos-gallery")) return;
+    isLoadingPhotosGalleryLightbox = true;
+    try {
+      const { initPhotosGalleryLightbox } =
+        await import("../utils/photos-gallery-lightbox");
+      photosGalleryLightbox = initPhotosGalleryLightbox();
+    } catch (error) {
+      console.error(
+        "[theme-fuwari] Failed to initialize photos gallery",
+        error,
+      );
+    } finally {
+      isLoadingPhotosGalleryLightbox = false;
+    }
+  }
+
+  void initContentLightbox();
+  void initPhotosGallery();
 
   function restoreOriginalHistoryStateHandlers() {
     const originalHistory = window.__fuwariOriginalHistory;
@@ -378,12 +390,16 @@ const themeSettingScript = `<script type="application/json" id="theme-config" th
       "content:replace",
       () => {
         lightbox?.destroy?.();
+        lightbox = undefined;
+        photosGalleryLightbox?.destroy?.();
+        photosGalleryLightbox = undefined;
       },
       { before: true },
     );
     window.swup.hooks.on("page:view", () => {
       syncHomeClass();
-      lightbox = initPhotoSwipe();
+      void initContentLightbox();
+      void initPhotosGallery();
       showBanner();
       scrollFunction();
       initAdmonitions();

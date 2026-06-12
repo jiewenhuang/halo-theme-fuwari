@@ -1,0 +1,255 @@
+---
+import PhotoExifMeta from "../components/photos/PhotoExifMeta.astro";
+import PhotoI18n from "../components/photos/PhotoI18n.astro";
+import MainGridLayout from "../layouts/MainGridLayout.astro";
+---
+
+<MainGridLayout title="${title + ' - ' + site.title}">
+  <Fragment slot="head">
+    <title th:text="${title + ' - ' + site.title}"></title>
+    <meta
+      property="og:image"
+      th:content="${not #strings.isEmpty(photo.spec.cover) ? photo.spec.cover : photo.spec.url}"
+    />
+    <PhotoI18n />
+  </Fragment>
+
+  <article class="onload-animation mb-4">
+    <section class="card-base overflow-hidden">
+      <div class="px-4 py-5 md:px-6 md:py-6">
+        <div
+          class="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between"
+        >
+          <a
+            th:href="@{${backUrl}}"
+            class="btn-card h-10 w-fit rounded-lg px-3 text-sm font-bold text-75"
+          >
+            <span
+              class="icon-[material-symbols--arrow-back-rounded] mr-1 text-xl"
+            ></span>
+            <span th:text="#{page.photos.backToGallery}">Back to gallery</span>
+          </a>
+
+          <a
+            th:href="${photo.spec.url}"
+            target="_blank"
+            rel="noopener"
+            class="btn-card h-10 w-fit rounded-lg px-3 text-sm font-bold text-75 sm:shrink-0"
+            th:aria-label="#{page.photos.openImage}"
+          >
+            <span
+              class="icon-[material-symbols--open-in-new-rounded] mr-1 text-xl"
+            ></span>
+            <span th:text="#{page.photos.openImage}">Open full image</span>
+          </a>
+        </div>
+
+        <div
+          class="mb-2 flex flex-wrap items-center gap-2 text-xs font-bold uppercase text-30"
+        >
+          <span th:text="#{page.photos.collection}">Collection</span>
+          <span class="text-20">/</span>
+          <span th:text="#{page.photos.position(${position}, ${total})}"
+            >1 / 1</span
+          >
+        </div>
+
+        <h1
+          class="break-words text-3xl font-bold leading-tight text-90 md:text-4xl"
+          th:text="${not #strings.isEmpty(photo.spec.displayName) ? photo.spec.displayName : photo.metadata.name}"
+        >
+          Photo
+        </h1>
+
+        <p
+          th:if="${not #strings.isEmpty(photo.spec.description)}"
+          class="mt-3 max-w-3xl text-sm leading-6 text-50"
+          th:text="${photo.spec.description}"
+        >
+          Description
+        </p>
+
+        <div class="mt-4 flex flex-wrap items-center gap-2">
+          <span
+            th:if="${not #strings.isEmpty(group) or not #strings.isEmpty(photo.spec.groupName)}"
+            class="inline-flex h-8 items-center rounded-lg bg-(--btn-regular-bg) px-3 text-xs font-bold text-(--btn-content)"
+          >
+            <span
+              class="icon-[material-symbols--folder-outline-rounded] mr-1.5 text-lg text-(--primary)"
+            ></span>
+            <span
+              th:text="${not #strings.isEmpty(group) ? group : photo.spec.groupName}"
+              >Group</span
+            >
+          </span>
+          <span
+            th:if="${photo.exif != null and photo.exif.dateTimeOriginal != null}"
+            class="inline-flex h-8 items-center rounded-lg bg-(--btn-regular-bg) px-3 text-xs font-bold text-(--btn-content)"
+            th:text="${#dates.format(photo.exif.dateTimeOriginal, 'yyyy-MM-dd HH:mm')}"
+          >
+            2026-01-01 12:00
+          </span>
+          <span
+            th:if="${photo.exif != null and photo.exif.imageWidth != null and photo.exif.imageHeight != null}"
+            class="inline-flex h-8 items-center rounded-lg bg-(--btn-regular-bg) px-3 text-xs font-bold text-(--btn-content)"
+            th:text="|${photo.exif.imageWidth} x ${photo.exif.imageHeight}|"
+          >
+            4000 x 3000
+          </span>
+        </div>
+
+        <div
+          th:if="${not #lists.isEmpty(photo.spec.tags)}"
+          class="mt-4 flex flex-wrap gap-2"
+        >
+          <span
+            th:each="tag : ${photo.spec.tags}"
+            class="rounded-lg bg-(--primary)/10 px-2.5 py-1 text-xs font-bold text-(--primary)"
+            th:text="${'#' + tag}"
+          >
+            #tag
+          </span>
+        </div>
+      </div>
+
+      <div
+        class="relative flex justify-center border-y border-(--line-divider) bg-black px-3 py-4 sm:px-4 md:py-6"
+        th:aria-label="#{page.photos.openImage}"
+        aria-label="Open full image"
+      >
+        <img
+          id="photo-detail-image"
+          alt=""
+          th:src="${not #strings.isEmpty(photo.spec.cover) ? photo.spec.cover : photo.spec.url}"
+          th:attr="data-pswp-src=${photo.spec.url},data-pswp-width=${photo.exif != null and photo.exif.imageWidth != null ? photo.exif.imageWidth : 0},data-pswp-height=${photo.exif != null and photo.exif.imageHeight != null ? photo.exif.imageHeight : 0}"
+          th:alt="${photo.spec.displayName}"
+          class="block h-auto max-h-[70vh] max-w-full cursor-zoom-in object-contain md:max-h-[74vh]"
+        />
+      </div>
+
+      <div class="flex flex-col gap-4 px-4 py-4 md:px-6">
+        <div
+          th:if="${photo.exif != null}"
+          class="rounded-xl bg-(--btn-regular-bg) px-4 py-4"
+        >
+          <PhotoExifMeta condition="${photo.exif != null}" />
+        </div>
+
+        <div class="grid gap-3 sm:grid-cols-2">
+          <a
+            th:if="${prev != null}"
+            th:href="@{${photoUrl.detail(prev)}}"
+            class="btn-card min-h-18 justify-start! gap-3 rounded-xl p-3 text-left"
+          >
+            <span
+              class="icon-[material-symbols--chevron-left-rounded] text-2xl text-(--primary)"
+            ></span>
+            <img
+              alt=""
+              th:src="${not #strings.isEmpty(prev.spec.cover) ? prev.spec.cover : prev.spec.url}"
+              th:alt="${prev.spec.displayName}"
+              loading="lazy"
+              class="h-12 w-16 shrink-0 rounded-lg object-cover"
+            />
+            <div class="min-w-0">
+              <div
+                class="text-xs font-bold text-50"
+                th:text="#{page.photos.previous}"
+              >
+                Previous
+              </div>
+              <div
+                class="truncate text-sm font-bold text-90"
+                th:text="${not #strings.isEmpty(prev.spec.displayName) ? prev.spec.displayName : prev.metadata.name}"
+              >
+                Photo
+              </div>
+            </div>
+          </a>
+          <div
+            th:unless="${prev != null}"
+            class="hidden min-h-18 rounded-xl bg-(--btn-regular-bg) sm:block"
+          >
+          </div>
+
+          <a
+            th:if="${next != null}"
+            th:href="@{${photoUrl.detail(next)}}"
+            class="btn-card min-h-18 justify-start! gap-3 rounded-xl p-3 text-left sm:justify-end! sm:text-right"
+          >
+            <div class="min-w-0 sm:order-1">
+              <div
+                class="text-xs font-bold text-50"
+                th:text="#{page.photos.next}"
+              >
+                Next
+              </div>
+              <div
+                class="truncate text-sm font-bold text-90"
+                th:text="${not #strings.isEmpty(next.spec.displayName) ? next.spec.displayName : next.metadata.name}"
+              >
+                Photo
+              </div>
+            </div>
+            <img
+              alt=""
+              th:src="${not #strings.isEmpty(next.spec.cover) ? next.spec.cover : next.spec.url}"
+              th:alt="${next.spec.displayName}"
+              loading="lazy"
+              class="h-12 w-16 shrink-0 rounded-lg object-cover sm:order-2"
+            />
+            <span
+              class="icon-[material-symbols--chevron-right-rounded] text-2xl text-(--primary) sm:order-3"
+            ></span>
+          </a>
+        </div>
+
+        <div
+          th:if="${not #lists.isEmpty(neighbors)}"
+          class="border-t border-(--line-divider) pt-4"
+        >
+          <div
+            class="mb-3 text-sm font-bold text-50"
+            th:text="#{page.photos.nearby}"
+          >
+            Nearby
+          </div>
+          <div class="flex gap-2 overflow-x-auto pb-1">
+            <a
+              th:each="neighbor : ${neighbors}"
+              th:href="@{${photoUrl.detail(neighbor)}}"
+              th:title="${neighbor.spec.displayName}"
+              th:classappend="${neighbor.metadata.name == photo.metadata.name ? ' ring-2 ring-(--primary)' : ''}"
+              th:aria-current="${neighbor.metadata.name == photo.metadata.name ? 'true' : 'false'}"
+              class="block h-18 w-24 shrink-0 overflow-hidden rounded-lg bg-(--btn-regular-bg)"
+            >
+              <img
+                alt=""
+                th:src="${not #strings.isEmpty(neighbor.spec.cover) ? neighbor.spec.cover : neighbor.spec.url}"
+                th:alt="${neighbor.spec.displayName}"
+                loading="lazy"
+                class="h-full w-full object-cover"
+              />
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </article>
+
+  <div
+    class="card-base relative z-10 w-full px-6 pb-4 pt-6 md:px-9"
+    id="comment"
+    th:if="${haloCommentEnabled}"
+  >
+    <h2
+      class="mb-2 text-base font-medium text-gray-900 dark:text-slate-50"
+      th:text="#{common.comment}"
+    >
+      评论
+    </h2>
+    <Fragment
+      set:html={'<halo:comment group="core.halo.run" kind="Photo" th:attr="name=${photo.metadata.name}" />'}
+    />
+  </div>
+</MainGridLayout>

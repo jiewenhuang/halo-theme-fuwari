@@ -1,0 +1,109 @@
+---
+interface Props {
+  condition?: string;
+  mode?: "hidden" | "display";
+}
+
+const { condition, mode = "display" } = Astro.props;
+const isHidden = mode === "hidden";
+const wrapperClass = isHidden ? "photo-meta hidden" : "space-y-3";
+const rowClass = isHidden
+  ? "photo-meta-item"
+  : "grid grid-cols-[7rem_minmax(0,1fr)] gap-3 text-sm";
+const labelClass = isHidden ? "photo-meta-label" : "text-50";
+const valueClass = isHidden ? "photo-meta-value" : "min-w-0 font-bold text-90";
+
+const exifItems = [
+  {
+    key: "datetime",
+    label: "#{page.photos.exif.dateTimeOriginal}",
+    value: "${#dates.format(photo.exif.dateTimeOriginal, 'yyyy-MM-dd HH:mm')}",
+    condition: "${photo.exif != null and photo.exif.dateTimeOriginal != null}",
+  },
+  {
+    key: "camera",
+    label: "#{page.photos.exif.camera}",
+    value:
+      "${#strings.trim((photo.exif.make ?: '') + ' ' + (photo.exif.model ?: ''))}",
+    condition:
+      "${photo.exif != null and (not #strings.isEmpty(photo.exif.make) or not #strings.isEmpty(photo.exif.model))}",
+  },
+  {
+    key: "lens",
+    label: "#{page.photos.exif.lens}",
+    value: "${photo.exif.lensModel}",
+    condition:
+      "${photo.exif != null and not #strings.isEmpty(photo.exif.lensModel)}",
+  },
+  {
+    key: "aperture",
+    label: "#{page.photos.exif.aperture}",
+    value: "|f/${photo.exif.fNumber}|",
+    condition: "${photo.exif != null and photo.exif.fNumber != null}",
+  },
+  {
+    key: "shutter",
+    label: "#{page.photos.exif.shutter}",
+    value: "${photo.exif.exposureTime}",
+    condition:
+      "${photo.exif != null and not #strings.isEmpty(photo.exif.exposureTime)}",
+  },
+  {
+    key: "iso",
+    label: "#{page.photos.exif.iso}",
+    value: "|ISO ${photo.exif.iso}|",
+    condition: "${photo.exif != null and photo.exif.iso != null}",
+  },
+  {
+    key: "focal",
+    label: "#{page.photos.exif.focalLength}",
+    value: "|${photo.exif.focalLength} mm|",
+    condition: "${photo.exif != null and photo.exif.focalLength != null}",
+  },
+  {
+    key: "focal35",
+    label: "#{page.photos.exif.focalLength35mm}",
+    value: "|${photo.exif.focalLengthIn35mm} mm|",
+    condition: "${photo.exif != null and photo.exif.focalLengthIn35mm != null}",
+  },
+  {
+    key: "dimensions",
+    label: "#{page.photos.exif.dimensions}",
+    value: "|${photo.exif.imageWidth} x ${photo.exif.imageHeight}|",
+    condition:
+      "${photo.exif != null and photo.exif.imageWidth != null and photo.exif.imageHeight != null}",
+  },
+  {
+    key: "software",
+    label: "#{page.photos.exif.software}",
+    value: "${photo.exif.software}",
+    condition:
+      "${photo.exif != null and not #strings.isEmpty(photo.exif.software)}",
+  },
+];
+---
+
+<div class={wrapperClass} th:if={condition}>
+  {
+    !isHidden && (
+      <div
+        class="text-xs font-bold uppercase text-30"
+        th:text="#{page.photos.exif.title}"
+      >
+        EXIF
+      </div>
+    )
+  }
+  {
+    exifItems.map((item) => (
+      <div th:if={item.condition} class={rowClass}>
+        <span class={labelClass} th:text={item.label}>
+          {item.key}
+        </span>
+        <span class={valueClass} th:text={item.value}>
+          Value
+        </span>
+      </div>
+    ))
+  }
+</div>

@@ -1,0 +1,121 @@
+---
+interface Props {
+  context?: string;
+  class?: string;
+  style?: string;
+}
+
+const { context = "photos", style } = Astro.props;
+const className = Astro.props.class;
+const hasPages = `\${${context}.totalPages gt 1}`;
+const prevUrl = `@{\${${context}.prevUrl}}`;
+const nextUrl = `@{\${${context}.nextUrl}}`;
+const pageWindow = `
+  currentPage=\${${context}.page},
+  totalPages=\${${context}.totalPages},
+  pageSize=\${${context}.size},
+  currentGroup=\${#lists.isEmpty(param.group) ? null : param.group[0]},
+  windowStart=\${currentPage le 3 ? 1 : (currentPage ge totalPages - 2 ? (totalPages - 4 gt 1 ? totalPages - 4 : 1) : currentPage - 2)},
+  windowEnd=\${currentPage le 3 ? (totalPages lt 5 ? totalPages : 5) : (currentPage ge totalPages - 2 ? totalPages : currentPage + 2)}
+`;
+---
+
+<nav
+  th:if={hasPages}
+  th:with={pageWindow}
+  class:list={[className, "flex flex-row justify-center gap-3"]}
+  style={style}
+  th:aria-label="#{pagination.label}"
+  aria-label="Pagination"
+>
+  <a
+    th:href={prevUrl}
+    th:classappend={`\${not ${context}.hasPrevious() ? ' disabled' : ''}`}
+    th:aria-label="#{pagination.previous}"
+    class="btn-card h-11 w-11 overflow-hidden rounded-lg text-(--primary)"
+  >
+    <span class="icon-[material-symbols--chevron-left-rounded] text-[1.75rem]"
+    ></span>
+  </a>
+  <div
+    class="flex flex-row items-center rounded-lg bg-(--card-bg) font-bold text-neutral-700 dark:text-neutral-300"
+  >
+    <a
+      th:if="${windowStart gt 1}"
+      th:with="pageNumber=1, targetUrl=${photoUrl.list(currentGroup, pageNumber, pageSize)}"
+      th:href="@{${targetUrl}}"
+      th:aria-label="#{pagination.page(${pageNumber})}"
+      class="btn-card h-11 w-11 overflow-hidden rounded-lg active:scale-[0.85]"
+    >
+      1
+    </a>
+    <a
+      th:if="${windowStart == 3}"
+      th:with="pageNumber=2, targetUrl=${photoUrl.list(currentGroup, pageNumber, pageSize)}"
+      th:href="@{${targetUrl}}"
+      th:aria-label="#{pagination.page(${pageNumber})}"
+      class="btn-card h-11 w-11 overflow-hidden rounded-lg active:scale-[0.85]"
+    >
+      2
+    </a>
+    <span
+      th:if="${windowStart gt 3}"
+      class="icon-[material-symbols--more-horiz] mx-1"></span>
+
+    <span
+      class="contents"
+      th:each="pageNumber : ${#numbers.sequence(windowStart, windowEnd)}"
+    >
+      <div
+        th:if="${pageNumber == currentPage}"
+        class="flex h-11 w-11 items-center justify-center rounded-lg bg-(--primary) font-bold text-white dark:text-black/70"
+        th:text="${pageNumber}"
+      >
+        1
+      </div>
+      <a
+        th:unless="${pageNumber == currentPage}"
+        th:with="targetUrl=${photoUrl.list(currentGroup, pageNumber, pageSize)}"
+        th:href="@{${targetUrl}}"
+        th:aria-label="#{pagination.page(${pageNumber})}"
+        class="btn-card h-11 w-11 overflow-hidden rounded-lg active:scale-[0.85]"
+        th:text="${pageNumber}"
+      >
+        2
+      </a>
+    </span>
+
+    <span
+      th:if="${windowEnd lt totalPages - 2}"
+      class="icon-[material-symbols--more-horiz] mx-1"></span>
+    <a
+      th:if="${windowEnd == totalPages - 2}"
+      th:with="pageNumber=${totalPages - 1}, targetUrl=${photoUrl.list(currentGroup, pageNumber, pageSize)}"
+      th:href="@{${targetUrl}}"
+      th:aria-label="#{pagination.page(${pageNumber})}"
+      class="btn-card h-11 w-11 overflow-hidden rounded-lg active:scale-[0.85]"
+      th:text="${pageNumber}"
+    >
+      8
+    </a>
+    <a
+      th:if="${windowEnd lt totalPages}"
+      th:with="pageNumber=${totalPages}, targetUrl=${photoUrl.list(currentGroup, pageNumber, pageSize)}"
+      th:href="@{${targetUrl}}"
+      th:aria-label="#{pagination.page(${pageNumber})}"
+      class="btn-card h-11 w-11 overflow-hidden rounded-lg active:scale-[0.85]"
+      th:text="${pageNumber}"
+    >
+      9
+    </a>
+  </div>
+  <a
+    th:href={nextUrl}
+    th:classappend={`\${not ${context}.hasNext() ? ' disabled' : ''}`}
+    th:aria-label="#{pagination.next}"
+    class="btn-card h-11 w-11 overflow-hidden rounded-lg text-(--primary)"
+  >
+    <span class="icon-[material-symbols--chevron-right-rounded] text-[1.75rem]"
+    ></span>
+  </a>
+</nav>

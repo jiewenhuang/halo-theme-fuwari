@@ -1,0 +1,332 @@
+@reference "./global.css";
+
+.pswp--photos-gallery {
+  --photos-info-width: clamp(20rem, 27vw, 25rem);
+  --photos-rail-height: 7.25rem;
+  --photos-stage-inset: 1.5rem;
+  --photos-shell-radius: 1.5rem;
+  --photos-panel-bg: rgb(6 8 10 / 72%);
+  --photos-panel-border: rgb(255 255 255 / 18%);
+  --photos-current-image: none;
+}
+
+.pswp--photos-gallery .pswp__bg {
+  background:
+    linear-gradient(90deg, rgb(4 9 12 / 0.56), rgb(6 6 7 / 0.72)), rgb(3 5 7);
+}
+
+.pswp--photos-gallery.pswp--open .pswp__bg {
+  opacity: 1 !important;
+}
+
+.pswp--photos-gallery .pswp__bg::before {
+  content: "";
+  position: fixed;
+  inset: -3rem;
+  background-image: var(--photos-current-image);
+  background-position: center;
+  background-size: cover;
+  filter: blur(36px) saturate(1.15);
+  opacity: 0.56;
+  transform: scale(1.04);
+  pointer-events: none;
+}
+
+.pswp--photos-gallery .pswp__bg::after {
+  content: "";
+  position: fixed;
+  inset: var(--photos-stage-inset);
+  border: 1px solid var(--photos-panel-border);
+  border-radius: var(--photos-shell-radius);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.12),
+    0 24px 70px rgb(0 0 0 / 0.46);
+  pointer-events: none;
+}
+
+.pswp--photos-gallery .pswp__top-bar {
+  @apply bg-transparent p-0;
+  height: 0;
+  inset: 0 auto auto 0;
+  width: 100%;
+  z-index: 20;
+}
+
+.pswp--photos-gallery .pswp__top-bar.pswp__hide-on-close {
+  opacity: 0;
+  transition: opacity 140ms cubic-bezier(0.4, 0, 0.22, 1);
+}
+
+.pswp--photos-gallery.pswp--ui-visible .pswp__top-bar.pswp__hide-on-close {
+  opacity: 1;
+}
+
+.pswp--photos-gallery .pswp__button {
+  @apply rounded-full bg-white/10 text-white backdrop-blur-xl hover:bg-white/18;
+}
+
+.pswp--photos-gallery .pswp__button--close {
+  position: fixed;
+  inset: auto auto auto auto;
+  right: calc(var(--photos-stage-inset) + 0.5rem);
+  top: calc(var(--photos-stage-inset) + 0.5rem);
+  margin: 0 !important;
+  width: 3rem;
+  height: 3rem;
+  z-index: 30;
+  opacity: 1 !important;
+}
+
+.pswp--photos-gallery .pswp__button--close .pswp__icn {
+  left: 50%;
+  top: 50%;
+  margin: 0;
+  transform: translate3d(-50%, -50%, 0);
+}
+
+.pswp--photos-gallery .pswp__button--zoom {
+  @apply mt-0 hidden;
+}
+
+.pswp--photos-gallery .pswp__button--arrow {
+  @apply h-12 w-12 rounded-full bg-black/38 opacity-100 shadow-xl backdrop-blur-xl hover:bg-black/55;
+  top: 50%;
+  margin: 0;
+  transform: translateY(-50%);
+}
+
+.pswp--photos-gallery .pswp__button--arrow .pswp__icn {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 1.75rem;
+  height: 1.75rem;
+  margin: 0;
+  background: none;
+  transform: translate3d(-50%, -50%, 0);
+}
+
+.pswp--photos-gallery .pswp__button--arrow--next .pswp__icn {
+  transform: translate3d(-50%, -50%, 0) scaleX(-1);
+}
+
+.pswp--photos-gallery .pswp__button--arrow--prev {
+  left: calc(var(--photos-stage-inset) + 1.25rem);
+}
+
+.pswp--photos-gallery .pswp__button--arrow--next {
+  right: calc(var(--photos-info-width) + var(--photos-stage-inset) + 1.25rem);
+}
+
+.pswp--photos-gallery .pswp__counter {
+  @apply rounded-full bg-black/45 px-4 py-2 text-sm font-bold text-white/90 backdrop-blur-xl;
+  position: fixed;
+  left: calc(var(--photos-stage-inset) + 1rem);
+  margin: 0;
+  top: calc(var(--photos-stage-inset) + 1rem);
+  z-index: 20;
+  opacity: 1 !important;
+}
+
+.pswp--photos-gallery .pswp__scroll-wrap,
+.pswp--photos-gallery .pswp__container {
+  background: transparent;
+}
+
+.pswp-photo-info {
+  @apply fixed z-10 flex flex-col overflow-y-auto border-l border-white/10 px-7 pb-7 pt-24 text-white shadow-2xl backdrop-blur-2xl;
+  bottom: calc(var(--photos-stage-inset) + var(--photos-rail-height));
+  right: var(--photos-stage-inset);
+  top: var(--photos-stage-inset);
+  width: min(
+    var(--photos-info-width),
+    calc(100vw - var(--photos-stage-inset) - var(--photos-stage-inset))
+  );
+  background: var(--photos-panel-bg);
+  border-color: var(--photos-panel-border);
+  border-top-right-radius: var(--photos-shell-radius);
+}
+
+.pswp-photo-info__top {
+  @apply mb-6 border-b border-white/10 pb-5;
+}
+
+.pswp-photo-info__title-wrap {
+  @apply min-w-0;
+}
+
+.pswp-photo-info__title {
+  @apply break-words text-2xl font-bold leading-tight text-white;
+}
+
+.pswp-photo-info__summary {
+  @apply mt-3 whitespace-pre-wrap text-sm leading-6 text-white/58;
+}
+
+.pswp-photo-info__details {
+  @apply border-b border-white/10;
+}
+
+.pswp-photo-info__detail-row {
+  @apply grid grid-cols-[1.75rem_minmax(0,1fr)] gap-4 border-t border-white/8 py-4 first:border-t-0;
+}
+
+.pswp-photo-info__detail-icon {
+  @apply mt-0.5 text-2xl text-white/86;
+}
+
+.pswp-photo-info__detail-body {
+  @apply min-w-0;
+}
+
+.pswp-photo-info__detail-title {
+  @apply break-words text-base font-bold leading-6 text-white/88;
+}
+
+.pswp-photo-info__detail-subtitle {
+  @apply mt-1 break-words text-sm leading-5 text-white/52;
+}
+
+.pswp-photo-info__actions {
+  @apply mb-7 grid grid-cols-4 gap-3 border-b border-white/10 py-5;
+}
+
+.pswp-photo-action {
+  @apply flex min-h-14 flex-col items-center justify-center gap-2 rounded-xl px-3 text-center text-xs font-medium transition hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white;
+  background: transparent;
+  color: rgb(255 255 255 / 0.78);
+}
+
+.pswp-photo-action:hover {
+  background: rgb(255 255 255 / 0.14);
+}
+
+.pswp-photo-action__icon {
+  @apply text-2xl text-white/92;
+}
+
+.pswp-photo-action__label {
+  @apply leading-none;
+}
+
+.pswp-photo-action--ghost {
+  color: rgb(255 255 255 / 0.68);
+}
+
+.pswp-photo-rail {
+  @apply fixed z-10 border-t border-white/14 px-12 py-4 backdrop-blur-2xl;
+  bottom: var(--photos-stage-inset);
+  height: var(--photos-rail-height);
+  left: var(--photos-stage-inset);
+  right: var(--photos-stage-inset);
+  background: rgb(8 8 10 / 74%);
+  border-color: var(--photos-panel-border);
+  border-bottom-left-radius: var(--photos-shell-radius);
+  border-bottom-right-radius: var(--photos-shell-radius);
+}
+
+.pswp-photo-rail__inner {
+  @apply flex h-full gap-3 overflow-x-auto pb-1;
+  scrollbar-width: none;
+}
+
+.pswp-photo-rail__inner::-webkit-scrollbar {
+  display: none;
+}
+
+.pswp-photo-thumb {
+  @apply h-20 w-28 shrink-0 overflow-hidden rounded-lg border-2 border-transparent bg-white/10 opacity-70 transition hover:opacity-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white;
+}
+
+.pswp-photo-thumb.is-active {
+  @apply border-white opacity-100 shadow-[0_0_0_1px_rgb(255_255_255_/_0.35)];
+}
+
+.pswp-photo-thumb img {
+  @apply h-full w-full object-cover;
+}
+
+@media (max-width: 1023px) {
+  .pswp--photos-gallery {
+    --photos-info-width: calc(100vw - 1.5rem);
+    --photos-rail-height: 5rem;
+    --photos-stage-inset: 0.75rem;
+    --photos-shell-radius: 1rem;
+  }
+
+  .pswp--photos-gallery .pswp__top-bar {
+    @apply h-0;
+  }
+
+  .pswp--photos-gallery .pswp__button {
+    @apply h-11 w-11;
+  }
+
+  .pswp--photos-gallery .pswp__button--close {
+    right: var(--photos-stage-inset);
+    top: var(--photos-stage-inset);
+  }
+
+  .pswp--photos-gallery .pswp__counter {
+    left: var(--photos-stage-inset);
+    top: var(--photos-stage-inset);
+  }
+
+  .pswp--photos-gallery .pswp__button--arrow {
+    @apply h-11 w-11;
+  }
+
+  .pswp--photos-gallery .pswp__button--arrow .pswp__icn {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+
+  .pswp--photos-gallery .pswp__button--arrow--prev {
+    @apply left-5;
+  }
+
+  .pswp--photos-gallery .pswp__button--arrow--next {
+    @apply right-5;
+  }
+
+  .pswp-photo-info {
+    @apply top-auto max-h-40 w-auto rounded-t-2xl border-l-0 border-t px-4 py-3;
+    bottom: calc(var(--photos-rail-height) + var(--photos-stage-inset));
+    left: var(--photos-stage-inset);
+    right: var(--photos-stage-inset);
+  }
+
+  .pswp-photo-info__top {
+    @apply mb-2 pb-2;
+  }
+
+  .pswp-photo-info__title {
+    @apply line-clamp-1 text-base;
+  }
+
+  .pswp-photo-info__details {
+    @apply hidden;
+  }
+
+  .pswp-photo-info__actions {
+    @apply mb-2 grid-cols-4 gap-2 border-b-0 py-0;
+  }
+
+  .pswp-photo-action {
+    @apply min-h-10 rounded-xl text-[0.7rem];
+  }
+
+  .pswp-photo-action__icon {
+    @apply hidden;
+  }
+
+  .pswp-photo-rail {
+    @apply rounded-b-2xl px-3 py-2;
+    left: var(--photos-stage-inset);
+    right: var(--photos-stage-inset);
+  }
+
+  .pswp-photo-thumb {
+    @apply h-14 w-18 rounded-md;
+  }
+}

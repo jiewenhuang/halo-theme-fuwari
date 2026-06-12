@@ -1,0 +1,24 @@
+---
+const photosI18nScript = `<script th:inline="javascript">
+  window.i18nResources = {
+    ...(window.i18nResources || {}),
+    "page.photos.addDescription": \`[(#{page.photos.addDescription})]\`,
+    "page.photos.download": \`[(#{page.photos.download})]\`,
+    "page.photos.exif.aperture": \`[(#{page.photos.exif.aperture})]\`,
+    "page.photos.exif.camera": \`[(#{page.photos.exif.camera})]\`,
+    "page.photos.exif.dateTimeOriginal": \`[(#{page.photos.exif.dateTimeOriginal})]\`,
+    "page.photos.exif.dimensions": \`[(#{page.photos.exif.dimensions})]\`,
+    "page.photos.exif.focalLength": \`[(#{page.photos.exif.focalLength})]\`,
+    "page.photos.exif.iso": \`[(#{page.photos.exif.iso})]\`,
+    "page.photos.exif.lens": \`[(#{page.photos.exif.lens})]\`,
+    "page.photos.exif.shutter": \`[(#{page.photos.exif.shutter})]\`,
+    "page.photos.more": \`[(#{page.photos.more})]\`,
+    "page.photos.selectPhoto": \`[(#{page.photos.selectPhoto})]\`,
+    "page.photos.share": \`[(#{page.photos.share})]\`,
+    "page.photos.tags": \`[(#{page.photos.tags})]\`,
+    "page.photos.viewDetail": \`[(#{page.photos.viewDetail})]\`,
+  };
+</script>`;
+---
+
+<Fragment set:html={photosI18nScript} />

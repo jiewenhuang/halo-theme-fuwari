@@ -1,92 +1,233 @@
 ---
-import Pagination from "../components/control/Pagination.astro";
+import PhotoExifMeta from "../components/photos/PhotoExifMeta.astro";
+import PhotoI18n from "../components/photos/PhotoI18n.astro";
+import PhotoPagination from "../components/photos/PhotoPagination.astro";
 import MainGridLayout from "../layouts/MainGridLayout.astro";
+import "../styles/photos-gallery-lightbox.css";
 ---
 
 <MainGridLayout title="${title + ' - ' + site.title}">
   <Fragment slot="head">
     <title th:text="${title + ' - ' + site.title}"></title>
+    <PhotoI18n />
   </Fragment>
 
-  <section class="card-base onload-animation mb-4 px-6 py-6 md:px-9">
+  <section class="card-base onload-animation mb-4 px-4 py-5 md:px-8 md:py-7">
     <div
-      class="mb-6 flex flex-col gap-3 md:flex-row md:items-end md:justify-between"
+      class="mb-6 flex flex-col gap-5 xl:flex-row xl:items-end xl:justify-between"
     >
-      <div>
-        <h1 class="text-3xl font-bold text-90" th:text="${title}">图库</h1>
-        <div class="mt-1 text-sm text-50">
+      <div class="min-w-0">
+        <div
+          class="mb-2 flex flex-wrap items-center gap-2 text-sm font-bold text-(--primary)"
+        >
+          <span class="icon-[material-symbols--photo-library-rounded] text-xl"
+          ></span>
+          <span th:text="#{page.photos.collection}">Collection</span>
+        </div>
+        <h1 class="text-3xl font-bold text-90 md:text-4xl" th:text="${title}">
+          图库
+        </h1>
+        <div class="mt-3 flex flex-wrap items-center gap-2 text-sm text-50">
           <span th:text="#{page.photos.count(${photos.total})}">0 张图片</span>
+          <span th:if="${photos.totalPages gt 0}" class="text-30">/</span>
+          <span
+            th:if="${photos.totalPages gt 0}"
+            th:text="#{page.photos.page(${photos.page}, ${photos.totalPages})}"
+          >
+            Page 1 / 1
+          </span>
+          <span
+            th:if="${not #lists.isEmpty(param.group)}"
+            class="rounded-md bg-(--btn-regular-bg) px-2 py-1 text-xs font-bold text-(--btn-content)"
+            th:text="#{page.photos.filtered}"
+          >
+            Filtered
+          </span>
         </div>
       </div>
-    </div>
 
-    <div
-      th:if="${not #lists.isEmpty(groups)}"
-      class="mb-6 flex flex-wrap gap-2"
-    >
       <a
-        th:href="@{/photos}"
-        th:classappend="${#lists.isEmpty(param.group) ? ' bg-(--primary) text-white dark:text-black/70' : ''}"
-        class="btn-card h-9 rounded-lg px-3 text-sm font-bold text-75"
-        th:text="#{common.all}">全部</a
+        th:if="${not #lists.isEmpty(param.group)}"
+        th:href="@{${photoUrl.list()}}"
+        class="btn-card h-11 w-fit rounded-lg px-4 text-sm font-bold text-75"
       >
-      <a
-        th:each="group : ${groups}"
-        th:href="@{/photos(group=${group.metadata.name})}"
-        th:classappend="${#lists.contains(param.group, group.metadata.name) ? ' bg-(--primary) text-white dark:text-black/70' : ''}"
-        class="btn-card h-9 rounded-lg px-3 text-sm font-bold text-75"
-      >
-        <span th:text="${group.spec.displayName}">Group</span>
-        <span class="ml-1 text-30" th:text="${group.status.photoCount}">0</span>
+        <span class="icon-[material-symbols--close-rounded] mr-1 text-xl"
+        ></span>
+        <span th:text="#{page.photos.clearFilter}">Clear filter</span>
       </a>
     </div>
 
     <div
-      id="photos-gallery"
-      th:if="${not #lists.isEmpty(photos.items)}"
-      class="grid gap-4 sm:grid-cols-2 xl:grid-cols-3"
+      th:if="${not #lists.isEmpty(groups)}"
+      class="mb-6 flex gap-2 overflow-x-auto pb-1"
     >
-      <figure
-        th:each="photo, photoStat : ${photos.items}"
-        class="group relative overflow-hidden rounded-2xl bg-(--btn-regular-bg)"
-        th:style="|animation-delay: calc(var(--content-delay) + ${photoStat.index * 50}ms)|"
+      <a
+        th:with="targetUrl=${photoUrl.list()}"
+        th:href="@{${targetUrl}}"
+        th:classappend="${#lists.isEmpty(param.group) ? ' bg-(--primary) text-white dark:text-black/70' : ''}"
+        class="btn-card h-10 shrink-0 rounded-lg px-3 text-sm font-bold text-75"
       >
-        <img
-          alt=""
-          th:src="${not #strings.isEmpty(photo.spec.cover) ? photo.spec.cover : photo.spec.url}"
-          th:attr="data-pswp-src=${photo.spec.url}"
-          th:alt="${photo.spec.displayName}"
-          loading="lazy"
-          class="aspect-4/3 w-full cursor-zoom-in object-cover transition duration-300 group-hover:scale-105"
-        />
-        <figcaption
-          th:if="${not #strings.isEmpty(photo.spec.displayName) or not #strings.isEmpty(photo.spec.description)}"
-          class="pointer-events-none absolute inset-x-0 bottom-0 bg-linear-to-t from-black/70 to-transparent px-4 pb-3 pt-10 text-white transition"
+        <span th:text="#{common.all}">全部</span>
+        <span
+          th:if="${#lists.isEmpty(param.group)}"
+          class="ml-2 text-xs opacity-70"
+          th:text="${photos.total}">0</span
         >
-          <div
-            class="font-bold"
-            th:if="${not #strings.isEmpty(photo.spec.displayName)}"
-            th:text="${photo.spec.displayName}"
+      </a>
+      <a
+        th:each="group : ${groups}"
+        th:with="targetUrl=${photoUrl.list(group.metadata.name)}"
+        th:href="@{${targetUrl}}"
+        th:classappend="${#lists.contains(param.group, group.metadata.name) ? ' bg-(--primary) text-white dark:text-black/70' : ''}"
+        class="btn-card h-10 shrink-0 rounded-lg px-3 text-sm font-bold text-75"
+      >
+        <span th:text="${group.spec.displayName}">Group</span>
+        <span
+          class="ml-2 text-xs opacity-70"
+          th:text="${group.status.photoCount}">0</span
+        >
+      </a>
+    </div>
+
+    <div th:if="${not #lists.isEmpty(photos.items)}">
+      <div
+        id="photos-gallery"
+        class="columns-1 gap-4 sm:columns-2 2xl:columns-3"
+      >
+        <article
+          th:each="photo, photoStat : ${photos.items}"
+          class="photo-gallery-item group/photo-item relative mb-4 block w-full break-inside-avoid"
+          th:style="|animation-delay: calc(var(--content-delay) + ${photoStat.index * 50}ms)|"
+        >
+          <a
+            class="photo-gallery-link group block w-full cursor-zoom-in overflow-hidden rounded-xl bg-black/5 text-left transition hover:-translate-y-0.5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--primary) active:scale-[0.99] dark:bg-white/5"
+            data-no-swup
+            th:href="${photo.spec.url}"
+            th:attr="data-pswp-src=${photo.spec.url},data-pswp-width=${photo.exif != null and photo.exif.imageWidth != null ? photo.exif.imageWidth : 0},data-pswp-height=${photo.exif != null and photo.exif.imageHeight != null ? photo.exif.imageHeight : 0}"
+            th:aria-label="#{page.photos.openViewer}"
           >
-            Photo
-          </div>
-          <div
-            class="line-clamp-2 text-sm text-white/75"
-            th:if="${not #strings.isEmpty(photo.spec.description)}"
-            th:text="${photo.spec.description}"
+            <span
+              class="photo-detail-url hidden"
+              th:text="@{${photoUrl.detail(photo)}}"></span>
+            <span class="photo-full-url hidden" th:text="${photo.spec.url}"
+            ></span>
+            <span
+              th:if="${not #strings.isEmpty(photo.spec.groupName)}"
+              class="photo-group-name hidden"
+              th:text="${photo.spec.groupName}"
+            >
+            </span>
+            <span
+              th:if="${not #strings.isEmpty(photo.spec.groupName)}"
+              class="photo-group-url hidden"
+              th:text="@{${photoUrl.list(photo.spec.groupName)}}"
+            >
+            </span>
+            <span
+              class="photo-data-title hidden"
+              th:text="${not #strings.isEmpty(photo.spec.displayName) ? photo.spec.displayName : photo.metadata.name}"
+            >
+              Photo
+            </span>
+            <span
+              th:if="${not #strings.isEmpty(photo.spec.description)}"
+              class="photo-data-description hidden"
+              th:text="${photo.spec.description}"
+            >
+            </span>
+            <span
+              th:if="${photo.exif != null and photo.exif.dateTimeOriginal != null}"
+              class="photo-data-date hidden"
+              th:text="${#dates.format(photo.exif.dateTimeOriginal, 'yyyy-MM-dd HH:mm')}"
+            >
+            </span>
+            <span
+              th:if="${photo.exif != null and (not #strings.isEmpty(photo.exif.make) or not #strings.isEmpty(photo.exif.model))}"
+              class="photo-data-camera hidden"
+              th:text="${#strings.trim((photo.exif.make ?: '') + ' ' + (photo.exif.model ?: ''))}"
+            >
+            </span>
+
+            <figure class="relative">
+              <img
+                alt=""
+                th:src="${not #strings.isEmpty(photo.spec.cover) ? photo.spec.cover : photo.spec.url}"
+                th:alt="${photo.spec.displayName}"
+                loading="lazy"
+                class="photo-cover w-full object-cover transition duration-300 group-hover:scale-[1.02]"
+              />
+              <figcaption
+                th:if="${not #strings.isEmpty(photo.spec.displayName) or not #strings.isEmpty(photo.spec.description) or not #lists.isEmpty(photo.spec.tags) or (photo.exif != null and (photo.exif.dateTimeOriginal != null or not #strings.isEmpty(photo.exif.make) or not #strings.isEmpty(photo.exif.model)))}"
+                class="pointer-events-none absolute inset-x-0 bottom-0 translate-y-full bg-linear-to-t from-black/80 via-black/35 to-transparent px-4 pb-3 pt-12 text-white transition duration-300 group-hover:translate-y-0 group-focus-within:translate-y-0"
+              >
+                <div
+                  th:if="${not #strings.isEmpty(photo.spec.displayName)}"
+                  class="text-base font-bold"
+                  th:text="${photo.spec.displayName}"
+                >
+                  Photo
+                </div>
+                <div
+                  th:if="${not #strings.isEmpty(photo.spec.description)}"
+                  class="mt-1 line-clamp-2 text-sm leading-5 text-white/75"
+                  th:text="${photo.spec.description}"
+                >
+                </div>
+                <div class="mt-3 flex flex-wrap gap-2 text-xs text-white/80">
+                  <span
+                    th:if="${photo.exif != null and photo.exif.dateTimeOriginal != null}"
+                    class="rounded-md bg-white/15 px-2 py-1 backdrop-blur"
+                    th:text="${#dates.format(photo.exif.dateTimeOriginal, 'yyyy-MM-dd')}"
+                  >
+                    2026-01-01
+                  </span>
+                  <span
+                    th:if="${photo.exif != null and (not #strings.isEmpty(photo.exif.make) or not #strings.isEmpty(photo.exif.model))}"
+                    class="rounded-md bg-white/15 px-2 py-1 backdrop-blur"
+                    th:text="${#strings.trim((photo.exif.make ?: '') + ' ' + (photo.exif.model ?: ''))}"
+                  >
+                    Camera
+                  </span>
+                </div>
+                <div
+                  th:if="${not #lists.isEmpty(photo.spec.tags)}"
+                  class="mt-2 flex flex-wrap gap-1.5"
+                >
+                  <span
+                    th:each="tag : ${photo.spec.tags}"
+                    class="photo-data-tag rounded-md bg-white/15 px-2 py-0.5 text-xs font-medium text-white/85 backdrop-blur"
+                    th:text="${'#' + tag}"
+                  >
+                    #tag
+                  </span>
+                </div>
+              </figcaption>
+            </figure>
+
+            <PhotoExifMeta mode="hidden" />
+          </a>
+          <a
+            class="photo-detail-link absolute right-3 top-3 z-10 flex h-10 w-10 items-center justify-center rounded-full bg-black/45 text-white opacity-0 shadow-lg backdrop-blur-xl transition hover:bg-black/65 focus-visible:opacity-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white group-hover/photo-item:opacity-100"
+            th:href="@{${photoUrl.detail(photo)}}"
+            th:aria-label="#{page.photos.viewDetail}"
           >
-          </div>
-        </figcaption>
-      </figure>
+            <span class="icon-[material-symbols--info-outline-rounded] text-xl"
+            ></span>
+          </a>
+        </article>
+      </div>
     </div>
 
     <div
       th:if="${#lists.isEmpty(photos.items)}"
-      class="py-12 text-center text-50"
+      class="rounded-xl bg-(--btn-regular-bg) py-14 text-center text-50"
     >
+      <span
+        class="icon-[material-symbols--photo-library-outline-rounded] mb-3 block text-4xl text-30"
+      ></span>
       <span th:text="#{page.photos.empty}">暂无图片</span>
     </div>
   </section>
 
-  <Pagination context="photos" class="mb-4 onload-animation" />
+  <PhotoPagination context="photos" class="mb-4 onload-animation" />
 </MainGridLayout>

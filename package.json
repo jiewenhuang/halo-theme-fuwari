@@ -36,7 +36,7 @@
     "@astrojs/vue": "^6.0.1",
     "@fontsource-variable/jetbrains-mono": "^5.2.8",
     "@fontsource/roboto": "^5.2.10",
-    "@halo-dev/api-client": "^2.24.0",
+    "@halo-dev/api-client": "^2.25.1",
     "@swup/astro": "^1.8.0",
     "@tailwindcss/vite": "^4.3.0",
     "astro": "^6.4.6",
@@ -52,7 +52,7 @@
     "vue": "^3.5.38"
   },
   "devDependencies": {
-    "@halo-dev/theme-package-cli": "^1.0.5",
+    "@halo-dev/theme-package-cli": "^1.1.1",
     "@iconify-json/ant-design": "^1.2.5",
     "@iconify-json/entypo-social": "^1.2.3",
     "@iconify-json/fa6-brands": "^1.2.6",

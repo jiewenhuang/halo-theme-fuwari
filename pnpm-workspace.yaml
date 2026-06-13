@@ -1,6 +1,9 @@
 allowBuilds:
   esbuild: true
   sharp: true
+minimumReleaseAgeExclude:
+  - '@halo-dev/theme-package-cli@1.1.0'
+  - '@halo-dev/theme-package-cli@1.1.1'
 packages:
   - "."
   - "ui-plugin"

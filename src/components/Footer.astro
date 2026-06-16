@@ -32,24 +32,38 @@ const currentYear = new Date().getFullYear();
     </span>
   </div>
   <div
-    class="mt-2"
-    th:if="${not #strings.isEmpty(theme.config.beian.icp_text)}"
+    class="mt-2 flex flex-col items-center justify-center gap-2"
+    th:if="${not #strings.isEmpty(theme.config.beian.icp_text) or not #strings.isEmpty(theme.config.beian.gongan_text)}"
   >
     <a
-      class="link font-medium text-(--primary)"
+      th:if="${not #strings.isEmpty(theme.config.beian.icp_text)}"
+      class="link inline-flex items-center gap-1 font-medium text-(--primary)"
       th:href="${theme.config.beian.icp_link}"
       target="_blank"
-      th:text="${theme.config.beian.icp_text}"></a>
-  </div>
-  <div
-    class="mt-1"
-    th:if="${not #strings.isEmpty(theme.config.beian.gongan_text)}"
-  >
+      rel="noopener noreferrer"
+    >
+      <img
+        th:src="@{/assets/images/icp.webp}"
+        alt="ICP备案"
+        class="beian-icon inline-block h-4 w-4"
+      />
+      <span th:text="${theme.config.beian.icp_text}"></span>
+    </a>
     <a
-      class="link font-medium text-(--primary)"
+      id="gongan-link"
+      th:if="${not #strings.isEmpty(theme.config.beian.gongan_text)}"
+      class="link inline-flex items-center gap-1 font-medium text-(--primary)"
       th:href="${theme.config.beian.gongan_link}"
       target="_blank"
-      th:text="${theme.config.beian.gongan_text}"></a>
+      rel="noopener noreferrer"
+    >
+      <img
+        th:src="@{/assets/images/gongan.png}"
+        alt="公安备案"
+        class="beian-icon inline-block h-4 w-4"
+      />
+      <span id="gongan-text" th:text="${theme.config.beian.gongan_text}"></span>
+    </a>
   </div>
   <div class="mt-2">
     <span th:text="#{footer.poweredBy}">Powered by</span>
@@ -66,3 +80,17 @@ const currentYear = new Date().getFullYear();
     >
   </div>
 </footer>
+
+<script>
+  // Auto-extract gongan filing number and construct the MPS query URL
+  // Same logic as Clarity theme
+  (function () {
+    var textEl = document.getElementById("gongan-text");
+    var linkEl = document.getElementById("gongan-link");
+    if (!textEl || !linkEl) return;
+    var code = textEl.innerText.replace(/[^0-9]/g, "");
+    if (code) {
+      linkEl.href = "https://beian.mps.gov.cn/#/query/webSearch?code=" + code;
+    }
+  })();
+</script>

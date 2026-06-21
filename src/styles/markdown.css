@@ -45,6 +45,11 @@
   @apply rounded-md bg-(--inline-code-bg) px-1.5 py-0.5 text-(--inline-code-color);
 }
 
+.custom-md code::before,
+.custom-md code::after {
+  content: none;
+}
+
 .custom-md pre {
   @apply rounded-xl bg-(--codeblock-bg) text-white;
 }

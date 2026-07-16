@@ -51,6 +51,16 @@ const currentYear = new Date().getFullYear();
       target="_blank"
       th:text="${theme.config.beian.gongan_text}"></a>
   </div>
+  <div
+    class="mt-1"
+    th:if="${not #strings.isEmpty(theme.config.beian.moe_text)}"
+  >
+    <a
+      class="link font-medium text-(--primary)"
+      th:href="${theme.config.beian.moe_link}"
+      target="_blank"
+      th:text="${theme.config.beian.moe_text}"></a>
+  </div>
   <div class="mt-2">
     <span th:text="#{footer.poweredBy}">Powered by</span>
     <a

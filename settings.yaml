@@ -329,3 +329,12 @@ spec:
           name: gongan_link
           label: 公安联网备案跳转链接
           value: https://beian.mps.gov.cn/#/query/webSearch
+
+        - $formkit: text
+          name: moe_text
+          label: 萌ICP备案号
+          help: 萌备案号，如：萌ICP备20250059号
+        - $formkit: text
+          name: moe_link
+          label: 萌ICP备案跳转链接
+          value: https://icp.gov.moe/?keyword=20250059

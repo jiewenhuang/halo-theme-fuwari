@@ -110,6 +110,8 @@ export interface Beian {
   icp_link: string;
   gongan_text: string;
   icp_text: string;
+  moe_text: string;
+  moe_link: string;
 }
 
 export interface Development {

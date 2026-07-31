@@ -337,4 +337,4 @@ spec:
         - $formkit: text
           name: moe_link
           label: 萌ICP备案跳转链接
-          value: https://icp.gov.moe/?keyword=20250059
+          help: 萌备案跳转链接，如：https://icp.gov.moe/?keyword=20250059

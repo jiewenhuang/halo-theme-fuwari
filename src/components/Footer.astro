@@ -53,7 +53,7 @@ const currentYear = new Date().getFullYear();
   </div>
   <div
     class="mt-1"
-    th:if="${not #strings.isEmpty(theme.config.beian.moe_text)}"
+    th:if="${not #strings.isEmpty(theme.config.beian.moe_text) and not #strings.isEmpty(theme.config.beian.moe_link)}"
   >
     <a
       class="link font-medium text-(--primary)"

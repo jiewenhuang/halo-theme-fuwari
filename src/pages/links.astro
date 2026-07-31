@@ -63,20 +63,23 @@ import LinkApplication from "../components/LinkApplication.astro";
             rel="noopener noreferrer"
             class="btn-card group min-h-28 items-start! justify-start! gap-4 rounded-xl p-4 text-left active:scale-95"
           >
-            <img
-              alt=""
-              th:if="${not #strings.isEmpty(link.spec.logo)}"
-              th:src="${link.spec.logo}"
-              th:alt="${link.spec.displayName}"
-              loading="lazy"
-              class="h-12 w-12 shrink-0 rounded-xl bg-(--btn-regular-bg) object-cover transition group-hover:scale-105"
-            />
             <div
-              th:unless="${not #strings.isEmpty(link.spec.logo)}"
-              class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-(--btn-regular-bg) text-(--primary)"
+              class="relative flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-(--btn-regular-bg) text-lg font-bold text-(--primary) transition group-hover:scale-105"
             >
-              <span class="icon-[material-symbols--link-rounded] text-2xl"
-              ></span>
+              <span
+                aria-hidden="true"
+                th:text="${#strings.isEmpty(link.spec.displayName) ? '?' : #strings.toUpperCase(#strings.substring(link.spec.displayName, 0, 1))}"
+                >F</span
+              >
+              <img
+                alt=""
+                th:if="${not #strings.isEmpty(link.spec.logo)}"
+                th:src="${link.spec.logo}"
+                loading="lazy"
+                onload="this.previousElementSibling.hidden = true"
+                onerror="this.remove()"
+                class="absolute inset-0 h-full w-full object-cover"
+              />
             </div>
             <div class="min-w-0 flex-1">
               <div class="flex items-start gap-2">

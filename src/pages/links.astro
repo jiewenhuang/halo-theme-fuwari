@@ -1,5 +1,6 @@
 ---
 import MainGridLayout from "../layouts/MainGridLayout.astro";
+import LinkApplication from "../components/LinkApplication.astro";
 ---
 
 <MainGridLayout title="${linksTitle + ' - ' + site.title}">
@@ -8,14 +9,31 @@ import MainGridLayout from "../layouts/MainGridLayout.astro";
   </Fragment>
 
   <section class="card-base onload-animation mb-4 px-6 py-6 md:px-9">
-    <div class="mb-6 flex flex-col gap-2">
-      <h1 class="text-3xl font-bold text-90" th:text="${linksTitle}">
-        友情链接
-      </h1>
-      <div class="text-sm text-50">
-        <span class="icon-[material-symbols--link-rounded] mr-1"></span>
-        <span>Friends links</span>
+    <div
+      class="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"
+    >
+      <div class="flex flex-col gap-2">
+        <h1 class="text-3xl font-bold text-90" th:text="${linksTitle}">
+          友情链接
+        </h1>
+        <div class="text-sm text-50">
+          <span class="icon-[material-symbols--link-rounded] mr-1"></span>
+          <span>Friends links</span>
+        </div>
       </div>
+      <a
+        href="#link-application"
+        data-link-application-trigger
+        th:if="${linkApplicationEnabled == true}"
+        aria-controls="link-application-details"
+        aria-expanded="false"
+        class="btn-regular inline-flex h-10 w-full shrink-0 items-center gap-2 rounded-xl px-4 font-bold outline-none active:scale-95 focus-visible:ring-2 focus-visible:ring-(--primary)/40 sm:w-auto"
+      >
+        <span
+          class="icon-[material-symbols--add-link-rounded] text-xl"
+          aria-hidden="true"></span>
+        <span th:text="#{page.links.application.action}">Apply</span>
+      </a>
     </div>
 
     <div th:if="${not #lists.isEmpty(groups)}" class="space-y-8">
@@ -95,6 +113,8 @@ import MainGridLayout from "../layouts/MainGridLayout.astro";
       暂无友情链接
     </div>
   </section>
+
+  <LinkApplication />
 
   <div
     id="comment"

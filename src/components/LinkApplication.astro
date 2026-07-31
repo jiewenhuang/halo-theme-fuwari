@@ -1,0 +1,575 @@
+---
+const inputClass =
+  "w-full rounded-xl border border-black/10 bg-black/[0.025] px-3.5 py-3 text-sm text-90 outline-none transition placeholder:text-black/25 hover:border-(--primary)/35 focus:border-(--primary) focus:ring-2 focus:ring-(--primary)/15 dark:border-white/10 dark:bg-white/[0.035] dark:placeholder:text-white/25";
+const textareaClass = `${inputClass} min-h-28 resize-y leading-6`;
+const labelClass = "mb-2 block text-sm font-bold text-75";
+---
+
+<fuwari-link-application
+  id="link-application"
+  th:if="${linkApplicationEnabled == true}"
+  th:attr="data-network-error=#{page.links.application.networkError},data-success-message=#{page.links.application.success}"
+  class="card-base onload-animation mb-4 block scroll-mt-24"
+>
+  <details id="link-application-details" data-application-details class="group">
+    <summary
+      class="flex cursor-pointer list-none items-center gap-4 px-6 py-5 outline-none transition hover:bg-(--btn-card-bg-hover) focus-visible:bg-(--btn-card-bg-hover) focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-(--primary)/35 md:px-9"
+    >
+      <span
+        class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-(--btn-regular-bg) text-(--primary) transition group-hover:scale-105"
+      >
+        <span
+          class="icon-[material-symbols--add-link-rounded] text-2xl"
+          aria-hidden="true"></span>
+      </span>
+      <span class="min-w-0 flex-1">
+        <span
+          class="block text-lg font-bold text-90"
+          th:text="#{page.links.application.title}"
+        >
+          Apply for a friend link
+        </span>
+        <span
+          class="mt-1 block text-sm leading-6 text-50"
+          th:text="#{page.links.application.description}"
+        >
+          Share your site details for review.
+        </span>
+      </span>
+      <span
+        class="icon-[material-symbols--keyboard-arrow-down-rounded] shrink-0 text-2xl text-30 transition-transform duration-300 group-open:rotate-180 group-hover:text-(--primary)"
+        aria-hidden="true"></span>
+    </summary>
+
+    <div
+      class="border-t border-dashed border-black/10 px-6 pb-7 pt-6 dark:border-white/15 md:px-9"
+    >
+      <form
+        data-application-form
+        method="post"
+        action="/links/apply/submit"
+        th:action="@{/links/apply/submit}"
+        class="space-y-6"
+      >
+        <input type="hidden" name="_csrf" th:value="${csrfToken}" />
+
+        <div class="grid gap-x-5 gap-y-4 md:grid-cols-2">
+          <label class="md:col-span-2">
+            <span class={labelClass}>
+              <span th:text="#{page.links.application.url}">Website URL</span>
+              <span aria-hidden="true" class="ml-0.5 text-(--primary)">*</span>
+            </span>
+            <input
+              class={inputClass}
+              name="url"
+              type="url"
+              autocomplete="url"
+              spellcheck="false"
+              required
+              placeholder="https://example.com"
+            />
+          </label>
+
+          <label>
+            <span class={labelClass}>
+              <span th:text="#{page.links.application.displayName}">
+                Website name
+              </span>
+              <span aria-hidden="true" class="ml-0.5 text-(--primary)">*</span>
+            </span>
+            <input
+              class={inputClass}
+              name="displayName"
+              autocomplete="organization"
+              required
+              th:placeholder="#{page.links.application.displayNamePlaceholder}"
+            />
+          </label>
+
+          <label>
+            <span class={labelClass} th:text="#{page.links.application.email}">
+              Contact email
+            </span>
+            <input
+              class={inputClass}
+              name="email"
+              type="email"
+              autocomplete="email"
+              spellcheck="false"
+              placeholder="hello@example.com"
+            />
+          </label>
+
+          <label>
+            <span class={labelClass} th:text="#{page.links.application.logo}">
+              Logo URL
+            </span>
+            <input
+              class={inputClass}
+              name="logo"
+              type="url"
+              autocomplete="off"
+              spellcheck="false"
+              placeholder="https://example.com/logo.png"
+            />
+          </label>
+
+          <label>
+            <span
+              class={labelClass}
+              th:text="#{page.links.application.backlink}"
+            >
+              Backlink page
+            </span>
+            <input
+              class={inputClass}
+              name="backlink"
+              type="url"
+              autocomplete="off"
+              spellcheck="false"
+              placeholder="https://example.com/links"
+            />
+          </label>
+
+          <label>
+            <span
+              class={labelClass}
+              th:text="#{page.links.application.siteDescription}"
+            >
+              Website description
+            </span>
+            <textarea
+              class={textareaClass}
+              name="description"
+              autocomplete="off"
+              th:placeholder="#{page.links.application.descriptionPlaceholder}"
+            ></textarea>
+          </label>
+
+          <label>
+            <span
+              class={labelClass}
+              th:text="#{page.links.application.feedUrls}"
+            >
+              RSS / Atom feeds
+            </span>
+            <textarea
+              class={textareaClass}
+              name="feedUrls"
+              autocomplete="off"
+              spellcheck="false"
+              th:placeholder="#{page.links.application.feedUrlsPlaceholder}"
+            ></textarea>
+          </label>
+        </div>
+
+        <div
+          class="rounded-xl border border-dashed border-black/10 bg-black/[0.02] p-3.5 dark:border-white/15 dark:bg-white/[0.025]"
+        >
+          <div
+            class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between"
+          >
+            <div class="shrink-0">
+              <div class="text-sm font-bold text-75">
+                <span th:text="#{page.links.application.captcha}">
+                  Verification code
+                </span>
+                <span aria-hidden="true" class="ml-0.5 text-(--primary)">*</span
+                >
+              </div>
+              <p
+                id="link-application-captcha-hint"
+                class="mt-0.5 text-xs text-30"
+                th:text="#{page.links.application.captchaHint}"
+              >
+                Enter the characters shown in the image.
+              </p>
+            </div>
+
+            <div class="flex flex-col gap-2 sm:flex-row sm:items-center">
+              <button
+                data-captcha-refresh
+                type="button"
+                class="relative flex h-12 w-full shrink-0 cursor-pointer items-center justify-center overflow-hidden rounded-lg bg-white px-2 outline-none ring-1 ring-black/5 transition hover:ring-(--primary)/35 focus-visible:ring-2 focus-visible:ring-(--primary) dark:bg-white/90 sm:w-40"
+                th:aria-label="#{page.links.application.refreshCaptcha}"
+                th:title="#{page.links.application.refreshCaptcha}"
+                aria-label="Refresh verification code"
+                title="Refresh verification code"
+              >
+                <img
+                  data-application-captcha
+                  class="h-full w-full object-contain"
+                  src="/links/apply/captcha"
+                  th:src="@{/links/apply/captcha}"
+                  th:attr="data-captcha-url=@{/links/apply/captcha}"
+                  alt="Friend link application verification code"
+                  th:alt="#{page.links.application.captchaAlt}"
+                  width="160"
+                  height="48"
+                />
+              </button>
+
+              <div class="flex items-center gap-2">
+                <input
+                  class={`${inputClass} h-12 min-w-0 flex-1 text-center font-mono text-base tracking-[0.3em] sm:w-40`}
+                  name="captchaCode"
+                  required
+                  autocomplete="off"
+                  spellcheck="false"
+                  aria-describedby="link-application-captcha-hint"
+                  th:placeholder="#{page.links.application.captchaPlaceholder}"
+                />
+
+                <button
+                  data-captcha-refresh
+                  type="button"
+                  class="btn-plain scale-animation h-10 w-10 shrink-0 rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-(--primary)/40"
+                  th:aria-label="#{page.links.application.refreshCaptcha}"
+                  aria-label="Refresh verification code"
+                >
+                  <span
+                    class="icon-[material-symbols--refresh-rounded] text-xl"
+                    aria-hidden="true"></span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div
+          data-application-result
+          class="application-result break-words"
+          role="status"
+          aria-live="polite"
+          hidden
+        >
+          <span
+            data-result-icon
+            class="mt-0.5 shrink-0 text-xl"
+            aria-hidden="true"></span>
+          <span data-result-message></span>
+        </div>
+
+        <div
+          class="flex flex-col gap-4 border-t border-dashed border-black/10 pt-5 dark:border-white/15 sm:flex-row sm:items-center sm:justify-between"
+        >
+          <p
+            class="flex items-center gap-2 text-sm leading-6 text-50"
+            th:text="#{page.links.application.reviewNotice}"
+          >
+            Applications are published only after review.
+          </p>
+          <button
+            data-application-submit
+            type="submit"
+            class="btn-regular inline-flex h-11 w-full shrink-0 gap-2 rounded-xl px-5 font-bold outline-none active:scale-95 focus-visible:ring-2 focus-visible:ring-(--primary)/40 disabled:cursor-wait disabled:opacity-60 sm:w-auto"
+          >
+            <span
+              data-submit-icon
+              class="icon-[material-symbols--send-rounded] text-lg"
+              aria-hidden="true"></span>
+            <span
+              data-submit-label
+              th:attr="data-idle=#{page.links.application.submit},data-submitting=#{page.links.application.submitting}"
+              th:text="#{page.links.application.submit}"
+            >
+              Submit application
+            </span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </details>
+</fuwari-link-application>
+
+<script>
+  type ApplicationResponse = {
+    code?: unknown;
+    field?: unknown;
+    message?: unknown;
+  };
+
+  const restorableFieldNames = new Set([
+    "url",
+    "displayName",
+    "email",
+    "logo",
+    "backlink",
+    "description",
+    "feedUrls",
+  ]);
+
+  class LinkApplicationElement extends HTMLElement {
+    abortController?: AbortController;
+    details?: HTMLDetailsElement;
+    form?: HTMLFormElement;
+    result?: HTMLElement;
+    captcha?: HTMLImageElement;
+
+    connectedCallback() {
+      if (this.abortController) return;
+
+      const details = this.querySelector<HTMLDetailsElement>(
+        "[data-application-details]",
+      );
+      const form = this.querySelector<HTMLFormElement>(
+        "[data-application-form]",
+      );
+      const result = this.querySelector<HTMLElement>(
+        "[data-application-result]",
+      );
+      const captcha = this.querySelector<HTMLImageElement>(
+        "[data-application-captcha]",
+      );
+      if (!details || !form || !result || !captcha) return;
+
+      this.abortController = new AbortController();
+      const { signal } = this.abortController;
+      this.details = details;
+      this.form = form;
+      this.result = result;
+      this.captcha = captcha;
+
+      details.addEventListener("toggle", this.syncTriggers, { signal });
+      form.addEventListener("submit", this.handleSubmit, { signal });
+      this.querySelectorAll<HTMLElement>("[data-captcha-refresh]").forEach(
+        (control) =>
+          control.addEventListener("click", this.refreshCaptcha, { signal }),
+      );
+      document
+        .querySelectorAll<HTMLElement>("[data-link-application-trigger]")
+        .forEach((trigger) =>
+          trigger.addEventListener("click", this.openFromTrigger, { signal }),
+        );
+
+      if (window.location.hash === `#${this.id}`) {
+        details.open = true;
+      }
+      this.restoreRedirectState();
+      this.syncTriggers();
+    }
+
+    disconnectedCallback() {
+      this.abortController?.abort();
+      this.abortController = undefined;
+    }
+
+    syncTriggers = () => {
+      const expanded = String(Boolean(this.details?.open));
+      document
+        .querySelectorAll<HTMLElement>("[data-link-application-trigger]")
+        .forEach((trigger) => trigger.setAttribute("aria-expanded", expanded));
+    };
+
+    openFromTrigger = (event: Event) => {
+      event.preventDefault();
+      if (!this.details) return;
+      this.details.open = true;
+      const behavior = window.matchMedia("(prefers-reduced-motion: reduce)")
+        .matches
+        ? "auto"
+        : "smooth";
+      this.scrollIntoView({ behavior, block: "start" });
+    };
+
+    refreshCaptcha = () => {
+      if (!this.captcha) return;
+      const captchaCode = this.form?.elements.namedItem("captchaCode");
+      if (captchaCode instanceof HTMLInputElement) captchaCode.value = "";
+
+      const baseUrl =
+        this.captcha.dataset.captchaUrl ||
+        this.captcha.getAttribute("src") ||
+        "/links/apply/captcha";
+      const separator = baseUrl.includes("?") ? "&" : "?";
+      this.captcha.src = `${baseUrl}${separator}t=${Date.now()}`;
+    };
+
+    restoreRedirectState() {
+      if (!this.details || !this.form) return;
+
+      const params = new URLSearchParams(window.location.search);
+      const state = params.get("applied");
+      const isSuccess = state === "success";
+      const isError = state === "error" || state === "disabled";
+      if (!isSuccess && !isError) return;
+
+      const message = params.get("message");
+      const fieldName = params.get("field");
+      const fieldValue = params.get("value");
+      ["applied", "message", "field", "value"].forEach((key) =>
+        params.delete(key),
+      );
+      const search = params.toString();
+      window.history.replaceState(
+        window.history.state,
+        "",
+        `${window.location.pathname}${search ? `?${search}` : ""}${window.location.hash}`,
+      );
+
+      this.details.open = true;
+      if (isSuccess) {
+        this.showResult(
+          this.dataset.successMessage ||
+            "Application submitted and waiting for review.",
+          "success",
+        );
+        return;
+      }
+
+      this.showResult(
+        message ||
+          this.dataset.networkError ||
+          "Unable to submit. Please try again.",
+        "error",
+      );
+
+      if (
+        !fieldName ||
+        !restorableFieldNames.has(fieldName) ||
+        fieldValue === null
+      ) {
+        return;
+      }
+
+      const field = this.form.elements.namedItem(fieldName);
+      if (
+        field instanceof HTMLInputElement ||
+        field instanceof HTMLTextAreaElement
+      ) {
+        field.value = fieldValue;
+        field.focus();
+      }
+    }
+
+    showResult(message: string, state: "success" | "error") {
+      if (!this.result) return;
+      const messageElement = this.result.querySelector<HTMLElement>(
+        "[data-result-message]",
+      );
+      const icon = this.result.querySelector<HTMLElement>("[data-result-icon]");
+      if (messageElement) messageElement.textContent = message;
+      if (icon) {
+        icon.className = `${
+          state === "success"
+            ? "icon-[material-symbols--check-circle-rounded]"
+            : "icon-[material-symbols--error-rounded]"
+        } mt-0.5 shrink-0 text-xl`;
+      }
+      this.result.dataset.state = state;
+      this.result.setAttribute("role", state === "error" ? "alert" : "status");
+      this.result.setAttribute(
+        "aria-live",
+        state === "error" ? "assertive" : "polite",
+      );
+      this.result.hidden = false;
+      const behavior = window.matchMedia("(prefers-reduced-motion: reduce)")
+        .matches
+        ? "auto"
+        : "smooth";
+      this.result.scrollIntoView({ behavior, block: "nearest" });
+    }
+
+    handleSubmit = async (event: Event) => {
+      event.preventDefault();
+      if (!this.form) return;
+
+      const submitButton = this.form.querySelector<HTMLButtonElement>(
+        "[data-application-submit]",
+      );
+      const submitLabel = submitButton?.querySelector<HTMLElement>(
+        "[data-submit-label]",
+      );
+      const submitIcon =
+        submitButton?.querySelector<HTMLElement>("[data-submit-icon]");
+      const idleLabel =
+        submitLabel?.dataset.idle || submitLabel?.textContent || "";
+      const submittingLabel = submitLabel?.dataset.submitting || idleLabel;
+      const idleIconClass = submitIcon?.className || "";
+
+      if (this.result) {
+        this.result.hidden = true;
+        delete this.result.dataset.state;
+      }
+      if (submitButton) submitButton.disabled = true;
+      if (submitLabel) submitLabel.textContent = submittingLabel;
+      if (submitIcon) {
+        submitIcon.className =
+          "icon-[material-symbols--progress-activity] animate-spin text-lg";
+      }
+      this.form.setAttribute("aria-busy", "true");
+
+      const body = new URLSearchParams();
+      new FormData(this.form).forEach((value, key) =>
+        body.append(key, String(value)),
+      );
+
+      try {
+        const response = await fetch(this.form.action, {
+          method: "POST",
+          credentials: "same-origin",
+          headers: { Accept: "application/json" },
+          body,
+        });
+        const contentType = response.headers.get("content-type") || "";
+        if (!contentType.includes("application/json")) {
+          throw new Error("Unexpected response type");
+        }
+
+        const payload = (await response.json()) as ApplicationResponse;
+        if (
+          typeof payload.code !== "string" ||
+          typeof payload.message !== "string"
+        ) {
+          throw new Error("Unexpected response payload");
+        }
+
+        const success = response.ok && payload.code === "APPLICATION_CREATED";
+        this.showResult(payload.message, success ? "success" : "error");
+        if (success) {
+          this.form.reset();
+        } else if (typeof payload.field === "string") {
+          const field = this.form.elements.namedItem(payload.field);
+          if (field instanceof HTMLElement) field.focus();
+        }
+      } catch {
+        this.showResult(
+          this.dataset.networkError || "Unable to submit. Please try again.",
+          "error",
+        );
+      } finally {
+        this.refreshCaptcha();
+        if (submitButton) submitButton.disabled = false;
+        if (submitLabel) submitLabel.textContent = idleLabel;
+        if (submitIcon) submitIcon.className = idleIconClass;
+        this.form.removeAttribute("aria-busy");
+      }
+    };
+  }
+
+  if (!customElements.get("fuwari-link-application")) {
+    customElements.define("fuwari-link-application", LinkApplicationElement);
+  }
+</script>
+
+<style>
+  @reference "../styles/global.css";
+
+  summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .application-result {
+    @apply items-start gap-3 rounded-xl px-4 py-3 text-sm leading-6;
+  }
+
+  .application-result[data-state="success"] {
+    @apply bg-green-500/10 text-green-700 dark:bg-green-400/10 dark:text-green-300;
+    display: flex;
+  }
+
+  .application-result[data-state="error"] {
+    @apply bg-red-500/10 text-red-700 dark:bg-red-400/10 dark:text-red-300;
+    display: flex;
+  }
+</style>

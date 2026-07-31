@@ -8,7 +8,7 @@ const labelClass = "mb-2 block text-sm font-bold text-75";
 <fuwari-link-application
   id="link-application"
   th:if="${linkApplicationEnabled == true}"
-  th:attr="data-network-error=#{page.links.application.networkError},data-success-message=#{page.links.application.success}"
+  th:attr="data-network-error=#{page.links.application.networkError},data-success-message=#{page.links.application.success},data-invalid-application=#{page.links.application.invalidApplication},data-invalid-captcha=#{page.links.application.invalidCaptcha},data-application-disabled=#{page.links.application.applicationDisabled},data-duplicate-application=#{page.links.application.duplicateApplication},data-capacity-reached=#{page.links.application.capacityReached},data-rate-limited=#{page.links.application.rateLimited},data-service-unavailable=#{page.links.application.serviceUnavailable},data-rest-captcha-url=@{/apis/api.link.halo.run/v1alpha1/link-applications/captcha},data-rest-submit-url=@{/apis/api.link.halo.run/v1alpha1/link-applications}"
   class="card-base onload-animation mb-4 block scroll-mt-24"
 >
   <details id="link-application-details" data-application-details class="group">
@@ -190,23 +190,41 @@ const labelClass = "mb-2 block text-sm font-bold text-75";
               <button
                 data-captcha-refresh
                 type="button"
-                class="relative flex h-12 w-full shrink-0 cursor-pointer items-center justify-center overflow-hidden rounded-lg bg-white px-2 outline-none ring-1 ring-black/5 transition hover:ring-(--primary)/35 focus-visible:ring-2 focus-visible:ring-(--primary) dark:bg-white/90 sm:w-40"
+                class="relative flex h-12 w-full shrink-0 cursor-pointer items-center justify-center overflow-hidden rounded-lg bg-white px-2 outline-none ring-1 ring-black/5 transition hover:ring-(--primary)/35 focus-visible:ring-2 focus-visible:ring-(--primary) disabled:cursor-wait disabled:opacity-70 dark:bg-white/90 sm:w-40"
                 th:aria-label="#{page.links.application.refreshCaptcha}"
                 th:title="#{page.links.application.refreshCaptcha}"
                 aria-label="Refresh verification code"
                 title="Refresh verification code"
               >
+                <span
+                  data-captcha-loading
+                  class="absolute inset-0 flex items-center justify-center text-(--primary)"
+                  hidden
+                >
+                  <span
+                    class="icon-[material-symbols--progress-activity] animate-spin text-xl"
+                    aria-hidden="true"></span>
+                </span>
                 <img
                   data-application-captcha
                   class="h-full w-full object-contain"
-                  src="/links/apply/captcha"
-                  th:src="@{/links/apply/captcha}"
-                  th:attr="data-captcha-url=@{/links/apply/captcha}"
                   alt="Friend link application verification code"
                   th:alt="#{page.links.application.captchaAlt}"
                   width="160"
                   height="48"
+                  hidden
                 />
+                <noscript>
+                  <img
+                    class="h-full w-full object-contain"
+                    src="/links/apply/captcha"
+                    th:src="@{/links/apply/captcha}"
+                    alt="Friend link application verification code"
+                    th:alt="#{page.links.application.captchaAlt}"
+                    width="160"
+                    height="48"
+                  />
+                </noscript>
               </button>
 
               <div class="flex items-center gap-2">
@@ -223,7 +241,7 @@ const labelClass = "mb-2 block text-sm font-bold text-75";
                 <button
                   data-captcha-refresh
                   type="button"
-                  class="btn-plain scale-animation h-10 w-10 shrink-0 rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-(--primary)/40"
+                  class="btn-plain scale-animation h-10 w-10 shrink-0 rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-(--primary)/40 disabled:cursor-wait disabled:opacity-50"
                   th:aria-label="#{page.links.application.refreshCaptcha}"
                   aria-label="Refresh verification code"
                 >
@@ -283,10 +301,16 @@ const labelClass = "mb-2 block text-sm font-bold text-75";
 </fuwari-link-application>
 
 <script>
-  type ApplicationResponse = {
-    code?: unknown;
-    field?: unknown;
-    message?: unknown;
+  type CaptchaResponse = {
+    challengeId?: unknown;
+    image?: unknown;
+    expiresInSeconds?: unknown;
+  };
+
+  type ProblemResponse = {
+    detail?: unknown;
+    status?: unknown;
+    type?: unknown;
   };
 
   const restorableFieldNames = new Set([
@@ -305,6 +329,13 @@ const labelClass = "mb-2 block text-sm font-bold text-75";
     form?: HTMLFormElement;
     result?: HTMLElement;
     captcha?: HTMLImageElement;
+    captchaLoadingIndicator?: HTMLElement;
+    captchaRequestController?: AbortController;
+    submitRequestController?: AbortController;
+    challengeId?: string;
+    captchaExpiresAt = 0;
+    captchaLoading = false;
+    submitting = false;
 
     connectedCallback() {
       if (this.abortController) return;
@@ -321,7 +352,18 @@ const labelClass = "mb-2 block text-sm font-bold text-75";
       const captcha = this.querySelector<HTMLImageElement>(
         "[data-application-captcha]",
       );
-      if (!details || !form || !result || !captcha) return;
+      const captchaLoadingIndicator = this.querySelector<HTMLElement>(
+        "[data-captcha-loading]",
+      );
+      if (
+        !details ||
+        !form ||
+        !result ||
+        !captcha ||
+        !captchaLoadingIndicator
+      ) {
+        return;
+      }
 
       this.abortController = new AbortController();
       const { signal } = this.abortController;
@@ -329,12 +371,15 @@ const labelClass = "mb-2 block text-sm font-bold text-75";
       this.form = form;
       this.result = result;
       this.captcha = captcha;
+      this.captchaLoadingIndicator = captchaLoadingIndicator;
 
-      details.addEventListener("toggle", this.syncTriggers, { signal });
+      details.addEventListener("toggle", this.handleDetailsToggle, { signal });
       form.addEventListener("submit", this.handleSubmit, { signal });
       this.querySelectorAll<HTMLElement>("[data-captcha-refresh]").forEach(
         (control) =>
-          control.addEventListener("click", this.refreshCaptcha, { signal }),
+          control.addEventListener("click", this.handleCaptchaRefresh, {
+            signal,
+          }),
       );
       document
         .querySelectorAll<HTMLElement>("[data-link-application-trigger]")
@@ -347,12 +392,27 @@ const labelClass = "mb-2 block text-sm font-bold text-75";
       }
       this.restoreRedirectState();
       this.syncTriggers();
+      this.syncControlState();
+      if (details.open) void this.ensureCaptcha();
     }
 
     disconnectedCallback() {
       this.abortController?.abort();
+      this.captchaRequestController?.abort();
+      this.submitRequestController?.abort();
       this.abortController = undefined;
+      this.captchaRequestController = undefined;
+      this.submitRequestController = undefined;
+      this.challengeId = undefined;
+      this.captchaExpiresAt = 0;
+      this.setSubmitting(false);
+      this.setCaptchaLoading(false);
     }
+
+    handleDetailsToggle = () => {
+      this.syncTriggers();
+      if (this.details?.open) void this.ensureCaptcha();
+    };
 
     syncTriggers = () => {
       const expanded = String(Boolean(this.details?.open));
@@ -372,17 +432,96 @@ const labelClass = "mb-2 block text-sm font-bold text-75";
       this.scrollIntoView({ behavior, block: "start" });
     };
 
-    refreshCaptcha = () => {
-      if (!this.captcha) return;
+    handleCaptchaRefresh = () => {
+      void this.refreshCaptcha(true);
+    };
+
+    ensureCaptcha = async () => {
+      if (this.captchaLoading) return;
+      if (this.challengeId && Date.now() < this.captchaExpiresAt) {
+        return;
+      }
+      await this.refreshCaptcha(true);
+    };
+
+    refreshCaptcha = async (announceErrors: boolean) => {
+      if (!this.captcha || !this.form || !this.isConnected) return;
+
+      this.captchaRequestController?.abort();
+      const requestController = new AbortController();
+      this.captchaRequestController = requestController;
+      this.challengeId = undefined;
+      this.captchaExpiresAt = 0;
+
       const captchaCode = this.form?.elements.namedItem("captchaCode");
       if (captchaCode instanceof HTMLInputElement) captchaCode.value = "";
 
-      const baseUrl =
-        this.captcha.dataset.captchaUrl ||
-        this.captcha.getAttribute("src") ||
-        "/links/apply/captcha";
-      const separator = baseUrl.includes("?") ? "&" : "?";
-      this.captcha.src = `${baseUrl}${separator}t=${Date.now()}`;
+      this.setCaptchaLoading(true);
+      try {
+        const response = await fetch(
+          this.dataset.restCaptchaUrl ||
+            "/apis/api.link.halo.run/v1alpha1/link-applications/captcha",
+          {
+            method: "POST",
+            credentials: "omit",
+            cache: "no-store",
+            headers: {
+              Accept: "application/json, application/problem+json",
+            },
+            signal: requestController.signal,
+          },
+        );
+
+        if (!response.ok) {
+          if (announceErrors) {
+            const problem =
+              response.status === 404
+                ? {
+                    message:
+                      this.dataset.applicationDisabled ||
+                      "Friend link applications are currently closed.",
+                  }
+                : await this.readProblem(response);
+            this.showResult(problem.message, "error");
+          }
+          return;
+        }
+
+        const payload = (await response.json()) as CaptchaResponse;
+        if (
+          typeof payload.challengeId !== "string" ||
+          !payload.challengeId ||
+          typeof payload.image !== "string" ||
+          !payload.image.startsWith("data:image/")
+        ) {
+          throw new Error("Unexpected CAPTCHA response");
+        }
+
+        const expiresInSeconds =
+          typeof payload.expiresInSeconds === "number" &&
+          payload.expiresInSeconds > 0
+            ? payload.expiresInSeconds
+            : 300;
+        this.challengeId = payload.challengeId;
+        this.captchaExpiresAt =
+          Date.now() + Math.max(expiresInSeconds - 5, 1) * 1000;
+        this.captcha.src = payload.image;
+        this.captcha.hidden = false;
+      } catch (error) {
+        if (!this.isAbortError(error) && announceErrors) {
+          this.showResult(
+            this.dataset.serviceUnavailable ||
+              this.dataset.networkError ||
+              "Unable to load the verification code.",
+            "error",
+          );
+        }
+      } finally {
+        if (this.captchaRequestController === requestController) {
+          this.captchaRequestController = undefined;
+          this.setCaptchaLoading(false);
+        }
+      }
     };
 
     restoreRedirectState() {
@@ -426,8 +565,7 @@ const labelClass = "mb-2 block text-sm font-bold text-75";
 
       if (
         !fieldName ||
-        !restorableFieldNames.has(fieldName) ||
-        fieldValue === null
+        (!restorableFieldNames.has(fieldName) && fieldName !== "captchaCode")
       ) {
         return;
       }
@@ -437,7 +575,9 @@ const labelClass = "mb-2 block text-sm font-bold text-75";
         field instanceof HTMLInputElement ||
         field instanceof HTMLTextAreaElement
       ) {
-        field.value = fieldValue;
+        if (fieldValue !== null && restorableFieldNames.has(fieldName)) {
+          field.value = fieldValue;
+        }
         field.focus();
       }
     }
@@ -472,9 +612,168 @@ const labelClass = "mb-2 block text-sm font-bold text-75";
 
     handleSubmit = async (event: Event) => {
       event.preventDefault();
-      if (!this.form) return;
+      if (!this.form || this.submitting) return;
 
-      const submitButton = this.form.querySelector<HTMLButtonElement>(
+      if (!this.challengeId || Date.now() >= this.captchaExpiresAt) {
+        this.showResult(
+          this.dataset.invalidCaptcha ||
+            "The verification code is incorrect or expired.",
+          "error",
+        );
+        this.focusField("captchaCode");
+        await this.refreshCaptcha(false);
+        return;
+      }
+
+      const challengeId = this.challengeId;
+      const requestController = new AbortController();
+      this.submitRequestController = requestController;
+      this.setSubmitting(true);
+
+      const payload = {
+        url: this.getFormValue("url") || "",
+        displayName: this.getFormValue("displayName") || "",
+        logo: this.getFormValue("logo") || undefined,
+        description: this.getFormValue("description") || undefined,
+        email: this.getFormValue("email") || undefined,
+        backlink: this.getFormValue("backlink") || undefined,
+        feedUrls: (this.getFormValue("feedUrls") || "")
+          .split(/\r?\n/)
+          .map((value) => value.trim())
+          .filter(Boolean),
+        challengeId,
+        captchaCode: this.getFormValue("captchaCode") || "",
+      };
+
+      try {
+        const response = await fetch(
+          this.dataset.restSubmitUrl ||
+            "/apis/api.link.halo.run/v1alpha1/link-applications",
+          {
+            method: "POST",
+            credentials: "omit",
+            headers: {
+              Accept: "application/json, application/problem+json",
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(payload),
+            signal: requestController.signal,
+          },
+        );
+
+        if (response.status === 201) {
+          this.form.reset();
+          this.showResult(
+            this.dataset.successMessage ||
+              "Application submitted and waiting for review.",
+            "success",
+          );
+        } else {
+          const problem = await this.readProblem(response);
+          this.showResult(problem.message, "error");
+          if (
+            problem.type ===
+            "https://halo.run/probs/invalid-link-application-captcha"
+          ) {
+            this.focusField("captchaCode");
+          }
+        }
+      } catch (error) {
+        if (!this.isAbortError(error)) {
+          this.showResult(
+            this.dataset.networkError ||
+              "Unable to submit. Please try again later.",
+            "error",
+          );
+        }
+      } finally {
+        if (this.submitRequestController === requestController) {
+          this.submitRequestController = undefined;
+          this.challengeId = undefined;
+          this.captchaExpiresAt = 0;
+          if (this.isConnected) {
+            this.setSubmitting(false);
+            await this.refreshCaptcha(false);
+          }
+        }
+      }
+    };
+
+    getFormValue(name: string) {
+      if (!this.form) return "";
+      const field = this.form.elements.namedItem(name);
+      if (
+        field instanceof HTMLInputElement ||
+        field instanceof HTMLTextAreaElement
+      ) {
+        return field.value.trim();
+      }
+      return "";
+    }
+
+    focusField(name: string) {
+      if (!this.form) return;
+      const field = this.form.elements.namedItem(name);
+      if (field instanceof HTMLElement) field.focus();
+    }
+
+    async readProblem(response: Response) {
+      let payload: ProblemResponse | undefined;
+      const contentType = response.headers.get("content-type") || "";
+      if (contentType.includes("json")) {
+        try {
+          payload = (await response.json()) as ProblemResponse;
+        } catch {
+          payload = undefined;
+        }
+      }
+
+      const status =
+        typeof payload?.status === "number" ? payload.status : response.status;
+      const type = typeof payload?.type === "string" ? payload.type : undefined;
+      const messages: Record<string, string | undefined> = {
+        "400 https://halo.run/probs/invalid-link-application":
+          this.dataset.invalidApplication,
+        "400 https://halo.run/probs/invalid-link-application-captcha":
+          this.dataset.invalidCaptcha,
+        "403 https://halo.run/probs/link-application-disabled":
+          this.dataset.applicationDisabled,
+        "409 https://halo.run/probs/duplicate-link-application":
+          this.dataset.duplicateApplication,
+        "409 https://halo.run/probs/link-application-capacity-reached":
+          this.dataset.capacityReached,
+        "429 https://halo.run/probs/request-not-permitted":
+          this.dataset.rateLimited,
+        "503 https://halo.run/probs/link-application-unavailable":
+          this.dataset.serviceUnavailable,
+      };
+      const message = type ? messages[`${status} ${type}`] : undefined;
+      const detail =
+        typeof payload?.detail === "string" ? payload.detail : undefined;
+
+      return {
+        type,
+        message:
+          message ||
+          detail ||
+          this.dataset.networkError ||
+          "Unable to submit. Please try again later.",
+      };
+    }
+
+    setCaptchaLoading(loading: boolean) {
+      this.captchaLoading = loading;
+      if (this.captchaLoadingIndicator) {
+        this.captchaLoadingIndicator.hidden = !loading;
+      }
+      if (this.captcha && loading) this.captcha.hidden = true;
+      this.syncControlState();
+    }
+
+    setSubmitting(submitting: boolean) {
+      this.submitting = submitting;
+
+      const submitButton = this.form?.querySelector<HTMLButtonElement>(
         "[data-application-submit]",
       );
       const submitLabel = submitButton?.querySelector<HTMLElement>(
@@ -485,66 +784,42 @@ const labelClass = "mb-2 block text-sm font-bold text-75";
       const idleLabel =
         submitLabel?.dataset.idle || submitLabel?.textContent || "";
       const submittingLabel = submitLabel?.dataset.submitting || idleLabel;
-      const idleIconClass = submitIcon?.className || "";
 
-      if (this.result) {
+      if (submitting && this.result) {
         this.result.hidden = true;
         delete this.result.dataset.state;
       }
-      if (submitButton) submitButton.disabled = true;
-      if (submitLabel) submitLabel.textContent = submittingLabel;
+      if (submitLabel) {
+        submitLabel.textContent = submitting ? submittingLabel : idleLabel;
+      }
       if (submitIcon) {
-        submitIcon.className =
-          "icon-[material-symbols--progress-activity] animate-spin text-lg";
+        submitIcon.className = submitting
+          ? "icon-[material-symbols--progress-activity] animate-spin text-lg"
+          : "icon-[material-symbols--send-rounded] text-lg";
       }
-      this.form.setAttribute("aria-busy", "true");
+      if (this.form) {
+        if (submitting) this.form.setAttribute("aria-busy", "true");
+        else this.form.removeAttribute("aria-busy");
+      }
+      this.syncControlState();
+    }
 
-      const body = new URLSearchParams();
-      new FormData(this.form).forEach((value, key) =>
-        body.append(key, String(value)),
+    syncControlState() {
+      const busy = this.captchaLoading || this.submitting;
+      this.querySelectorAll<HTMLButtonElement>(
+        "[data-captcha-refresh]",
+      ).forEach((control) => (control.disabled = busy));
+      const submitButton = this.form?.querySelector<HTMLButtonElement>(
+        "[data-application-submit]",
       );
-
-      try {
-        const response = await fetch(this.form.action, {
-          method: "POST",
-          credentials: "same-origin",
-          headers: { Accept: "application/json" },
-          body,
-        });
-        const contentType = response.headers.get("content-type") || "";
-        if (!contentType.includes("application/json")) {
-          throw new Error("Unexpected response type");
-        }
-
-        const payload = (await response.json()) as ApplicationResponse;
-        if (
-          typeof payload.code !== "string" ||
-          typeof payload.message !== "string"
-        ) {
-          throw new Error("Unexpected response payload");
-        }
-
-        const success = response.ok && payload.code === "APPLICATION_CREATED";
-        this.showResult(payload.message, success ? "success" : "error");
-        if (success) {
-          this.form.reset();
-        } else if (typeof payload.field === "string") {
-          const field = this.form.elements.namedItem(payload.field);
-          if (field instanceof HTMLElement) field.focus();
-        }
-      } catch {
-        this.showResult(
-          this.dataset.networkError || "Unable to submit. Please try again.",
-          "error",
-        );
-      } finally {
-        this.refreshCaptcha();
-        if (submitButton) submitButton.disabled = false;
-        if (submitLabel) submitLabel.textContent = idleLabel;
-        if (submitIcon) submitIcon.className = idleIconClass;
-        this.form.removeAttribute("aria-busy");
+      if (submitButton) {
+        submitButton.disabled = busy || !this.challengeId;
       }
-    };
+    }
+
+    isAbortError(error: unknown) {
+      return error instanceof DOMException && error.name === "AbortError";
+    }
   }
 
   if (!customElements.get("fuwari-link-application")) {
